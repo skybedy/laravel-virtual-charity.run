@@ -38,7 +38,7 @@
                             </div>
                         </button>
                       @else
-                      <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="http://localhost:8000/login">Přihlásit se</a>
+                      <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a>
                       @endif
                     
                     
@@ -90,7 +90,7 @@
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                @else
-                    <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="http://localhost:8000/login">Přihlásit se</a> 
+                    <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a> 
               @endif  
             </div>
 
