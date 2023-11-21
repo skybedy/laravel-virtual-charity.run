@@ -20,7 +20,8 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        // TODO: last_year and first_year remake to model
+      return view('auth.register',['first_year' => date('Y') - 99, 'last_year' => date('Y') - 6]);
     }
 
     /**
@@ -30,14 +31,22 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        
         $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'lastname' => 'required|string|max:255',
+            'firstname' => 'required|string|max:255',
+            'gender' => 'required',
+            'birth_year' => 'required',
+            'email' => 'required|string|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        
         $user = User::create([
-            'name' => $request->name,
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'gender' => $request->gender,
+            'birth_year' => $request->birth_year,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);

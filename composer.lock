@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ffdbf85bd3b39f40ab1575aaeb41f40",
+    "content-hash": "2f02822f5bc3eee4b0f964a131da8b36",
     "packages": [
         {
             "name": "brick/math",
@@ -1495,6 +1495,75 @@
             "time": "2023-08-15T14:27:00+00:00"
         },
         {
+            "name": "laravie/parser",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravie/parser.git",
+                "reference": "11bcf705da402527c49b9bebdf68dec3e04d057f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravie/parser/zipball/11bcf705da402527c49b9bebdf68dec3e04d057f",
+                "reference": "11bcf705da402527c49b9bebdf68dec3e04d057f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-simplexml": "*",
+                "illuminate/collections": "^8.0 || ^9.0 || ^10.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4.2",
+                "phpstan/phpstan": "^1.9.14",
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Laravie\\Parser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "XML Document Parser for PHP",
+            "keywords": [
+                "parser",
+                "xml"
+            ],
+            "support": {
+                "source": "https://github.com/laravie/parser/tree/v2.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/crynobone",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://liberapay.com/crynobone",
+                    "type": "liberapay"
+                }
+            ],
+            "time": "2023-02-14T10:32:44+00:00"
+        },
+        {
             "name": "league/commonmark",
             "version": "2.4.1",
             "source": {
@@ -2460,6 +2529,81 @@
                 }
             ],
             "time": "2023-02-08T01:06:31+00:00"
+        },
+        {
+            "name": "orchestra/parser",
+            "version": "v8.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/orchestral/parser.git",
+                "reference": "148b905cdcee0e81e87ecf214442634f103f08b7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/orchestral/parser/zipball/148b905cdcee0e81e87ecf214442634f103f08b7",
+                "reference": "148b905cdcee0e81e87ecf214442634f103f08b7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/container": "^10.0",
+                "laravie/parser": "^2.3",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "laravel/pint": "^1.4",
+                "orchestra/testbench": "^8.0",
+                "phpstan/phpstan": "^1.9.14",
+                "phpunit/phpunit": "^10.0.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "9.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Orchestra\\Parser\\XmlServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Orchestra\\Parser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mior Muhammad Zaki",
+                    "email": "crynobone@gmail.com",
+                    "homepage": "https://github.com/crynobone"
+                }
+            ],
+            "description": "XML Document Parser for Laravel and PHP",
+            "keywords": [
+                "laravel",
+                "orchestra-platform",
+                "orchestral",
+                "parser",
+                "xml"
+            ],
+            "support": {
+                "source": "https://github.com/orchestral/parser/tree/v8.0.0"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/crynobone",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://liberapay.com/crynobone",
+                    "type": "liberapay"
+                }
+            ],
+            "time": "2023-02-15T01:13:52+00:00"
         },
         {
             "name": "phpoption/phpoption",

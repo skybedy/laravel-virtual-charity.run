@@ -16,7 +16,7 @@
                         {{ __('Hlavní strana') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('event.index')">
                         {{ __('Závody') }}
                     </x-nav-link>
                 </div>
@@ -38,7 +38,7 @@
                             </div>
                         </button>
                       @else
-                      <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a>
+                         <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a>
                       @endif
                     
                     
