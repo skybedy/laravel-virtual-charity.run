@@ -25,7 +25,7 @@
 
 
 <div class="flex-1">
-    <a class="block  sm:w-[250px] sm:inline-block border-solid border border-blue-500 hover:bg-red-700 hover:text-white text-red-700  px-2 rounded bg-blue-400 text-white text-xl px-4 py-2 mx-2 mb-5 sm:mb-0 text-center" href="{{ route('event.startlist.index',$event->id) }}">{{ $event->name }},  {{ $carbon::parse($event->date_start)->format('j') }}-{{ $carbon::parse($event->date_end)->format('j.n.y') }}</a>
+    <a class="block  sm:w-[250px] sm:inline-block border-solid border border-blue-500 hover:bg-red-700 hover:text-white text-red-700  px-2 rounded bg-blue-400 text-white text-xl px-4 py-2 mx-2 mb-5 sm:mb-0 text-center" href="{{ route('event.startlist.index',$event->id) }}">{{ $event->name }},  {{ $carbon::parse($event->date_start)->format('j.n') }}-{{ $carbon::parse($event->date_end)->format('j.n') }}</a>
 </div> 
   
     

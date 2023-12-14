@@ -22,7 +22,7 @@ class Event extends Model
 
     public function eventList($userId)
     {
-        return self::select('events.id', 'events.name')
+        return self::select('events.id', 'events.name','events.date_start','events.date_end')
                     ->leftJoin('registrations', function ($join) use ($userId) {
                         $join->on('events.id', '=', 'registrations.event_id')
                             ->where('registrations.user_id', '=', $userId);

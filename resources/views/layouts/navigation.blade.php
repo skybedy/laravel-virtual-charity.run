@@ -168,7 +168,7 @@
                     <x-slot name="trigger">
                         @auth
                         
-                        <button class="inline-flex items-center px-3 pt-[0.4rem] border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500  hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 pt-[0.4rem] border border-transparent text-lg leading-4 font-medium rounded-md text-blue-600  hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
                         </button>
                       @else
@@ -229,9 +229,6 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('event.index')" :active="request()->routeIs('dashboard')">
                 {{ __('Závody') }}
-            </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Pravidla') }}
             </x-responsive-nav-link>
         </div>
 
