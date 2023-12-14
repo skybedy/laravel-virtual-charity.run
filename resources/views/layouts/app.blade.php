@@ -13,9 +13,21 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script src="https://api.mapy.cz/loader.js"></script>
+        <script type="text/javascript">Loader.load();</script>
+
+        <style>
+            #m img {
+                max-width: none;
+            }
+        </style>
+
+
+
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen bg-blue-200">
             @include('layouts.navigation')
 
 
@@ -24,5 +36,6 @@
                 {{ $slot }}
             </main>
         </div>
+      
     </body>
 </html>

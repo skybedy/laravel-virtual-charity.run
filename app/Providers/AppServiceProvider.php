@@ -13,7 +13,16 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ResultService::class, function ($app) {
-            return new ResultService();
+
+            if ($app->request->eventId == null) {
+                throw new \Exception('Není uvedeno Id závodu.');
+            }
+                
+            if (!is_numeric($app->request->eventId)) {
+                throw new \InvalidArgumentException('Id závodu musí být číslo.');
+            }
+
+            return new ResultService($app->request->eventId);
         });
     }
 

@@ -37,54 +37,15 @@ class RegistrationController extends Controller
                 'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id
             ]);
 
-            session()->flash('status', 'Přihláška byla úspěšně odeslána');
+            session()->flash('status', 'Byli jste úspěšně zaregistrováni');
        }
        else
        {
-            session()->flash('status', 'Na tento závod už jsi přihlášený');
+            session()->flash('status', 'Na tento závod už jsme vás zaregistrovali');
        }
 
        return redirect()->route('event.index');
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Registration $registration)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Registration $registration)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Registration $registration)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Registration $registration)
-    {
-        //
-    }
 }

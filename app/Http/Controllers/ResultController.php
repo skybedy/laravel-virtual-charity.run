@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\ResultService;
 use App\Models\Registration;
 use App\Models\Result;
+use App\Models\TrackPoint;
 
 
 class ResultController extends Controller
@@ -16,16 +17,35 @@ class ResultController extends Controller
         dd($result->resultsOverall($request->eventId));
         return view('result.index');
     }
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+    public function resultMap(Request $request,TrackPoint $trackPoint)
+    {
+        $data = "";
+        foreach($trackPoint::select('latitude','longitude','elevation')->where('result_id',$request->resultId)->get() as $trackPoint)
+        {
+            $data .= '<trkpt lat="'.$trackPoint->latitude.'" lon="'.$trackPoint->longitude.'">';
+            $data .= '<ele>'.$trackPoint->elevation.'</ele>';
+            $data .= '<time></time>';
+            $data .= '</trkpt>';
+        }
+        
+        return response()->json($data);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
  
  
  
@@ -55,11 +75,11 @@ class ResultController extends Controller
 
         dd($result);
 
-
-
-
-
-
-
     }
+
+
+
+
+
+    
 }

@@ -121,7 +121,7 @@ class RegisteredProviderUserController extends Controller
          
                 Auth::login($finduser);
        
-                return redirect()->intended('dashboard');
+                return redirect()->intended('/');
          
             }else{
      //          dd($user);

@@ -68,3 +68,6 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## sudo chmod 666 /var/run/docker.sock v pripade, kdyz systemn hlasi, ze Docker nepracuje
 
+
+## https://www.strava.com/oauth/authorize?client_id=55124&response_type=code&redirect_uri=https://vyzva.adventnibehani.cz/registered.php&amp;state=NjkyMzY0ZTE1NGVlZDg1ODA1MzIzZDcwMjk2MDMwZjQtWTNvPS1NQT09LWMydDVZbVZrZVVCbmJXRnBiQzVqYjIwPS1vbi1vbi1jb21wYW55X25vLTA=&approval_prompt=force&scope=read,activity:read_all
+

@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('results', function (Blueprint $table) {
             $table->id();
             $table->foreignId('registration_id')->constrained();
-            $table->unsignedMediumInteger('finishtime_order');
-            $table->time('finishtime');
-            $table->unsignedInteger('finishtime_sec');
+            $table->date('finish_time_date');
+            $table->string('place');
+            $table->unsignedMediumInteger('finish_time_order')->nullable();
+            $table->time('finish_time');
+            $table->unsignedInteger('finish_time_sec');
+            $table->json('duplicity_check');
             $table->timestamps();
         });
     }

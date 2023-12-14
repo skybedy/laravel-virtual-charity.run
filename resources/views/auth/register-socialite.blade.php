@@ -1,6 +1,8 @@
+<div class="bg-red-100 text-red-500 py-2 text-center border-b border-red-300 ">Pokud jste se ocitli na této stránce, tak tu jste patrně poprvé a v tom případě je jednou jedinkrát potřeba doplnit rok narození a pohlaví pro správné zařazení do věkové kategorie.</div>
+
+
 <x-guest-layout>
     <div class="w-ful sm:max-w-md my-2 md:mr-5  px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg border border-solid border-gray-200">
-        <p class="mt-5 italic">Přes svou sociální síť..</p>
         <div class="mt-3">
             <a href="auth/{{ $provider }}"><img class="img-fluid" src="{{  Vite::asset('resources/images/'.$provider.'-login-icon.png') }}" /></a>            
         </div>

@@ -20,7 +20,15 @@ class Event extends Model
     }
 
 
-
-
+    public function eventList($userId)
+    {
+        return self::select('events.id', 'events.name')
+                    ->leftJoin('registrations', function ($join) use ($userId) {
+                        $join->on('events.id', '=', 'registrations.event_id')
+                            ->where('registrations.user_id', '=', $userId);
+                    })
+                    ->selectRaw("CASE WHEN registrations.user_id IS NULL THEN null ELSE 1 END as registration_status")
+                    ->get();
+    }
 
 }
