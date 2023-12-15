@@ -3,7 +3,7 @@ import './bootstrap';
 import $ from "jquery"; 
 window.$ = window.jQuery = $;
 
-import './custom';
+import './custom1';
 
 import Alpine from 'alpinejs';
 

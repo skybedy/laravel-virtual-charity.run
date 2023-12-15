@@ -4,10 +4,10 @@
 <x-guest-layout>
     <div class="w-ful sm:max-w-md my-2 md:mr-5  px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg border border-solid border-gray-200">
         <div class="mt-3">
-            <a href="auth/{{ $provider }}"><img class="img-fluid" src="{{  Vite::asset('resources/images/'.$provider.'-login-icon.png') }}" /></a>            
+            <img class="img-fluid" src="{{$provider}}-login-icon.png" />           
         </div>
         <form method="POST" action="{{ route('register-socialite') }}">
-            @csrf
+            @csrf 
              <x-text-input  id="provider_name" type="hidden" name="provider_name" :value="$provider" />
              <x-text-input  id="provider_id" type="hidden" name="provider_id" :value="$id" />
             <div class="mt-4">

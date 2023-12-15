@@ -13,6 +13,7 @@ use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\DuplicateFileException;
 use App\Models\TrackPoint;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
@@ -123,7 +124,15 @@ class EventController extends Controller
           //  DB::transaction(function () use ($result,$finishTime,$trackPoint) {
                 DB::beginTransaction();
 
-        $result->save();
+                
+                try{
+                    $result->save();
+                }
+                catch(QueryException $e)
+
+                {
+                    return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
+                }
 
 
         for($i = 0; $i < count($finishTime['track_points']); $i++)
@@ -148,7 +157,7 @@ class EventController extends Controller
         }
        
         $r = Result::where('registration_id', $registration_id)
-        ->orderBy('finish_time_sec', 'asc')
+        ->orderBy('finish_time', 'asc')
         ->get();
 
 
@@ -189,7 +198,7 @@ else
 return view('events.results.post-upload', [
     'results' =>  Result::selectRaw('id,DATE_FORMAT(finish_time_date,"%e.%c") AS date,place,finish_time')
     ->where('registration_id', $registration_id)
-    ->orderBy('finish_time_sec', 'asc')
+    ->orderBy('finish_time', 'asc')
     ->get(),
     'event' => $event::find($request->eventId),
     'last_id' => $lastId,
