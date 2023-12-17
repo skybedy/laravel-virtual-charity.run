@@ -174,6 +174,7 @@ class ResultService
           return [
             'finish_time' => $finishTime['finish_time'],
             'finish_time_sec' => $finishTime['finish_time_sec'],
+            'average_time_per_km' => $finishTime['average_time_per_km'],
             'finish_time_date' => $finishTimeDate,
             'duplicity_check' => $duplicityCheck,
             'track_points' => $trackPointArray,
@@ -210,9 +211,20 @@ class ResultService
         return[
           'finish_time' => $finishTime,
           'finish_time_sec' => intval(round($finishTimeSec,0)),
+          'average_time_per_km' => $this->averageTimePerKm($finishTimeSec)
         ];
         
     }
+
+
+    private function averageTimePerKm($finishTimeSec)
+    {
+        $secondPerKm = round(($finishTimeSec*1000)/$this->eventLength);
+        $timeObj = Carbon::createFromTime(0, 0, 0)->addSeconds($secondPerKm);
+
+        return substr($timeObj->format('i:s'),1);
+    }
+
 
 
 

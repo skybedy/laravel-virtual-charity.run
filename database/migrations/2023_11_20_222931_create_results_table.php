@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('place');
             $table->unsignedMediumInteger('finish_time_order')->nullable();
             $table->time('finish_time');
+            $table->string('average_time_per_km');
             $table->unsignedInteger('finish_time_sec');
             $table->json('duplicity_check');
             $table->timestamps();

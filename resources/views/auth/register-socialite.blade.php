@@ -1,5 +1,5 @@
-<div class="bg-red-100 text-red-500 py-2 text-center border-b border-red-300 ">Pokud jste se ocitli na této stránce, tak tu jste patrně poprvé a v tom případě je jednou jedinkrát potřeba doplnit rok narození a pohlaví pro správné zařazení do věkové kategorie.</div>
-
+<div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-1">Pokud jste se ocitli na této stránce, tak tu jste patrně poprvé a v tom případě je jednou jedinkrát potřeba doplnit rok narození a pohlaví pro správné zařazení do věkové kategorie.</div>
+<div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-1">V případě, že nechcete uvádět rok narození, budete automaticky zařazeni do kategorie OPEN 23-39 let.</div>
 
 <x-guest-layout>
     <div class="w-ful sm:max-w-md my-2 md:mr-5  px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg border border-solid border-gray-200">
@@ -21,6 +21,11 @@
                 <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
             </div>
             <div class="mt-4">
+                <x-input-label for="team" :value="__('Tým/Město/Obec - nepovinné')" />
+                <x-text-input id="team" class="mt-1 block w-full" type="text" name="team"  autofocus autocomplete="team" />
+                <x-input-error class="mt-2" :messages="$errors->get('team')" />
+            </div>
+            <div class="mt-4">
                 <x-input-label for="gender" value="Pohlaví" />
                 <select id="gender" name="gender" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full" required>
                     <option value="" selected disabled></option>
@@ -31,9 +36,10 @@
             </div>
 
             <div class="mt-4">
-                    <x-input-label for="birth_year" value="Ročník" />
+                    <x-input-label for="birth_year" value="Rok narození" />
                     <select id="birth_year" name="birth_year" v-model="form.birth_year" required class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                         <option value="" selected disabled></option>
+                        <option value="1901" class="text-red-600">Nechci uvádět rok narození</option>
                         <x-birth-year-option :first_year="$first_year" :last_year="$last_year"></x-birth-year-option>
                     </select>
                     <x-input-error class="mt-2" :messages="$errors->get('birthyear')" />

@@ -10,9 +10,10 @@
                         <tr class="">
                             <th class="border-none">Pořadí</th>
                             <th class="border-none text-left px-2">Jméno</th>
+                            <th class="border-none text-left px-2">Tým/Město/Obec</th>
                             <th class="border-none text-left px-2">Kategorie</th>
-                            <th class="border-none text-left px-2">Datum běhu</th>
-                            <th class="border-none text-left px-2">Místo běhu</th>
+                            <th class="border-none text-left px-2">Místo a čas</th>
+                            <th class="border-none">Min/km</th>
                             <th class="border-none">Čas</th>
                             <th class="border-none">Rozdíl</th>
                         </tr>
@@ -28,9 +29,10 @@
                             <tr class="odd:bg-gray-100 even:bg-white" id="result_{{ $result->id }}">
                                 <td class="border text-center">{{ $loop->iteration }}</td>
                                 <td class="border px-2">{{ $result->lastname }} {{ $result->firstname }}</td>
+                                <td class="border px-2">{{ $result->team }}</td>
                                 <td class="border px-2">{{ $result->category_name }}</td>
-                                <td class="border px-2">{{ $result->date }}</td>
-                                <td class="border px-2"><a class="test_tr" href="{{ route('result.map',$result->id) }}">{{ $result->place }}</a></td>
+                                <td class="border px-2"><a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">{{ $result->place }}, {{ $result->date }}</a></td>
+                                <td class="border text-center">{{ $result->average_time_per_km }}</td>
                                 <td class="border text-center">{{ $result->best_finish_time }}</td>
                                 <td class="border text-center">{{ dynamic_distance($loop->iteration,$result->best_finish_time_sec,$best_time) }}</td>
                             </tr>
@@ -42,9 +44,9 @@
                         <tr>
                             <th class="border-none">Pořadí</th>
                             <th class="border-none text-left px-2">Jméno</th>
-                            <th class="border-none text-left px-2">Místo běhu</th>
+                            <th class="border-none text-left px-2">Místo/čas</th>
                             <th class="border-none">Čas</th>
-                            <th class="border-none">Zráta</th>
+                            <th class="border-none">Ztráta</th>
                         </tr>
                         
                         
@@ -57,19 +59,12 @@
                             <tr class="odd:bg-gray-100 even:bg-white" id="result_{{ $result->id }}">
                                 <td class="border text-center">{{ $loop->iteration }}</td>
                                 <td class="border px-2">{{ $result->lastname }} {{ $result->firstname }}</td>
-                                <td class="border px-2"><a class="test_tr" href="{{ route('result.map',$result->id) }}">{{ $result->place }}</a></td>
+                                <td class="border px-2"><a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">{{ $result->place }}, {{ $result->date }}</a></td>
                                 <td class="border text-center">{{ $result->best_finish_time }}</td>
                                 <td class="border text-center">{{ dynamic_distance($loop->iteration,$result->best_finish_time_sec,$best_time) }}</td>
                             </tr>
                         @endforeach
                         </table>
-
-
-
-
-
-
-
 
                     </div>
                    

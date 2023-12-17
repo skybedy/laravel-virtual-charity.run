@@ -32,7 +32,7 @@ class RegisteredProviderUserController extends Controller
         'lastname' => $nameExplode[1],
         'provider' => $request->provider,
         'first_year' => date('Y') - 99, 
-        'last_year' => date('Y') - 6
+        'last_year' => date('Y') - 18
     ]);
    }
 
@@ -61,6 +61,7 @@ class RegisteredProviderUserController extends Controller
         $request->validate([
             'lastname' => 'required|string|max:255',
             'firstname' => 'required|string|max:255',
+            'team' => 'max:255',
             'gender' => 'required',
             'birth_year' => 'required',
             'email' => 'required|string|email|max:255|unique:'.User::class,
@@ -70,6 +71,7 @@ class RegisteredProviderUserController extends Controller
         $user = User::create([
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
+            'team' => $request->team,
             'gender' => $request->gender,
             'birth_year' => $request->birth_year,
             'email' => $request->email,

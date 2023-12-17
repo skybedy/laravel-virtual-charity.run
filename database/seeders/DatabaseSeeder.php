@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            TeamSeeder::class,
             EventSeeder::class,
             CategorySeeder::class,
 

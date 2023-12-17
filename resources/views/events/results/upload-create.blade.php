@@ -7,7 +7,13 @@
                    <x-event-navbar :event="$event" />
                     
                     @if (session('error'))
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2">{{ session('error') }}</div>
+                        @if(session('error') == 'registration_required')
+                            @php $error = 'Nahrávat výsledky je možné až poté, co se k závodu <a class="underline" href="'.route('registration.create',$event->id).'">zaregistrujete</a>'; @endphp
+                        @else
+                            @php $error = session('error') @endphp    
+                        @endif
+
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2">{!!$error!!}</div>
                     @endif
                
                     <form action="{{ route('event.upload.store',$event->id) }}" method="post" enctype="multipart/form-data" class="mt-5">

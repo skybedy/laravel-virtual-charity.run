@@ -40,6 +40,7 @@ class EventController extends Controller
 
     public function show(Request $request,Event $event)
     {
+     
         return view('events.show', [
             'event' => $event::find($request->eventId),
         ]);
@@ -61,7 +62,7 @@ class EventController extends Controller
         }
         else
         {
-            return back()->withError('Nahrávat výsledky je možné až poté, co se k závodu zaregistrujete')->withInput();
+            return back()->withError('registration_required')->withInput();
         }
         
        
@@ -117,6 +118,7 @@ class EventController extends Controller
            // dd( $result->finish_time_order);
             $result->finish_time_date = $finishTime['finish_time_date'];
             $result->finish_time = $finishTime['finish_time'];
+            $result->average_time_per_km = $finishTime['average_time_per_km'];
             $result->finish_time_sec = $finishTime['finish_time_sec'];  
             $result->duplicity_check = $finishTime['duplicity_check'];  
             $result->place = $request->place; 

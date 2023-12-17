@@ -9,6 +9,12 @@ class Registration extends Model
     protected $fillable = ['event_id', 'user_id', 'category_id'];
 
 
+        // V modelu Registration
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'event_id');
+    }
+
 
     public function registrationExists($eventId,$userId)
     {

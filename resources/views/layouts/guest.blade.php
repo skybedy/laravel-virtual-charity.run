@@ -20,10 +20,10 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-[#fefdf9]">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <x-application-logo class="w-20 h-20 fill-current text-gray-500"  width="80px" height="80px" />
                 </a>
             </div>
-            <div class="mt-3">
+            <div class="mb-5">
                          <svg  version="1.0" xmlns="http://www.w3.org/2000/svg"
                         width="160.000000pt" height="20.000000pt" viewBox="0 0 535.000000 67.000000"
                         preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,67.000000) scale(0.100000,-0.100000)"

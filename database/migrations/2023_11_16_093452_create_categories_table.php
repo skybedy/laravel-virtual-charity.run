@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('gender', ['M', 'F']);
             $table->tinyInteger('age_start');
             $table->tinyInteger('age_end');
+            $table->tinyInteger('open')->nullable()->default(null);
             $table->timestamps();
         });
     }

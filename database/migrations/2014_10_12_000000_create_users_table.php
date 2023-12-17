@@ -15,14 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('firstname');
             $table->string('lastname');
+            $table->string('team')->nullable()->default(null);
             $table->year('birth_year');
             $table->enum('gender', ['M', 'F']);
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('facebook_id')->nullable();
-            $table->string('google_id')->nullable();
+            $table->string('facebook_id')->nullable()->default(null);
+            $table->string('google_id')->nullable()->default(null);
             $table->rememberToken();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('email_verified_at')->nullable()->default(null);
             $table->timestamps();
         });
     }

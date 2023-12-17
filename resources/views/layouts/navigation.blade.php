@@ -1,6 +1,7 @@
-<nav x-data="{ open: false }" class="border-b-2 border-orange-400 bg-[#fefdf9]">
+
+<nav x-data="{ open: false }" class="border-b-2 border-orange-400 bg-[#fefdf9] py-4">
    
-   
+ 
    
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto  sm:px-6 lg:px-8">
@@ -14,11 +15,11 @@
                
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center flex-1">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-80" />
+                    <a href="{{ route('dashboard') }}" class="mr-5">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-80"  width="80px" height="80px" />
                     </a>
                     <svg  version="1.0" xmlns="http://www.w3.org/2000/svg"
-                        width="160.000000pt" height="20.000000pt" viewBox="0 0 535.000000 67.000000"
+                        width="200.000000pt" height="70.000000pt" viewBox="0 0 535.000000 67.000000"
                         preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,67.000000) scale(0.100000,-0.100000)"
                         fill="#000000" stroke="none">
                         <path d="M432 653 c-49 -5 -47 -23 3 -23 l33 0 -2 -47 c-1 -27 -3 -130 -4
@@ -144,13 +145,9 @@
                
                
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex bg-red-70">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-xl text-gray-600">
+                <div class="hidden space-x-6 lg:space-x-8 sm:-my-px sm:ms-10 md:flex bg-red-70">
+                    <x-nav-link :href="route('index')" :active="request()->routeIs('index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Hlavní strana') }}
-                    </x-nav-link>
-
-                    <x-nav-link :href="route('event.index')"  class="text-xl text-gray-600">
-                        {{ __('Závody') }}
                     </x-nav-link>
                 </div>
             
@@ -163,12 +160,12 @@
             
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden md:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         @auth
                         
-                        <button class="inline-flex items-center px-3 pt-[0.4rem] border border-transparent text-lg leading-4 font-medium rounded-md text-blue-600  hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 pt-[0.4rem] border border-transparent text-base lg:text-lg leading-4 font-medium rounded-md text-blue-600  hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
                         </button>
                       @else
@@ -207,9 +204,9 @@
             
             
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <div class="-me-2 flex items-center md:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center px-5 pt-4 pb-5  rounded-md text-gray-700 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    <svg class="h-10 w-10" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -224,11 +221,8 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link :href="route('index')" :active="request()->routeIs('index')">
                 {{ __('Hlavní strana') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('event.index')" :active="request()->routeIs('dashboard')">
-                {{ __('Závody') }}
             </x-responsive-nav-link>
         </div>
 

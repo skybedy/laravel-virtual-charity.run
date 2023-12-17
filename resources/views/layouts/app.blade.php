@@ -33,6 +33,8 @@
 
             <!-- Page Content -->
             <main>
+                <div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-1">Aplikace je zatím v testovacím režimu.</div>
+
                 {{ $slot }}
             </main>
         </div>

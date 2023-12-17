@@ -17,186 +17,212 @@ class CategorySeeder extends Seeder
         DB::table('categories')->insert(
             [
                 [
-                    'name' => 'Z18-24',
+                    'name' => 'Ženy U23',
                     'order' => '1',
                     'gender' => 'F',
                     'age_start' => '18',
-                    'age_end' => '24'
+                    'age_end' => '22',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z25-29',
+                    'name' => 'Ženy OPEN',
                     'order' => '2',
                     'gender' => 'F',
-                    'age_start' => '25',
-                    'age_end' => '29'
+                    'age_start' => '23',
+                    'age_end' => '29',
+                    'open' => '1'
                 ],     
                 [
-                    'name' => 'Z30-34',
+                    'name' => 'Ženy 30-34',
                     'order' => '3',
                     'gender' => 'F',
                     'age_start' => '30',
-                    'age_end' => '34'
+                    'age_end' => '34',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z35-39',
+                    'name' => 'Ženy 35-39',
                     'order' => '4',
                     'gender' => 'F',
                     'age_start' => '35',
-                    'age_end' => '39'
+                    'age_end' => '39',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z40-44',
+                    'name' => 'Ženy 40-44',
                     'order' => '5',
                     'gender' => 'F',
                     'age_start' => '40',
-                    'age_end' => '44'
+                    'age_end' => '44',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z45-49',
+                    'name' => 'Ženy 45-49',
                     'order' => '6',
                     'gender' => 'F',
                     'age_start' => '45',
-                    'age_end' => '49'
+                    'age_end' => '49',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z50-54',
+                    'name' => 'Ženy 50-54',
                     'order' => '7',
                     'gender' => 'F',
                     'age_start' => '50',
-                    'age_end' => '54'
+                    'age_end' => '54',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z55-59',
+                    'name' => 'Ženy 55-59',
                     'order' => '8',
                     'gender' => 'F',
                     'age_start' => '55',
-                    'age_end' => '59'
+                    'age_end' => '59',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z50-54',
+                    'name' => 'Ženy 50-54',
                     'order' => '9',
                     'gender' => 'F',
                     'age_start' => '50',
-                    'age_end' => '54'
+                    'age_end' => '54',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z55-59',
+                    'name' => 'Ženy 55-59',
                     'order' => '10',
                     'gender' => 'F',
                     'age_start' => '55',
-                    'age_end' => '59'
+                    'age_end' => '59',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z60-64',
+                    'name' => 'Ženy 60-64',
                     'order' => '11',
                     'gender' => 'F',
                     'age_start' => '60',
-                    'age_end' => '64'
+                    'age_end' => '64',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z65-69',
+                    'name' => 'Ženy 65-69',
                     'order' => '12',
                     'gender' => 'F',
                     'age_start' => '65',
-                    'age_end' => '69'
+                    'age_end' => '69',
+                    'open' => null
                 ],
                 [
-                    'name' => 'Z70+',
+                    'name' => 'Ženy 70+',
                     'order' => '13',
                     'gender' => 'F',
                     'age_start' => '70',
-                    'age_end' => '99'
+                    'age_end' => '99',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M18-24',
+                    'name' => 'U23-M',
                     'order' => '21',
                     'gender' => 'M',
                     'age_start' => '18',
-                    'age_end' => '24'
+                    'age_end' => '22',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M25-29',
+                    'name' => 'Muži OPEN',
                     'order' => '22',
                     'gender' => 'M',
-                    'age_start' => '25',
-                    'age_end' => '29'
+                    'age_start' => '23',
+                    'age_end' => '29',
+                    'open' => '1'
                 ],     
                 [
-                    'name' => 'M30-34',
+                    'name' => 'Muži 30-34',
                     'order' => '23',
                     'gender' => 'M',
                     'age_start' => '30',
-                    'age_end' => '34'
+                    'age_end' => '34',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M35-39',
+                    'name' => 'Muži 35-39',
                     'order' => '24',
                     'gender' => 'M',
                     'age_start' => '35',
-                    'age_end' => '39'
+                    'age_end' => '39',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M40-44',
+                    'name' => 'Muži 40-44',
                     'order' => '25',
                     'gender' => 'M',
                     'age_start' => '40',
-                    'age_end' => '44'
+                    'age_end' => '44',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M45-49',
+                    'name' => 'Muži 45-49',
                     'order' => '26',
                     'gender' => 'M',
                     'age_start' => '45',
-                    'age_end' => '49'
+                    'age_end' => '49',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M50-54',
+                    'name' => 'Muži 50-54',
                     'order' => '27',
                     'gender' => 'M',
                     'age_start' => '50',
-                    'age_end' => '54'
+                    'age_end' => '54',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M55-59',
+                    'name' => 'Muži 55-59',
                     'order' => '28',
                     'gender' => 'M',
                     'age_start' => '55',
-                    'age_end' => '59'
+                    'age_end' => '59',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M50-54',
+                    'name' => 'Muži 50-54',
                     'order' => '29',
                     'gender' => 'M',
                     'age_start' => '50',
-                    'age_end' => '54'
+                    'age_end' => '54',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M55-59',
+                    'name' => 'Muži 55-59',
                     'order' => '30',
                     'gender' => 'M',
                     'age_start' => '55',
-                    'age_end' => '59'
+                    'age_end' => '59',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M60-64',
+                    'name' => 'Muži 60-64',
                     'order' => '31',
                     'gender' => 'M',
                     'age_start' => '60',
-                    'age_end' => '64'
+                    'age_end' => '64',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M65-69',
+                    'name' => 'Muži M65-69',
                     'order' => '32',
                     'gender' => 'M',
                     'age_start' => '65',
-                    'age_end' => '69'
+                    'age_end' => '69',
+                    'open' => null
                 ],
                 [
-                    'name' => 'M70+',
+                    'name' => 'Muži 70+',
                     'order' => '33',
                     'gender' => 'M',
                     'age_start' => '70',
-                    'age_end' => '99'
+                    'age_end' => '99',
+                    'open' => null
                 ],
 
             ]

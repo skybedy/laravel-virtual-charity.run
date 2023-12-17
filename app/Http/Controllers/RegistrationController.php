@@ -44,7 +44,7 @@ class RegistrationController extends Controller
             session()->flash('status', 'Na tento závod už jsme vás zaregistrovali');
        }
 
-       return redirect()->route('event.index');
+       return redirect()->back();
 
     }
 

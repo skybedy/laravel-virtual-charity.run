@@ -6,7 +6,6 @@
                 <div class="p-6 text-gray-900 bg-rd-500">
                     <x-event-navbar :event="$event" />
  
-
                 </div>
             </div>
         </div>
