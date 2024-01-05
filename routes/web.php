@@ -8,6 +8,10 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\IndexController;
+use App\Http\Controllers\HowItWorksController;
+use App\Http\Controllers\RedirectController;
+use App\Http\Controllers\WebhookController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,12 +24,21 @@ use App\Http\Controllers\IndexController;
 |
 */
 
+
+
+
 Route::get('/', [IndexController::class, 'index'])->name('index');
+Route::get('/how-it-works', [HowItWorksController::class, 'index'])->name('how_it_works.index');
+Route::get('/redirect-strava',[RedirectController::class,'redirectStrava'])->name('redirect_strava');
+Route::get('/webhook',[WebhookController::class,'getStrava'])->name('get_strava');
+Route::post('/webhook',[WebhookController::class,'postStrava'])->name('post_strava');
+
 
 
 Route::middleware('auth')->group(function () {
     Route::get('/event/{eventId}/upload', [EventController::class, 'uploadCreate'])->name('event.upload.create');
     Route::post('/event/{eventId}/upload', [EventController::class, 'uploadStore'])->name('event.upload.store');
+    Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
 });
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{eventId}', [EventController::class, 'show'])->name('event.show');

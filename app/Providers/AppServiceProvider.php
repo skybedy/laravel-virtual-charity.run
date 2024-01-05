@@ -12,6 +12,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        
+        /*
+        nakonec nepoužito, ale ponechano pro inspiraci
         $this->app->bind(ResultService::class, function ($app) {
 
             if ($app->request->eventId == null) {
@@ -23,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             return new ResultService($app->request->eventId);
-        });
+        });*/
     }
 
     /**

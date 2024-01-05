@@ -41,7 +41,7 @@ $(() => {
            }
            else
            {
-            var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="7"><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
+            var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="8"><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
             $("#result_table #"+trId).after(novyRadek); 
 
            }

@@ -3,19 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use App\Models\Event;
-use App\Models\Registration;
-use App\Models\Result;
-use App\Models\Startlist;
 use App\Services\ResultService;
-use App\Exceptions\SmallDistanceException;
-use App\Exceptions\TimeIsOutOfRangeException;
-use App\Exceptions\DuplicateFileException;
-use App\Models\TrackPoint;
-use Illuminate\Database\UniqueConstraintViolationException;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
+use App\Models\Registration;
+
 
 class IndexController extends Controller
 {
@@ -34,4 +25,15 @@ class IndexController extends Controller
             ]);
         }
         
-    }}
+    }
+
+    public function autodistanceUpload(Request $request,ResultService $resultService,Registration $registration)
+    {
+        $resultService->overallDistance($request,$registration);
+        dd('bla');
+
+    }
+
+
+
+}

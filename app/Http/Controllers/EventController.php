@@ -137,9 +137,9 @@ class EventController extends Controller
                 }
 
 
-        for($i = 0; $i < count($finishTime['track_points']); $i++)
+        for($i = 0; $i < count($finishTime['track_points']['trkpt']); $i++)
         {
-            $finishTime['track_points'][$i]['result_id'] = $result->id;
+            $finishTime['track_points']['trkpt'][$i]['result_id'] = $result->id;
         }
 
 

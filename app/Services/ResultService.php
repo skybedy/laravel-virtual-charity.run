@@ -10,11 +10,13 @@ use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\DuplicityException;
 use App\Models\TrackPoint;
+use App\Models\Registration;
+use Illuminate\Support\Facades\Log;
 
 class ResultService 
 {
    
-  private $eventLength;
+  private $eventDistance;
   private $dateStart;
   private $dateEnd;
   private $dateEventStartTimestamp;
@@ -23,12 +25,12 @@ class ResultService
 
   
   
-  public function __construct($eventId)
+  public function __construct()
   {
-      $event = Event::where('id',$eventId);
-      $this->eventLength = $event->value('length');
-      $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
-      $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
+    //  $event = Event::where('id',$eventId);
+      //$this->eventDistance = $event->value('Distance');
+      //$this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
+      //$this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
 
   }
 
@@ -68,11 +70,231 @@ class ResultService
 
 
 
+    public function overallDistance($request,$registration)
+    {
+        
+        $trackPointArray = [];
+        $file = $request->file('file');
+        
+      
+        
+        $xmlObject = simplexml_load_file($file);
+        
+        
+        
+        $lastPointLat = null;
+        $lastPointLon = null;
+        $currentPointLat = null;
+        $currentPointLon = null;
+        $distance = 0;
+     
+        $originalDateTime = $xmlObject->metadata->time;
+
+
+         $activityDate  = Carbon::parse($originalDateTime)->format('Y-m-d');    
+        
+        $events = Event::where('date_start', '>=',$activityDate)
+                        ->where('date_end', '>=',$activityDate)
+                        ->orderBy('distance','DESC')
+        ->get(['id','distance']);
+
+     
+
+        // iteration through gpx
+        $i = 1;
+        foreach($xmlObject->trk->trkseg->trkpt as $point)
+        {
+          
+          
+          
+          
+          if($i == 1)
+          {
+            $time = $this->iso8601ToTimestamp($point->time);
+            $startDayTimestamp = $time;
+           // dd($startDayTimestamp);
+          }
+
+
+          
+          
+          
+            $lastPointLat = $currentPointLat;
+            $lastPointLon = $currentPointLon;
+            $currentPointLat = floatval($point['lat']);
+            $currentPointLon = floatval($point['lon']);
+
+        
+
+
+
+
+
+            if($lastPointLat != null)
+            {
+                $pointDistance = $this->vincentyGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
+                $distance += $pointDistance;
+            }
+
+            $trackPointArray[] = [
+              'distance' => $distance,
+              'time' => $point->time,
+              'user_id' => $request->user()->id,
+              'trkpt' =>  
+              [
+                'latitude' => $currentPointLat,
+                'longitude' => $currentPointLon,
+                'elevation' => $point->ele]
+              ];
+
+            $i++;
+        }
+
+
+
+
+
+
+        foreach($events as $event)
+        {
+            dump($event);
+            if($distance >= $event['distance'])
+            {
+                
+                if(isset($registration->registrationExists( $event['id'], $request->user()->id)->id))
+                {
+                    $registration_id = $registration->registrationExists( $event['id'], $request->user()->id)->id;
+                    //dump( $registration_id );
+
+                
+            
+                
+                
+                
+                $this->eventDistance = $event['distance'];
+
+                foreach($trackPointArray as $trackPoint)
+                {
+                    if($trackPoint['distance'] >= $event['distance'])
+                    {
+                        
+                        $finishTime = $this->finishTimeCalculation($trackPoint['time'],$trackPoint['distance'],$startDayTimestamp);
+                        break;
+                    }
+                }
+
+           
+                dd($finishTime);
+
+        
+        
+                return [
+                  'finish_time' => $finishTime['finish_time'],
+                  'finish_time_sec' => $finishTime['finish_time_sec'],
+                  'average_time_per_km' => $finishTime['average_time_per_km'],
+                  'track_points' => $trackPointArray,
+                ];
+           
+                
+            }
+
+                
+                
+                else
+                {
+                    dump('neni');
+                   
+                    Log::info('Event '.$event['id'].' délkově odpovídá, ale uživatel id '.$request->user()->id.' k nemu není přihlášený'); 
+                    continue;
+                }
+                
+
+
+              
+              
+              
+              
+                break;
+              
+              
+            }
+          
+        }
+       
+       
+       
+       
+     
+
+        
+
+
+          
+    }
+
+
+
+    private function finishTimeCalculation($time,$distance,$startDayTimestamp)
+    {
+       
+        $t = new Carbon($time);
+       
+        $finishDayTimestamp = $t->timestamp;
+        
+        $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
+        
+        
+        $speedMeterPerSec = $distance / $rawFinishTimeSec;
+       
+        $plusDistance = $distance - $this->eventDistance;
+
+
+        $finishTimeSec = $rawFinishTimeSec - ($plusDistance * (1 / $speedMeterPerSec));
+
+
+       
+
+        $carbonFinishTime = Carbon::createFromTime(0, 0, 0);
+        $carbonFinishTime->addSeconds($finishTimeSec);
+        $finishTime = $carbonFinishTime->format('H:i:s');
+
+        return[
+          'finish_time' => $finishTime,
+          'finish_time_sec' => intval(round($finishTimeSec,0)),
+          'average_time_per_km' => $this->averageTimePerKm($finishTimeSec)
+        ];
+        
+    }
+
+
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
 
 
   public function finishTime($request)
     {
-        
+       
+      //dd($request->eventId);
+
+
+        $event = Event::where('id',$request->eventId);
+        $this->eventDistance = $event->value('distance');
+        $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
+        $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
+
+
         $trackPointArray = [];
         $file = $request->file('file');
         $destinationPath = 'uploads';
@@ -147,9 +369,9 @@ class ResultService
             $pointDistance = $this->vincentyGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
             $distance += $pointDistance;
 
-            if($distance >= $this->eventLength)
+            if($distance >= $this->eventDistance)
             {
-              $finishTime = $this->finishTimeCalculation($point,$distance,$startDayTimestamp);
+              $finishTime = $this->finishTimeCalculation($point->time,$distance,$startDayTimestamp);
               break;
             }
 
@@ -159,12 +381,15 @@ class ResultService
         }
 
 
+        
 
 
 
 
 
-        if($distance < $this->eventLength)
+
+
+        if($distance < $this->eventDistance)
         {
           throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
         }
@@ -175,14 +400,31 @@ class ResultService
             'finish_time' => $finishTime['finish_time'],
             'finish_time_sec' => $finishTime['finish_time_sec'],
             'average_time_per_km' => $finishTime['average_time_per_km'],
-            'finish_time_date' => $finishTimeDate,
-            'duplicity_check' => $duplicityCheck,
             'track_points' => $trackPointArray,
           ];
 
         }
     }
 
+
+    
+    
+    
+    
+    
+    
+  
+
+
+
+
+    private function averageTimePerKm($finishTimeSec)
+    {
+        $secondPerKm = round(($finishTimeSec*1000)/$this->eventDistance);
+        $timeObj = Carbon::createFromTime(0, 0, 0)->addSeconds($secondPerKm);
+
+        return substr($timeObj->format('i:s'),1);
+    }
 
     function isTimeInRange($time)
     {
@@ -193,36 +435,6 @@ class ResultService
       {
         return false;
       }
-    }
-
-
-    private function finishTimeCalculation($point,$distance,$startDayTimestamp)
-    {
-        $t = new Carbon($point->time);
-        $finishDayTimestamp = $t->timestamp;
-        $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
-        $speedMeterPerSec = $distance / $rawFinishTimeSec;
-        $plusDistance = $distance - $this->eventLength;
-        $finishTimeSec = $rawFinishTimeSec - ($plusDistance * $speedMeterPerSec);
-        $carbonFinishTime = Carbon::createFromTime(0, 0, 0);
-        $carbonFinishTime->addSeconds($finishTimeSec);
-        $finishTime = $carbonFinishTime->format('H:i:s');
-
-        return[
-          'finish_time' => $finishTime,
-          'finish_time_sec' => intval(round($finishTimeSec,0)),
-          'average_time_per_km' => $this->averageTimePerKm($finishTimeSec)
-        ];
-        
-    }
-
-
-    private function averageTimePerKm($finishTimeSec)
-    {
-        $secondPerKm = round(($finishTimeSec*1000)/$this->eventLength);
-        $timeObj = Carbon::createFromTime(0, 0, 0)->addSeconds($secondPerKm);
-
-        return substr($timeObj->format('i:s'),1);
     }
 
 

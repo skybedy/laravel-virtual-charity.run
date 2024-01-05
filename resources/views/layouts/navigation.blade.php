@@ -1,25 +1,18 @@
 
 <nav x-data="{ open: false }" class="border-b-2 border-orange-400 bg-[#fefdf9] py-4">
-   
- 
-   
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto  sm:px-6 lg:px-8">
         
-
         <div class="flex justify-between h-16">
         
-        
-               
-               
-               
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center flex-1">
-                    <a href="{{ route('dashboard') }}" class="mr-5">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-80"  width="80px" height="80px" />
+                    <a href="{{ route('index') }}">
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-80"  width="70px" height="70px" />
                     </a>
+                    <div class="pt-1">
                     <svg  version="1.0" xmlns="http://www.w3.org/2000/svg"
-                        width="200.000000pt" height="70.000000pt" viewBox="0 0 535.000000 67.000000"
+                        width="170.000000pt" height="70.000000pt" viewBox="0 0 535.000000 67.000000"
                         preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,67.000000) scale(0.100000,-0.100000)"
                         fill="#000000" stroke="none">
                         <path d="M432 653 c-49 -5 -47 -23 3 -23 l33 0 -2 -47 c-1 -27 -3 -130 -4
@@ -139,6 +132,7 @@
                         21 -58 -1z"/>
                         </g>
                         </svg>
+                        </div>
                 </div>
                 
                
@@ -148,6 +142,9 @@
                 <div class="hidden space-x-6 lg:space-x-8 sm:-my-px sm:ms-10 md:flex bg-red-70">
                     <x-nav-link :href="route('index')" :active="request()->routeIs('index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Hlavní strana') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('how_it_works.index')" :active="request()->routeIs('how_it_works.index')" class="text-lg lg:text-xl text-gray-600">
+                        {{ __('Jak na to') }}
                     </x-nav-link>
                 </div>
             
@@ -204,9 +201,9 @@
             
             
             <!-- Hamburger -->
-            <div class="-me-2 flex items-center md:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center px-5 pt-4 pb-5  rounded-md text-gray-700 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-10 w-10" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+            <div class="flex items-center md:hidden">
+                <button @click="open = ! open" class="inline-flex items-center justify-center  rounded-md text-white hover:white hover:bg-gray-800 focus:outline-none focus:bg-gray-800 focus:text-white transition duration-150 ease-in-out bg-gray-800 mr-1">
+                    <svg class="h-10 w-8" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>

@@ -5,7 +5,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 bg-rd-500">
                     <x-event-navbar :event="$event" />
-                    <table class="border-collapse w-full mt-5">
+                    <table class="border-collapse w-full mt-5 text-xs sm:text-base">
                         <tr>
                             <th class="border-none text-left px-2">Jméno</th>
                             <th class="border-none text-left px-2">Tým/Město/Obec</th>
