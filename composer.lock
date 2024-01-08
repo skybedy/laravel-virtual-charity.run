@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4538f1b3452a564a81b849b64898ce2",
+    "content-hash": "91a28a94268feb80a996d99ae5f98ead",
     "packages": [
         {
             "name": "brick/math",
@@ -844,6 +844,56 @@
                 }
             ],
             "time": "2023-10-06T06:47:41+00:00"
+        },
+        {
+            "name": "endlessmiles/polyline",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/marcaspers/polyline.git",
+                "reference": "438168d8ee8539ee00b191d90b7936bb546910eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/marcaspers/polyline/zipball/438168d8ee8539ee00b191d90b7936bb546910eb",
+                "reference": "438168d8ee8539ee00b191d90b7936bb546910eb",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "EndlessMiles\\Polyline\\PolylineServiceProvider"
+                    ],
+                    "aliases": {
+                        "Polyline": "EndlessMiles\\Polyline\\PolylineFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EndlessMiles\\Polyline\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Caspers",
+                    "email": "mail@marcocaspers.com"
+                }
+            ],
+            "description": "A comopser package to decode Google Polyline strings into an array of latlng pairs.",
+            "support": {
+                "issues": "https://github.com/marcaspers/polyline/issues",
+                "source": "https://github.com/marcaspers/polyline/tree/1.0.1"
+            },
+            "time": "2022-06-06T05:34:25+00:00"
         },
         {
             "name": "fruitcake/php-cors",
@@ -7345,5 +7395,5 @@
         "php": "^8.1"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

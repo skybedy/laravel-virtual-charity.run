@@ -10,6 +10,7 @@ use App\Models\Startlist;
 use App\Services\ResultService;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
+use App\Exceptions\TimeMissingException;
 use App\Exceptions\DuplicateFileException;
 use App\Models\TrackPoint;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -89,6 +90,10 @@ class EventController extends Controller
         {
             return back()->withError($e->getMessage())->withInput();
         }
+        catch (TimeMissingException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
         catch (UniqueConstraintViolationException $e) {
             //dd('tu');
             $errorCode = $e->errorInfo[1];
@@ -98,48 +103,31 @@ class EventController extends Controller
             }
         }
 
+        $result = new Result();
+        $result->registration_id = $registration_id;
+        $result->finish_time_date = $finishTime['finish_time_date'];
+        $result->finish_time = $finishTime['finish_time'];
+        $result->average_time_per_km = $finishTime['average_time_per_km'];
+        $result->finish_time_sec = $finishTime['finish_time_sec'];  
+        $result->duplicity_check = $finishTime['duplicity_check'];  
+        $result->place = $request->place; 
 
-      
+        DB::beginTransaction();
 
+        
+        try{
+            $result->save();
+        }
+        catch(QueryException $e)
 
-
-
-  
-
-
-
-
-
-       
-
-            $result = new Result();
-            $result->registration_id = $registration_id;
-            //$result->finish_time_order = $result->finishTimeOrder($request->registration_id);
-           // dd( $result->finish_time_order);
-            $result->finish_time_date = $finishTime['finish_time_date'];
-            $result->finish_time = $finishTime['finish_time'];
-            $result->average_time_per_km = $finishTime['average_time_per_km'];
-            $result->finish_time_sec = $finishTime['finish_time_sec'];  
-            $result->duplicity_check = $finishTime['duplicity_check'];  
-            $result->place = $request->place; 
-
-          //  DB::transaction(function () use ($result,$finishTime,$trackPoint) {
-                DB::beginTransaction();
-
-                
-                try{
-                    $result->save();
-                }
-                catch(QueryException $e)
-
-                {
-                    return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
-                }
-
-
-        for($i = 0; $i < count($finishTime['track_points']['trkpt']); $i++)
         {
-            $finishTime['track_points']['trkpt'][$i]['result_id'] = $result->id;
+            return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
+        }
+
+
+        for($i = 0; $i < count($finishTime['track_points']); $i++)
+        {
+            $finishTime['track_points'][$i]['result_id'] = $result->id;
         }
 
 
@@ -165,19 +153,16 @@ class EventController extends Controller
 
 
 
-$lastId = $result->id;
-foreach($r as $key => $value)
-{
-    if($value->id == $lastId)
-    {
-        $rank = $key + 1;
-    }
+        $lastId = $result->id;
+        foreach($r as $key => $value)
+        {
+            if($value->id == $lastId)
+            {
+                $rank = $key + 1;
+            }
 
-    Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
-
-
-
-}
+            Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
+        }
 
 
 /*

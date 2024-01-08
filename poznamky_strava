@@ -1,0 +1,19 @@
+
+#autorizace, dulezite na konci musi byt to scope takto !!!!!
+https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-run.cz/redirect-strava&approval_prompt=force&scope=activity:read_all
+
+https://virtual-run.cz/redirect-strava?state=&code=b3106d2b593d61208db0591c03ee3c8e64d1fb4f&scope=read,activity:read_all
+
+
+{"token_type":"Bearer","expires_at":1703611126,"expires_in":21600,"refresh_token":"001fb15cc153d037ce67d2f8ecd7dbd17f0c096d","access_token":"ebdf28e80e9162c66302b20429d093e734641455","athlete":{"id":100148951,"username":"skybedy","resource_state":2,"firstname":"Martin","lastname":"Kupec","bio":null,"city":null,"state":null,"country":null,"sex":"M","premium":false,"summit":false,"created_at":"2022-03-14T15:56:54Z","updated_at":"2023-12-25T15:42:42Z","badge_type_id":0,"weight":0.0,"profile_medium":"https://graph.facebook.com/2490256737727762/picture?height=256\u0026width=256","profile":"https://graph.facebook.com/2490256737727762/picture?height=256\u0026width=256","friend":null,"follower":null}}
+
+curl -X GET https://www.strava.com/api/v3/athlete/activities -H 'Authorization: Bearer ebdf28e80e9162c66302b20429d093e734641455'
+
+http GET "https://www.strava.com/api/v3/activities/10431249527?include_all_efforts=" "Authorization: Bearer ebdf28e80e9162c66302b20429d093e734641455"
+
+http GET "https://www.strava.com/api/v3/activities/10431249527/laps" "Authorization: Bearer ebdf28e80e9162c66302b20429d093e734641455"
+
+
+http GET "https://www.strava.com/api/v3/routes/10431249527/export_gpx" "Authorization: Bearer ebdf28e80e9162c66302b20429d093e734641455"
+
+ 

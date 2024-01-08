@@ -32,6 +32,7 @@ Route::get('/how-it-works', [HowItWorksController::class, 'index'])->name('how_i
 Route::get('/redirect-strava',[RedirectController::class,'redirectStrava'])->name('redirect_strava');
 Route::get('/webhook',[WebhookController::class,'getStrava'])->name('get_strava');
 Route::post('/webhook',[WebhookController::class,'postStrava'])->name('post_strava');
+Route::get('/webhook/autoupload',[WebhookController::class,'autouploadStrava'])->name('autoupload_strava');
 
 
 

@@ -20,10 +20,12 @@ return new class extends Migration
             $table->enum('gender', ['M', 'F']);
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('facebook_id')->nullable()->default(null);
-            $table->string('google_id')->nullable()->default(null);
-            $table->rememberToken();
-            $table->timestamp('email_verified_at')->nullable()->default(null);
+            $table->string('facebook_id')->nullable();
+            $table->string('google_id')->nullable();
+            $table->integer('strava_id')->unsigned()->nullable();
+            $table->string('strava_access_token')->nullable();
+            $table->string('strava_refresh_token')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
     }
