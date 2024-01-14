@@ -14,20 +14,21 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 
 
 class StravaController extends Controller
 {
-    
-    
+
+
   //  public function dataProcessing(ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
 
     public function dataProcessing($resultService,$registration,$trackPoint,$event,$dataStream,$userId)
     {
 
         //return $dataStream;
-        
-        
+
+
         $finishTime =   $resultService->dataFromStravaStream($dataStream,$registration,$userId);
 
 
@@ -148,30 +149,30 @@ class StravaController extends Controller
 
             $stravaId = $request->input('owner_id');
             //$expiresAt = User::where('strava_id','=',$input)->value('expires_at');
-            $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('strava_id',$stravaId)->first(); 
+            $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('strava_id',$stravaId)->first();
 
-           
+
             if($user->strava_expires_at > time())
             {
 
                 //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
 
                 $url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."/streams?keys=time,latlng,altitude&key_by_type=true";
-               
-               
-               
-               
+
+
+
+
                 $token = $user->strava_access_token;
                 $response = Http::withToken($token)->get($url)->json();
 
-                
+
 
                 if($response)
                 {
                     $url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=false";
                     $response += Http::withToken($token)->get($url)->json();
                     $data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
-                }    
+                }
 
             }
             else
@@ -182,12 +183,12 @@ class StravaController extends Controller
                     'refresh_token' => $user->strava_refresh_token,
                     'grant_type' => 'refresh_token',
                 ]);
-                
+
                 $body = $response->body();
                 $content = json_decode($body, true);
-        
-                
-                $user1 = User::where('id',$user->id)->first(); 
+
+
+                $user1 = User::where('id',$user->id)->first();
                 $user1->strava_access_token = $content['access_token'];
                 $user1->strava_refresh_token = $content['refresh_token'];
                 $user1->strava_expires_at = $content['expires_at'];
@@ -195,8 +196,8 @@ class StravaController extends Controller
 
                 $user1->save();
 
-                
-                
+
+
                 $url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
                 $token = $user->strava_access_token;
                 $response = Http::withToken($token)->get($url);
@@ -216,22 +217,22 @@ class StravaController extends Controller
 
     private function getUserByStravaId($stravaId)
     {
-        return User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('strava_id',$stravaId)->first(); 
+        return User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('strava_id',$stravaId)->first();
     }
-    
-    
-    
+
+
+
     public function redirectStrava(Request $request)
     {
-        
-       
+
+
         $response = Http::post('https://www.strava.com/oauth/token', [
             'client_id' => '117954',
             'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
             'code' => $request->query('code'),
             'grant_type' => 'authorization_code',
         ]);
-        
+
         $body = $response->body();
         $content = json_decode($body, true);
         //dd($content);
@@ -243,13 +244,13 @@ class StravaController extends Controller
         $user->strava_expires_at = $content['expires_at'];
         $user->strava_scope = $request->query('scope');
         $user->save();
-        
-        
+
+
         dd($user);
-        
+
        // return view('redirect.redirect-strava');
        //return redirect()->back();
-     
+
     }
 
     //simulace autonahrani ze Stravy
@@ -280,11 +281,11 @@ class StravaController extends Controller
             $user = $this->getUserByStravaId(100148951);
 
             $finishTime =   $resultService->dataFromStravaStream($response,$registration,$user->id);
-        
-              
-    
-       
-        
+
+
+
+
+
 
             $result = new Result();
             $result->registration_id = $finishTime['registration_id'];
@@ -353,8 +354,15 @@ class StravaController extends Controller
 
 
 
-        }    
+        }
 
+    }
+
+
+
+    public function enableStrava(Request $request)
+    {
+        return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-run.cz/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read_all');
     }
 
 

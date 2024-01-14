@@ -2,9 +2,9 @@
 <nav x-data="{ open: false }" class="border-b-2 border-orange-400 bg-[#fefdf9] py-4">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto  sm:px-6 lg:px-8">
-        
+
         <div class="flex justify-between h-16">
-        
+
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center flex-1">
                     <a href="{{ route('index') }}">
@@ -134,10 +134,10 @@
                         </svg>
                         </div>
                 </div>
-                
-               
-               
-               
+
+
+
+
                 <!-- Navigation Links -->
                 <div class="hidden space-x-6 lg:space-x-8 sm:-my-px sm:ms-10 md:flex bg-red-70">
                     <x-nav-link :href="route('index')" :active="request()->routeIs('index')" class="text-lg lg:text-xl text-gray-600">
@@ -147,29 +147,29 @@
                         {{ __('Jak na to') }}
                     </x-nav-link>
                 </div>
-            
-            
-            
-            
-           
-           
-           
-            
+
+
+
+
+
+
+
+
 
             <!-- Settings Dropdown -->
             <div class="hidden md:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         @auth
-                        
+
                         <button class="inline-flex items-center px-3 pt-[0.4rem] border border-transparent text-base lg:text-lg leading-4 font-medium rounded-md text-blue-600  hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                             <div>{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
                         </button>
                       @else
                          <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a>
                       @endif
-                    
-                    
+
+
                     </x-slot>
 
                     <x-slot name="content">
@@ -194,15 +194,6 @@
                 </x-dropdown>
             </div>
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
             <!-- Hamburger -->
             <div class="flex items-center md:hidden">
                 <button @click="open = ! open" class="inline-flex items-center justify-center  rounded-md text-white hover:white hover:bg-gray-800 focus:outline-none focus:bg-gray-800 focus:text-white transition duration-150 ease-in-out bg-gray-800 mr-1">
@@ -212,9 +203,6 @@
                     </svg>
                 </button>
             </div>
-        
-        
-        
         </div>
     </div>
 
@@ -232,8 +220,8 @@
               @auth
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</div>
                @else
-                    <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a> 
-              @endif  
+                    <a class="border-solid border border-red-600 hover:bg-red-700 hover:text-white text-red-700 py-2 px-4 rounded" href="{{ route('login') }}">Přihlásit se</a>
+              @endif
             </div>
 
             <div class="mt-3 space-y-1">

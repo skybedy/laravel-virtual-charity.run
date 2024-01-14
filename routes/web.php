@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/event/{eventId}/upload', [EventController::class, 'uploadCreate'])->name('event.upload.create');
     Route::post('/event/{eventId}/upload', [EventController::class, 'uploadStore'])->name('event.upload.store');
     Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
+    Route::get('/enable-strava',[StravaController::class, 'enableStrava'])->name('enable_strava');
 });
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{eventId}', [EventController::class, 'show'])->name('event.show');
