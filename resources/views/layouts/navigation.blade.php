@@ -176,6 +176,9 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profil') }}
                         </x-dropdown-link>
+                          <x-dropdown-link :href="route('profile.edit')">
+                            {{ __('Strava') }}
+                        </x-dropdown-link>
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

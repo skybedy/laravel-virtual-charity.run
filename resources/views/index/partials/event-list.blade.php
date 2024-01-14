@@ -1,16 +1,5 @@
-@inject('carbon', 'Carbon\Carbon')
-
-@section('title', '| Hlavní strana')
-
-<x-app-layout>
-    <div class="sm:py-24">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if (session('status'))
-                <div class="alert alert-success">
-                    {{ session('status') }}
-                </div>
-            @endif
-            <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl">
+        
+            <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-5">
                 <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
                     @foreach ($events as $event)
                         <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  lg:h-96 xl:h-96 sm:rounded-2xl  text-white text-center font-black bg-gray-600 mt-10 sm:mt-0 px-3 pt-4 pb-5 sm:py-5 md:pt-0 pb-3 lg:pb-0">
@@ -31,30 +20,3 @@
                     @endforeach
                 </div>
             </div>
-            
-            <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-5 p-4">
-                <h2 class="text-4xl text-blue-700 font-black">Autodistance upload</h2>
-
-
-                <form action="{{ route('autodistance_upload') }}" method="post" enctype="multipart/form-data" class="mt-5">
-                    @csrf
-                         <div>
-                            <x-input-label for="place" :value="__('Místo běhu (Kocourkov, Horní Dolní..) *')" />
-                            <x-text-input id="place" name="place" type="text" class="mt-1 w-full sm:w-1/2" :value="old('place')"  />
-                            <x-input-error class="mt-2" :messages="$errors->get('place')" />
-                        </div>
-                        <input type="file" name="file" class="mt-1 w-full sm:w-1/2 mt-2 border border-grey">
-                        <div class="mt-2 p-2 w-full sm:w-1/2 border border-grey sm:rounded-xl">         
-                            <x-primary-button class="m-2">Nahrát</x-primary-button>
-                        </div>  
-                </form>
-
-            </div>
-
-
-
-
-
-        </div>
-    </div>
-</x-app-layout>

@@ -24,13 +24,13 @@ class IndexController extends Controller
         
         if($request->user() == null)
         {
-            return view('index', [
+            return view('index.index', [
                 'events' => $event::All(),
             ]);
         }
         else
         {
-            return view('index', [
+            return view('index/index', [
                 'events' => $event->eventList($request->user()->id),
             ]);
         }

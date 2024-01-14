@@ -20,7 +20,7 @@ return new class extends Migration
             $table->time('finish_time');
             $table->string('average_time_per_km');
             $table->unsignedInteger('finish_time_sec');
-            $table->json('duplicity_check');
+          //  $table->json('duplicity_check')->nullable();
             $table->timestamps();
         });
     }

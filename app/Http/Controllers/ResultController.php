@@ -23,10 +23,10 @@ class ResultController extends Controller
     public function resultMap(Request $request,TrackPoint $trackPoint)
     {
         $data = "";
-        foreach($trackPoint::select('latitude','longitude','elevation')->where('result_id',$request->resultId)->get() as $trackPoint)
+        foreach($trackPoint::select('latitude','longitude')->where('result_id',$request->resultId)->get() as $trackPoint)
         {
             $data .= '<trkpt lat="'.$trackPoint->latitude.'" lon="'.$trackPoint->longitude.'">';
-            $data .= '<ele>'.$trackPoint->elevation.'</ele>';
+            $data .= '<ele></ele>';
             $data .= '<time></time>';
             $data .= '</trkpt>';
         }

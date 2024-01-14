@@ -19,10 +19,10 @@ return new class extends Migration
             $table->double('latitude', 15, 8); // Zeměpisná šířka
             $table->double('longitude', 15, 8); // Zeměpisná délka
             $table->bigInteger('time')->unsigned()->nullable(); // Časová značka
-            //$table->float('elevation')->nullable(); // Nadmořská výška
+            $table->float('altitude')->nullable(); // Nadmořská výška
             //$table->float('speed')->nullable(); // Rychlost
             //$table->integer('heart_rate')->nullable(); // Srdeční tep
-          //  $table->unique(['user_id', 'time']);
+            $table->unique(['user_id', 'time']);
             $table->timestamps(); // Vytvoří created_at a updated_at sloupce
         });
 

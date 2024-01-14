@@ -10,7 +10,7 @@ use App\Http\Controllers\ResultController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\HowItWorksController;
 use App\Http\Controllers\RedirectController;
-use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\StravaController;
 
 
 /*
@@ -29,10 +29,10 @@ use App\Http\Controllers\WebhookController;
 
 Route::get('/', [IndexController::class, 'index'])->name('index');
 Route::get('/how-it-works', [HowItWorksController::class, 'index'])->name('how_it_works.index');
-Route::get('/redirect-strava',[RedirectController::class,'redirectStrava'])->name('redirect_strava');
-Route::get('/webhook',[WebhookController::class,'getStrava'])->name('get_strava');
-Route::post('/webhook',[WebhookController::class,'postStrava'])->name('post_strava');
-Route::get('/webhook/autoupload',[WebhookController::class,'autouploadStrava'])->name('autoupload_strava');
+Route::get('/redirect-strava/{userId}',[StravaController::class,'redirectStrava'])->name('redirect_strava');
+Route::get('/webhook',[StravaController::class,'getStrava'])->name('get_strava');
+Route::post('/webhook',[StravaController::class,'postStrava'])->name('post_strava');
+Route::get('/webhook/autoupload',[StravaController::class,'autouploadStrava'])->name('autoupload_strava');
 
 
 

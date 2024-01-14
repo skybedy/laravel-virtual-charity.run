@@ -12,6 +12,7 @@ use App\Models\Result;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 
 
@@ -27,6 +28,8 @@ class WebhookController extends Controller
         $token = "f2c183e83f7e1528e6a135af1520c928cc304b00";
         $response = Http::withToken($token)->get($url);
         $data = $response->json();
+        
+        
         $finishTime = $resultService->dataStravaProcessing($response->json(),$registration);
 
         $result = new Result();
@@ -131,13 +134,64 @@ class WebhookController extends Controller
     {
 
 
-
         \Log::info("Webhook event received!", [
             'query' => $request->query(),
             'body' => $request->all()
         ]);
 
-        return response('EVENT_RECEIVED', 200);
+
+        //$expiresAt = User::where(
+            $stravaId = $request->input('owner_id');
+            //$expiresAt = User::where('strava_id','=',$input)->value('expires_at');
+            $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('strava_id',$stravaId)->first(); 
+
+           
+            if($user->strava_expires_at > time())
+            {
+
+                $url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+                $token = $user->strava_access_token;
+                $response = Http::withToken($token)->get($url);
+                $data = $response->json();
+
+            }
+            else
+            {
+                $response = Http::post('https://www.strava.com/oauth/token', [
+                    'client_id' => '117954',
+                    'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+                    'refresh_token' => $user->strava_refresh_token,
+                    'grant_type' => 'refresh_token',
+                ]);
+                
+                $body = $response->body();
+                $content = json_decode($body, true);
+        
+                
+                $user1 = User::where('id',$user->id)->first(); 
+                $user1->strava_access_token = $content['access_token'];
+                $user1->strava_refresh_token = $content['refresh_token'];
+                $user1->strava_expires_at = $content['expires_at'];
+
+
+                $user1->save();
+
+                
+                
+                $url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+                $token = $user->strava_access_token;
+                $response = Http::withToken($token)->get($url);
+                $data = $content;
+
+                $data = $user1;
+                $data .= "tady jsem";
+
+
+
+            }
+
+
+        return response($data, 200);
     }
 
 

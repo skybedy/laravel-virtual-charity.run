@@ -25,6 +25,8 @@ return new class extends Migration
             $table->integer('strava_id')->unsigned()->nullable();
             $table->string('strava_access_token')->nullable();
             $table->string('strava_refresh_token')->nullable();
+            $table->integer('strava_expires_at')->unsigned()->nullable();
+            $table->string('strava_scope')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();
         });
