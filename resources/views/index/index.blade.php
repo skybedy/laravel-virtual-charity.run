@@ -19,17 +19,35 @@
                 </div>
             </div>
 
-                @include('index.partials.event-list')
 
 
-                <ol class="text-4xl font-bold list-decimal list-inside">
-                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl p-5 mt-5 text-xl sm:text-4xl"><li class="text-orange-600">Pokud nejste, tak se <a class="underline" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li></div>
-                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl p-5 mt-3 text-xl sm:text-4xl"><li class="text-blue-500">Pokud nemáte, tak <a class="underline">povolte</a> STRAVU..</li></div>
-                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl p-5 mt-3 text-xl sm:text-4xl"><li class="text-green-600">Pokud nejste, tak se registrujte se k závodu/závodům..</li></div>
-                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl p-5 mt-3 text-xl sm:text-4xl"><li class="text-gray-700">A to je vše..</li></div>
+                <ol class="text-4xl font-bold list-decimal list-inside mt-4">
+                   
+                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 text-xl sm:text-4xl">
+                        <div class="w-full sm:rounded-xl text-white text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
+                            <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-4 text-xl sm:text-4xl">
+                        <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
+                            <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('enable_strava') }}>povolte</a> STRAVU..</li>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-4 text-xl sm:text-4xl">
+                        <div class="w-full sm:rounded-xl text-white text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
+                            <li>Pokud nejste, tak se registrujte se k závodu, nebo závodům..</li>
+                        </div>
+                    </div>
+                    <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-4 text-xl sm:text-4xl">
+                        <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
+                            <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
+                        </div>
+                    </div>
+                    
 
                 </ol>
 
+                @include('index.partials.event-list')
 
 
 

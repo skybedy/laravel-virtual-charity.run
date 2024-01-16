@@ -52,13 +52,13 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-blue-200">
+        <div class="min-h-screen bg-slate-200">
             @include('layouts.navigation')
 
 
             <!-- Page Content -->
             <main>
-                <div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-1">Aplikace je zatím v testovacím režimu.</div>
+                <div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-3">Aplikace je zatím v testovacím režimu.</div>
 
                 {{ $slot }}
             </main>

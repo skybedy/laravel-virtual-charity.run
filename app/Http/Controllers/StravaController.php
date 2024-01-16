@@ -244,12 +244,7 @@ class StravaController extends Controller
         $user->strava_expires_at = $content['expires_at'];
         $user->strava_scope = $request->query('scope');
         $user->save();
-
-
-        dd($user);
-
-       // return view('redirect.redirect-strava');
-       //return redirect()->back();
+        return redirect('/');
 
     }
 
@@ -257,10 +252,6 @@ class StravaController extends Controller
     public function autouploadStrava(ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
     {
 
-        //$url = "https://www.strava.com/api/v3/activities/10529971762?include_all_efforts=true";
-        //$token = "cbe61307436953c0259d673a1973ab6af46b3c14";
-        //$response = Http::withToken($token)->get($url);
-        //$activityData = $response->json();
 
 
 
