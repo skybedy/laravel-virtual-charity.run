@@ -39,9 +39,12 @@ Route::get('/webhook/autoupload',[StravaController::class,'autouploadStrava'])->
 Route::middleware('auth')->group(function () {
     Route::get('/event/{eventId}/upload', [EventController::class, 'uploadCreate'])->name('event.upload.create');
     Route::post('/event/{eventId}/upload', [EventController::class, 'uploadStore'])->name('event.upload.store');
+    Route::post('/event/{eventId}/upload-url', [EventController::class, 'uploadStoreUrl'])->name('event.upload.store.url');
     Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
     Route::get('/enable-strava',[StravaController::class, 'enableStrava'])->name('enable_strava');
 });
+
+
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{eventId}', [EventController::class, 'show'])->name('event.show');
 Route::get('/event/{eventId}/result', [EventController::class, 'resultIndex'])->name('event.result.index');

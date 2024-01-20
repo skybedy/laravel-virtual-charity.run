@@ -36,12 +36,12 @@ class EventController extends Controller
                 'events' => $event->eventList($request->user()->id),
             ]);
         }
-        
+
     }
 
     public function show(Request $request,Event $event)
     {
-     
+
         return view('events.show', [
             'event' => $event::find($request->eventId),
         ]);
@@ -54,9 +54,42 @@ class EventController extends Controller
         ]);
     }
 
+
+
+    public function uploadStoreUrl(Request $request, ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
+    {
+
+        $url = $request['strava_url'];
+        $lastChar = substr($url, -1);
+        if($lastChar == '/')
+        {
+            $url = substr($url, 0, -1);
+        }
+
+
+        $url = substr($url, strrpos($url, '/') + 1);
+
+        dd($url);
+
+    }
+
+
+
+
     public function uploadStore(Request $request, ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
     {
-        
+
+
+        $request->validate(
+        [
+            'gpx_file' => 'required|mimetypes:application/xml,application/octet-stream|max:10000',
+        ],
+        [
+            'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
+        ]);
+
+
+
         if(isset($registration->registrationExists( $request->eventId, $request->user()->id)->id))
         {
             $registration_id = $registration->registrationExists( $request->eventId, $request->user()->id)->id;
@@ -65,19 +98,17 @@ class EventController extends Controller
         {
             return back()->withError('registration_required')->withInput();
         }
-        
-       
-       
-       
-        $request->validate([
-            'place' => 'required|string|max:100',
-        ]);
-        
-        
-        try 
+
+
+
+
+
+
+
+        try
         {
             $finishTime = $resultService->finishTime($request);
-        } 
+        }
         catch (SmallDistanceException $e)
         {
             return back()->withError($e->getMessage())->withInput();
@@ -108,13 +139,13 @@ class EventController extends Controller
         $result->finish_time_date = $finishTime['finish_time_date'];
         $result->finish_time = $finishTime['finish_time'];
         $result->average_time_per_km = $finishTime['average_time_per_km'];
-        $result->finish_time_sec = $finishTime['finish_time_sec'];  
-        $result->duplicity_check = $finishTime['duplicity_check'];  
-        $result->place = $request->place; 
+        $result->finish_time_sec = $finishTime['finish_time_sec'];
+        $result->duplicity_check = $finishTime['duplicity_check'];
+        $result->place = $request->place;
 
         DB::beginTransaction();
 
-        
+
         try{
             $result->save();
         }
@@ -132,12 +163,12 @@ class EventController extends Controller
 
 
 
-        
+
         try{
             $trackPoint::insert($finishTime['track_points']);
             DB::commit();
         }
-        catch (UniqueConstraintViolationException $e) 
+        catch (UniqueConstraintViolationException $e)
         {
             if($e->errorInfo[1] == 1062)
             {
@@ -145,7 +176,7 @@ class EventController extends Controller
                 return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
             }
         }
-       
+
         $r = Result::where('registration_id', $registration_id)
         ->orderBy('finish_time', 'asc')
         ->get();
@@ -190,12 +221,12 @@ return view('events.results.post-upload', [
     'event' => $event::find($request->eventId),
     'last_id' => $lastId,
     'rank' => $rank
-]);     
+]);
 
 
-    
-       
-       
+
+
+
 
     }
 

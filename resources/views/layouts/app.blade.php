@@ -58,11 +58,11 @@ input[type=file]::file-selector-button:hover {
 
             <!-- Page Content -->
             <main>
-                <div class="bg-red-100 text-red-500 py-2 text-center border-b border-t border-red-300 mt-3">Aplikace je zatím v testovacím režimu.</div>
+                <div class="bg-blue-400 text-white font-black py-2 text-center border-y  border-blue-500 mt-2 shadow-lg">Aplikace je zatím v testovacím režimu.</div>
 
                 {{ $slot }}
             </main>
         </div>
-      
+
     </body>
 </html>
