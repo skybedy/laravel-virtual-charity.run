@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Result;
 use App\Models\Startlist;
+use App\Models\User;
 use App\Services\ResultService;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
@@ -16,6 +17,14 @@ use App\Models\TrackPoint;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+
+
+
 
 class EventController extends Controller
 {
@@ -55,6 +64,8 @@ class EventController extends Controller
     }
 
 
+    private function url
+
 
     public function uploadStoreUrl(Request $request, ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
     {
@@ -68,7 +79,75 @@ class EventController extends Controller
             ]);
 
 
-        $url = $request['strava_url'];
+            $parseUrl = parse_url($request['strava_url']);
+            $explodeHost = explode('.', $parseUrl['host']);
+            $word = $explodeHost[0];
+            if($word ==  'www')
+            {
+                $host = $explodeHost[1];
+            }
+            elseif($word ==  'strava')
+            {
+                $host = $explodeHost[0];
+            }
+            else
+            {
+                //'nejaky problem s url');
+            }
+
+
+
+
+
+
+
+            $container = [];
+            $history = Middleware::history($container);
+
+            $stack = HandlerStack::create();
+            $stack->push($history);
+
+            $client = new Client([
+                'handler' => $stack,
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                ]
+            ]);
+
+            $response = $client->get('https://strava.app.link/BtqOkiqlzGb');
+
+            $finalUrl = '';
+            foreach ($container as $transaction) {
+                $finalUrl = (string)$transaction['request']->getUri();
+            }
+
+            if (preg_match('/\/activities\/(\d+)/', $finalUrl, $matches)) {
+                $activityId = $matches[1];
+                dd("Activity ID: $activityId");
+            } else {
+                dd("No activity ID found in URL");
+            }
+           // dd();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            $url = $request['strava_url'];
         $lastChar = substr($url, -1);
         if($lastChar == '/')
         {
@@ -76,11 +155,85 @@ class EventController extends Controller
         }
 
 
-        $url = substr($url, strrpos($url, '/') + 1);
+        $activityId = substr($url, strrpos($url, '/') + 1);
 
-        dd($url);
+        $this->test($request->user()->id,$activityId);
 
     }
+
+
+    private function test($userId,$activityId)
+    {
+
+
+        $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('id',$userId)->first();
+
+
+        if($user->strava_expires_at > time())
+        {
+
+            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."/streams?keys=time,latlng,altitude&key_by_type=true";
+
+
+
+
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url)->json();
+
+
+
+            if($response)
+            {
+                $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=false";
+                $response += Http::withToken($token)->get($url)->json();
+                dd($response);
+
+                //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
+            }
+
+        }
+        else
+        {
+            $response = Http::post('https://www.strava.com/oauth/token', [
+                'client_id' => '117954',
+                'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+                'refresh_token' => $user->strava_refresh_token,
+                'grant_type' => 'refresh_token',
+            ]);
+
+            $body = $response->body();
+            $content = json_decode($body, true);
+
+
+            $user1 = User::where('id',$user->id)->first();
+            $user1->strava_access_token = $content['access_token'];
+            $user1->strava_refresh_token = $content['refresh_token'];
+            $user1->strava_expires_at = $content['expires_at'];
+
+
+            $user1->save();
+
+
+
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=true";
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url);
+            $data = $content;
+
+            $data = $user1;
+            $data .= "tady jsem";
+
+
+
+        }
+
+    }
+
+
+
+
 
 
 
