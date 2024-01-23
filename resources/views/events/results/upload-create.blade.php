@@ -50,10 +50,6 @@
                                      Vzhledem ke skutečnosti, že vývoj aplikací nejen od Stravy je rychlý, může se způsob sdílení do schránky lišit v závislosti na verzi aplikace, operačního systému, atd.<br> Zde je ve 2 krocích uveden příklad pro Android, pro iOS se to může v nějakých detailech lišit.</p>
                                     </p>
                                     <div class="mt-2"><img class="img-fluid" src="/strava-url-app-example.png" /></div>
-
-
-
-
                                 </div>
 
                         </div>

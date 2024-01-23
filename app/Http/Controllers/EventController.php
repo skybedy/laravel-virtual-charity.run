@@ -59,6 +59,15 @@ class EventController extends Controller
     public function uploadStoreUrl(Request $request, ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
     {
 
+        $request->validate(
+            [
+                'strava_url' => 'required',
+            ],
+            [
+                'strava_url.required' => 'Je nutné vyplnit odkaz na Stravy.',
+            ]);
+
+
         $url = $request['strava_url'];
         $lastChar = substr($url, -1);
         if($lastChar == '/')
