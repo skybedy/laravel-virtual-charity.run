@@ -358,25 +358,16 @@ class ResultService
        //kolik metru za 1 sekundu, nepouzito, ale musel jsem si to zformulovat pro tu svou blbou palici
         $meterPerSec  =   $activityDistance / $rawFinishTimeSec;
 
+
+
         $plusDistance = $activityDistance - $eventDistance;
-
-       // dump($secPerMeter);
-        //dump($meterPerSec);
-        //dump($rawFinishTimeSec);
-        //dump($plusDistance);
-
-
-
 
         $plusSecond = $plusDistance * $secPerMeter;
 
         $finishTimeSec = intval(round($rawFinishTimeSec - $plusSecond));
 
-        //dump($finishTimeSec);
 
         $finishTime = Carbon::createFromTimestamp($finishTimeSec)->format('G:i:s');
-
-
 
         return [
             "finish_time" => $finishTime,
@@ -724,7 +715,9 @@ class ResultService
 
 
             $event = Event::where('id', $request->eventId);
-            $this->eventDistance = $event->value('distance');
+            $eventDistance = $event->value('distance');
+
+            //je to k necemu?
             $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
             $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
 
@@ -750,10 +743,10 @@ class ResultService
             if ($originalDateTime == null) {
                 throw new TimeMissingException();
             }
+
+
             $finishTimeDate = date("Y-m-d", strtotime($originalDateTime));
-            $randomNumbers = $this->generateRandomNumbers();
-            //  dd($randomNumbers);
-            $duplicityCheck = [];
+
 
 
             $i = 1;
@@ -771,24 +764,10 @@ class ResultService
                 }
 
 
-                /*
-                if(!$this->duplicityCheck($request->user()->id,$point->time))
-                {
-                    throw new DuplicateFileException('Soubor obsahuje duplicitní časové údaje.');
-                }*/
-
-
                 if ($i == 1) {
                     $startDayTimestamp = $time;
                 }
 
-
-
-                /*
-                if($i == $randomNumbers[0] || $i == $randomNumbers[1])
-                {
-                    $duplicityCheck[] = $time;
-                }*/
 
 
                 $lastPointLat = $currentPointLat;
@@ -799,8 +778,7 @@ class ResultService
                 $trackPointArray[] = [
                     'latitude' => $currentPointLat,
                     'longitude' => $currentPointLon,
-                     'time' => $time,
-                    //'elevation' => $point->ele,
+                    'time' => $time,
                     'user_id' => $request->user()->id,
                 ];
 
@@ -809,12 +787,13 @@ class ResultService
 
 
                 if ($lastPointLat != null) {
-                    $pointDistance = $this->vincentyGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
+                    $pointDistance = $this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
                     $distance += $pointDistance;
 
                     if ($distance >= $this->eventDistance) {
 
-                        $finishTime = $this->finishTimeCalculation($point->time, $distance, $startDayTimestamp);
+
+                        $finishTime = $this->finishTimeCalculation($eventDistance,$distance, $point->time, $startDayTimestamp);
                         break;
                     }
 
@@ -833,9 +812,11 @@ class ResultService
 
 
 
-            if ($distance < $this->eventDistance) {
+            if ($distance < $eventDistance) {
                 throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
-            } else {
+            }
+            else
+            {
 
                 return [
                     'finish_time' => $finishTime['finish_time'],
@@ -843,7 +824,6 @@ class ResultService
                     'finish_time_date' => $finishTimeDate,
                     'average_time_per_km' => $finishTime['average_time_per_km'],
                     'track_points' => $trackPointArray,
-                    'duplicity_check' => $duplicityCheck,
                 ];
 
             }
@@ -1000,7 +980,7 @@ class ResultService
         }
 
 
-        public function resultSave($registrationId,$finishTime,$request)     {
+        public function resultSave($request,$registrationId,$finishTime)     {
             $result = new Result();
             $result->registration_id = $registrationId;
             $result->finish_time_date = $finishTime['finish_time_date'];

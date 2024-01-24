@@ -236,7 +236,7 @@ class EventController extends Controller
             }
         }
 
-        $resulSave = $this->resultSave($request,$registration_id,$finishTime,$resultService,$trackPoint,$event);
+        $resulSave = $resultService->resultSave($request,$registration_id,$finishTime);
 
 
 
