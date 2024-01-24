@@ -9,6 +9,8 @@ use App\Models\Result;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use App\Exceptions\DuplicityException;
 use App\Models\TrackPoint;
 use App\Models\Registration;
@@ -20,6 +22,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use Illuminate\Support\Facades\DB;
+use App\Model\Events;
 
 
 
@@ -726,7 +730,7 @@ class ResultService
 
 
             $trackPointArray = [];
-            $file = $request->file('file');
+            $file = $request->file('gpx_file');
             $destinationPath = 'uploads';
             $file->move($destinationPath, $file->getClientOriginalName());
             $xmlString = file_get_contents($destinationPath . '/' . $file->getClientOriginalName());
@@ -778,10 +782,6 @@ class ResultService
                     $startDayTimestamp = $time;
                 }
 
-                if ($i == 500) {
-                    $x = $time - $startDayTimestamp;
-                    dd($x);
-                }
 
 
                 /*
@@ -799,7 +799,7 @@ class ResultService
                 $trackPointArray[] = [
                     'latitude' => $currentPointLat,
                     'longitude' => $currentPointLon,
-                    // 'time' => $time,
+                     'time' => $time,
                     //'elevation' => $point->ele,
                     'user_id' => $request->user()->id,
                 ];
@@ -823,7 +823,7 @@ class ResultService
                 $i++;
             }
 
-            dd($distance);
+            //dd($distance);
 
 
 
@@ -997,6 +997,84 @@ class ResultService
 
                 return $randomNumbers;
             }
+        }
+
+
+        public function resultSave($registrationId,$finishTime,$request)     {
+            $result = new Result();
+            $result->registration_id = $registrationId;
+            $result->finish_time_date = $finishTime['finish_time_date'];
+            $result->finish_time = $finishTime['finish_time'];
+            $result->average_time_per_km = $finishTime['average_time_per_km'];
+            $result->finish_time_sec = $finishTime['finish_time_sec'];
+
+            DB::beginTransaction();
+
+
+            try{
+                $result->save();
+            }
+            catch(QueryException $e)
+
+            {
+                dd($e);
+                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
+            }
+
+
+            for($i = 0; $i < count($finishTime['track_points']); $i++)
+            {
+                $finishTime['track_points'][$i]['result_id'] = $result->id;
+            }
+
+
+            $trackPoint = new TrackPoint();
+
+            try{
+                $trackPoint::insert($finishTime['track_points']);
+                DB::commit();
+            }
+            catch (UniqueConstraintViolationException $e)
+            {
+                if($e->errorInfo[1] == 1062)
+                {
+                    DB::rollback();
+                    return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
+                }
+            }
+
+            $r = Result::where('registration_id', $registrationId)
+            ->orderBy('finish_time', 'asc')
+            ->get();
+
+
+
+
+            $lastId = $result->id;
+            foreach($r as $key => $value)
+            {
+                if($value->id == $lastId)
+                {
+                    $rank = $key + 1;
+                }
+
+                Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
+            }
+
+            $event = new Event();
+
+            return [
+                'results' =>  Result::selectRaw('id,DATE_FORMAT(finish_time_date,"%e.%c") AS date,finish_time')
+                ->where('registration_id', $registrationId)
+                ->orderBy('finish_time', 'asc')
+                ->get(),
+                'event' => $event::find($request->eventId),
+                'last_id' => $lastId,
+                'rank' => $rank
+
+            ];
+
+
         }
 
 

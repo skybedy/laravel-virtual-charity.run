@@ -183,7 +183,8 @@ class EventController extends Controller
 
         $request->validate(
         [
-            'gpx_file' => 'required|mimetypes:application/xml,application/octet-stream|max:10000',
+            //'gpx_file' => 'required|mimetypes:application/xml,application/octet-stream|max:10000',
+            'gpx_file' => 'required|max:10000',
         ],
         [
             'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
@@ -235,93 +236,15 @@ class EventController extends Controller
             }
         }
 
-        $result = new Result();
-        $result->registration_id = $registration_id;
-        $result->finish_time_date = $finishTime['finish_time_date'];
-        $result->finish_time = $finishTime['finish_time'];
-        $result->average_time_per_km = $finishTime['average_time_per_km'];
-        $result->finish_time_sec = $finishTime['finish_time_sec'];
-        $result->duplicity_check = $finishTime['duplicity_check'];
-        $result->place = $request->place;
+        $resulSave = $this->resultSave($request,$registration_id,$finishTime,$resultService,$trackPoint,$event);
 
-        DB::beginTransaction();
-
-
-        try{
-            $result->save();
-        }
-        catch(QueryException $e)
-
-        {
-            return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
-        }
-
-
-        for($i = 0; $i < count($finishTime['track_points']); $i++)
-        {
-            $finishTime['track_points'][$i]['result_id'] = $result->id;
-        }
-
-
-
-
-        try{
-            $trackPoint::insert($finishTime['track_points']);
-            DB::commit();
-        }
-        catch (UniqueConstraintViolationException $e)
-        {
-            if($e->errorInfo[1] == 1062)
-            {
-                DB::rollback();
-                return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
-            }
-        }
-
-        $r = Result::where('registration_id', $registration_id)
-        ->orderBy('finish_time', 'asc')
-        ->get();
-
-
-
-
-        $lastId = $result->id;
-        foreach($r as $key => $value)
-        {
-            if($value->id == $lastId)
-            {
-                $rank = $key + 1;
-            }
-
-            Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
-        }
-
-
-/*
-if($rank == 1)
-{
-    dd("Je to zatím tvůj nejlepší čas v tomto závodě a bude zařazen do celkových výsledků");
-}
-else
-{
-   // dd("Je to celkově tvůj $rank.čas v tomto závodě a do celkových výsledků se započítávat nebude, seznam všech tvých časů je v tabulce");
-    return view('events.results.post-upload', [
-        'results' =>  Result::where('registration_id', $registration_id)
-        ->orderBy('finish_time_sec', 'asc')
-        ->get(),
-    ]);
-
-}*/
 
 
 return view('events.results.post-upload', [
-    'results' =>  Result::selectRaw('id,DATE_FORMAT(finish_time_date,"%e.%c") AS date,place,finish_time')
-    ->where('registration_id', $registration_id)
-    ->orderBy('finish_time', 'asc')
-    ->get(),
-    'event' => $event::find($request->eventId),
-    'last_id' => $lastId,
-    'rank' => $rank
+    'results' =>  $resulSave['results'],
+    'event' => $resulSave['event'],
+    'last_id' => $resulSave['last_id'],
+    'rank' => $resulSave['rank']
 ]);
 
 
