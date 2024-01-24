@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Polyline;
 use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\HandlerStack;
+
 
 
 class ResultService
@@ -38,6 +43,145 @@ class ResultService
         //$this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
 
     }
+
+
+    private function nonameYet($userId,$activityId)
+    {
+
+        $activityId = $this->removePossibleSlashBehindString($activityId);
+
+        $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('id',$userId)->first();
+
+
+        if($user->strava_expires_at > time())
+        {
+
+            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."/streams?keys=time,latlng,altitude&key_by_type=true";
+
+
+
+
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url)->json();
+
+
+
+            if($response)
+            {
+                $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=false";
+                $response += Http::withToken($token)->get($url)->json();
+                dd($response);
+
+                //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
+            }
+
+        }
+        else
+        {
+            $response = Http::post('https://www.strava.com/oauth/token', [
+                'client_id' => '117954',
+                'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+                'refresh_token' => $user->strava_refresh_token,
+                'grant_type' => 'refresh_token',
+            ]);
+
+            $body = $response->body();
+            $content = json_decode($body, true);
+
+
+            $user1 = User::where('id',$user->id)->first();
+            $user1->strava_access_token = $content['access_token'];
+            $user1->strava_refresh_token = $content['refresh_token'];
+            $user1->strava_expires_at = $content['expires_at'];
+
+
+            $user1->save();
+
+
+
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=true";
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url);
+            $data = $content;
+
+            $data = $user1;
+            $data .= "tady jsem";
+
+
+
+        }
+
+    }
+
+    public function getSubdomain($url)
+    {
+        $parseUrl = parse_url($url);
+
+        $explodeHost = explode('.', $parseUrl['host']);
+
+        return $explodeHost[0];
+    }
+
+
+
+
+
+
+    public function getActivityId($string)
+    {
+        $lastChar = substr($string, -1);
+        if($lastChar == '/')
+        {
+            $string = substr($string, 0, -1);
+        }
+
+
+        return substr($string, strrpos($string, '/') + 1);
+    }
+
+
+
+
+
+
+    public function getActivityIdFromStravaShareLink($shareLink)
+    {
+
+        $lastChar = substr($shareLink, -1);
+        if($lastChar == '/')
+        {
+            $shareLink = substr($shareLink, 0, -1);
+        }
+
+        $container = [];
+        $history = Middleware::history($container);
+
+        $stack = HandlerStack::create();
+        $stack->push($history);
+
+        $client = new Client([
+            'handler' => $stack,
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+            ]
+        ]);
+
+        $client->get($shareLink);
+
+        foreach ($container as $transaction) {
+            $finalUrl = (string)$transaction['request']->getUri();
+        }
+
+        if (preg_match('/\/activities\/(\d+)/', $finalUrl, $matches)) {
+            $activityId = $matches[1];
+            return $activityId;
+        }
+        else {
+            return false;
+        }
+}
 
 
 

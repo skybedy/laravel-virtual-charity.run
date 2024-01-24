@@ -64,7 +64,6 @@ class EventController extends Controller
     }
 
 
-    private function url
 
 
     public function uploadStoreUrl(Request $request, ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
@@ -78,17 +77,15 @@ class EventController extends Controller
                 'strava_url.required' => 'Je nutné vyplnit odkaz na Stravy.',
             ]);
 
+            $subdomain = $resultService->getSubdomain($request['strava_url']);
 
-            $parseUrl = parse_url($request['strava_url']);
-            $explodeHost = explode('.', $parseUrl['host']);
-            $word = $explodeHost[0];
-            if($word ==  'www')
+            if($subdomain ==  'www')
             {
-                $host = $explodeHost[1];
+                $activityId = $resultService->getActivityId($request['strava_url']);
             }
-            elseif($word ==  'strava')
+            elseif($subdomain ==  'strava')
             {
-                $host = $explodeHost[0];
+                $activityId = $resultService->getActivityIdFromStravaShareLink($request['strava_url']);
             }
             else
             {
@@ -98,64 +95,6 @@ class EventController extends Controller
 
 
 
-
-
-
-            $container = [];
-            $history = Middleware::history($container);
-
-            $stack = HandlerStack::create();
-            $stack->push($history);
-
-            $client = new Client([
-                'handler' => $stack,
-                'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-                ]
-            ]);
-
-            $response = $client->get('https://strava.app.link/BtqOkiqlzGb');
-
-            $finalUrl = '';
-            foreach ($container as $transaction) {
-                $finalUrl = (string)$transaction['request']->getUri();
-            }
-
-            if (preg_match('/\/activities\/(\d+)/', $finalUrl, $matches)) {
-                $activityId = $matches[1];
-                dd("Activity ID: $activityId");
-            } else {
-                dd("No activity ID found in URL");
-            }
-           // dd();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            $url = $request['strava_url'];
-        $lastChar = substr($url, -1);
-        if($lastChar == '/')
-        {
-            $url = substr($url, 0, -1);
-        }
-
-
-        $activityId = substr($url, strrpos($url, '/') + 1);
 
         $this->test($request->user()->id,$activityId);
 
