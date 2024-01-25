@@ -49,6 +49,145 @@ class ResultService
     }
 
 
+    public function finishTime($request)
+    {
+
+        $event = Event::where('id', $request->eventId);
+
+        $eventDistance = $event->value('distance');
+
+
+        $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
+        $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
+
+
+        $trackPointArray = [];
+        $file = $request->file('gpx_file');
+        $destinationPath = 'uploads';
+        $file->move($destinationPath, $file->getClientOriginalName());
+        $xmlString = file_get_contents($destinationPath . '/' . $file->getClientOriginalName());
+
+
+
+
+        $xmlObject = simplexml_load_string(trim($xmlString));
+        // dd($xmlObject);
+        $lastPointLat = null;
+        $lastPointLon = null;
+        $currentPointLat = null;
+        $currentPointLon = null;
+        $distance = 0;
+
+        $originalDateTime = $xmlObject->metadata->time;
+        if ($originalDateTime == null) {
+            throw new TimeMissingException();
+        }
+
+
+        $finishTimeDate = date("Y-m-d", strtotime($originalDateTime));
+
+
+
+        $i = 1;
+        foreach ($xmlObject->trk->trkseg->trkpt as $point) {
+
+            if (!isset($point->time)) {
+                throw new TimeMissingException();
+            }
+
+            $time = $this->iso8601ToTimestamp($point->time);
+
+
+            if (!$this->isTimeInRange($time)) {
+                throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
+            }
+
+
+            if ($i == 1) {
+                $startDayTimestamp = $time;
+            }
+
+
+
+            $lastPointLat = $currentPointLat;
+            $lastPointLon = $currentPointLon;
+            $currentPointLat = floatval($point['lat']);
+            $currentPointLon = floatval($point['lon']);
+
+            $trackPointArray[] = [
+                'latitude' => $currentPointLat,
+                'longitude' => $currentPointLon,
+                'time' => $time,
+                'user_id' => $request->user()->id,
+            ];
+
+
+
+
+
+            if ($lastPointLat != null) {
+                $pointDistance = $this->vincentyGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
+              //  dump($pointDistance);
+
+                $distance += $pointDistance;
+
+                if ($distance >= $eventDistance) {
+
+
+                    $finishTime = $this->finishTimeCalculation($eventDistance,$distance, $point->time, $startDayTimestamp);
+                    break;
+                }
+
+            }
+
+            $i++;
+        }
+
+       // dump($eventDistance);
+        //dd($distance);
+
+
+
+
+
+
+
+
+
+        if ($distance < $eventDistance) {
+            throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
+        }
+        else
+        {
+
+            return [
+                'finish_time' => $finishTime['finish_time'],
+                'finish_time_sec' => $finishTime['finish_time_sec'],
+                'finish_time_date' => $finishTimeDate,
+                'average_time_per_km' => $finishTime['average_time_per_km'],
+                'track_points' => $trackPointArray,
+            ];
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private function nonameYet($userId,$activityId)
     {
 
@@ -708,126 +847,6 @@ class ResultService
 
 
 
-        public function finishTime($request)
-        {
-
-            //dd($request->eventId);
-
-
-            $event = Event::where('id', $request->eventId);
-            $eventDistance = $event->value('distance');
-
-            //je to k necemu?
-            $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
-            $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
-
-
-            $trackPointArray = [];
-            $file = $request->file('gpx_file');
-            $destinationPath = 'uploads';
-            $file->move($destinationPath, $file->getClientOriginalName());
-            $xmlString = file_get_contents($destinationPath . '/' . $file->getClientOriginalName());
-
-
-
-
-            $xmlObject = simplexml_load_string(trim($xmlString));
-            // dd($xmlObject);
-            $lastPointLat = null;
-            $lastPointLon = null;
-            $currentPointLat = null;
-            $currentPointLon = null;
-            $distance = 0;
-
-            $originalDateTime = $xmlObject->metadata->time;
-            if ($originalDateTime == null) {
-                throw new TimeMissingException();
-            }
-
-
-            $finishTimeDate = date("Y-m-d", strtotime($originalDateTime));
-
-
-
-            $i = 1;
-            foreach ($xmlObject->trk->trkseg->trkpt as $point) {
-
-                if (!isset($point->time)) {
-                    throw new TimeMissingException();
-                }
-
-                $time = $this->iso8601ToTimestamp($point->time);
-
-
-                if (!$this->isTimeInRange($time)) {
-                    throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
-                }
-
-
-                if ($i == 1) {
-                    $startDayTimestamp = $time;
-                }
-
-
-
-                $lastPointLat = $currentPointLat;
-                $lastPointLon = $currentPointLon;
-                $currentPointLat = floatval($point['lat']);
-                $currentPointLon = floatval($point['lon']);
-
-                $trackPointArray[] = [
-                    'latitude' => $currentPointLat,
-                    'longitude' => $currentPointLon,
-                    'time' => $time,
-                    'user_id' => $request->user()->id,
-                ];
-
-
-
-
-
-                if ($lastPointLat != null) {
-                    $pointDistance = $this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
-                    $distance += $pointDistance;
-
-                    if ($distance >= $this->eventDistance) {
-
-
-                        $finishTime = $this->finishTimeCalculation($eventDistance,$distance, $point->time, $startDayTimestamp);
-                        break;
-                    }
-
-                }
-
-                $i++;
-            }
-
-            //dd($distance);
-
-
-
-
-
-
-
-
-
-            if ($distance < $eventDistance) {
-                throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
-            }
-            else
-            {
-
-                return [
-                    'finish_time' => $finishTime['finish_time'],
-                    'finish_time_sec' => $finishTime['finish_time_sec'],
-                    'finish_time_date' => $finishTimeDate,
-                    'average_time_per_km' => $finishTime['average_time_per_km'],
-                    'track_points' => $trackPointArray,
-                ];
-
-            }
-        }
 
 
 

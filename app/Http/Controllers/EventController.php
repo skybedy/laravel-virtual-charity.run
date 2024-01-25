@@ -236,15 +236,15 @@ class EventController extends Controller
             }
         }
 
-        $resulSave = $resultService->resultSave($request,$registration_id,$finishTime);
+        $resultSave = $resultService->resultSave($request,$registration_id,$finishTime);
 
-
+//dd($resultSave);
 
 return view('events.results.post-upload', [
-    'results' =>  $resulSave['results'],
-    'event' => $resulSave['event'],
-    'last_id' => $resulSave['last_id'],
-    'rank' => $resulSave['rank']
+    'results' =>  $resultSave['results'],
+    'event' => $resultSave['event'],
+    'last_id' => $resultSave['last_id'],
+    'rank' => $resultSave['rank']
 ]);
 
 
