@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class EventSeeder extends Seeder
 {
@@ -19,7 +17,7 @@ class EventSeeder extends Seeder
             'second_name' => null,
             'distance' => '5000',
             'date_start' => '2023-01-01',
-            'date_end' => '2024-01-31'
+            'date_end' => '2024-01-31',
         ]);
 
         DB::table('events')->insert([
@@ -27,7 +25,7 @@ class EventSeeder extends Seeder
             'second_name' => null,
             'distance' => '10000',
             'date_start' => '2023-01-01',
-            'date_end' => '2024-01-31'
+            'date_end' => '2024-01-31',
         ]);
 
         DB::table('events')->insert([
@@ -35,9 +33,8 @@ class EventSeeder extends Seeder
             'second_name' => 'půlmaraton',
             'distance' => '21097',
             'date_start' => '2023-01-01',
-            'date_end' => '2024-01-31'
+            'date_end' => '2024-01-31',
         ]);
-
 
     }
 }

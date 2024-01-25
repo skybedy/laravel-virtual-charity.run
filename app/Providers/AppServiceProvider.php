@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Services\ResultService;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+
         /*
         nakonec nepoužito, ale ponechano pro inspiraci
         $this->app->bind(ResultService::class, function ($app) {
@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
             if ($app->request->eventId == null) {
                 throw new \Exception('Není uvedeno Id závodu.');
             }
-                
+
             if (!is_numeric($app->request->eventId)) {
                 throw new \InvalidArgumentException('Id závodu musí být číslo.');
             }

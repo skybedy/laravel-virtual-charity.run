@@ -7,26 +7,20 @@ use Illuminate\Support\Facades\DB;
 
 class Category extends Model
 {
-
-    public function categoryChoice($gender,$age)
+    public function categoryChoice($gender, $age)
     {
-        if($age > 100)
-        {
+        if ($age > 100) {
             return self::where('gender', $gender)
                 ->where('open', '=', 1)
                 ->first('id');
-        }
-        else
-        {
+        } else {
             return self::where('gender', $gender)
                 ->where('age_start', '<=', $age)
                 ->where('age_end', '>=', $age)
                 ->first('id');
         }
-        
-       
-    }
 
+    }
 
     public function categoryListAbsolute($eventId)
     {
@@ -37,11 +31,7 @@ class Category extends Model
             ->orderBy('u.lastname', 'asc')
             ->get(['u.lastname', 'u.firstname', 'c.name']);
 
-
-        return $users;   
-
+        return $users;
 
     }
-
-
 }

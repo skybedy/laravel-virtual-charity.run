@@ -16,8 +16,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-       // dd($request->user());
-        
+        // dd($request->user());
+
         return view('profile.edit', [
             'user' => $request->user(),
         ]);
@@ -29,7 +29,6 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
-
 
         $request->user()->save();
 

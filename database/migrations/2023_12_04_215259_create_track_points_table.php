@@ -26,7 +26,6 @@ return new class extends Migration
             $table->timestamps(); // Vytvoří created_at a updated_at sloupce
         });
 
-
     }
 
     /**

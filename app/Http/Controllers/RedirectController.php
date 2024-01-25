@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Http;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class RedirectController extends Controller
 {
     public function redirectStrava(Request $request)
     {
-        
+
         $response = Http::post('https://www.strava.com/oauth/token', [
             'client_id' => '117954',
             'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
             'code' => $request->query('code'),
             'grant_type' => 'authorization_code',
         ]);
-        
+
         $body = $response->body();
         $content = json_decode($body, true);
 
@@ -29,22 +28,14 @@ class RedirectController extends Controller
         $user->strava_expires_at = $content['expires_at'];
         $user->strava_scope = $request->query('scope');
         $user->save();
-        
-        
+
         dd($user);
-        
-       // return view('redirect.redirect-strava');
-      //  return redirect()->back();
-        
-        
+
+        // return view('redirect.redirect-strava');
+        //  return redirect()->back();
+
     }
-        
-        
-        
-        
-        
-        
-        
-        //return view('redirect.redirect-strava');
-    
+
+    //return view('redirect.redirect-strava');
+
 }

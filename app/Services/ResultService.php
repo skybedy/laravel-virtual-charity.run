@@ -63,15 +63,9 @@ class ResultService
 
         $trackPointArray = [];
         $file = $request->file('gpx_file');
-        $destinationPath = 'uploads';
-        $file->move($destinationPath, $file->getClientOriginalName());
-        $xmlString = file_get_contents($destinationPath . '/' . $file->getClientOriginalName());
-
-
-
+        $xmlString = file_get_contents($file);
 
         $xmlObject = simplexml_load_string(trim($xmlString));
-        // dd($xmlObject);
         $lastPointLat = null;
         $lastPointLon = null;
         $currentPointLat = null;
@@ -86,34 +80,37 @@ class ResultService
 
         $finishTimeDate = date("Y-m-d", strtotime($originalDateTime));
 
-
-
         $i = 1;
         foreach ($xmlObject->trk->trkseg->trkpt as $point) {
 
+            // kontrola, jestli je GPX obsahuje elementy time
             if (!isset($point->time)) {
                 throw new TimeMissingException();
             }
 
+            //prevedeni casu do Timestampu
             $time = $this->iso8601ToTimestamp($point->time);
 
 
+            //kontrola, jestli je cas v rozsahu zavodu
             if (!$this->isTimeInRange($time)) {
                 throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
             }
 
-
+            // zacatek startu aktivity, teoreticky by se měl shodovat s case v metadatech, ale pro jistotu
             if ($i == 1) {
                 $startDayTimestamp = $time;
             }
 
 
-
+            //inicializace promennych pro vypocet vzdalenosti
             $lastPointLat = $currentPointLat;
             $lastPointLon = $currentPointLon;
             $currentPointLat = floatval($point['lat']);
             $currentPointLon = floatval($point['lon']);
 
+
+            //inicializace  pole pro TrackPointy
             $trackPointArray[] = [
                 'latitude' => $currentPointLat,
                 'longitude' => $currentPointLon,
@@ -122,19 +119,18 @@ class ResultService
             ];
 
 
-
-
-
+            //pokud je to prvni bod, tak se nic nepocita
             if ($lastPointLat != null) {
-                $pointDistance = $this->vincentyGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
-              //  dump($pointDistance);
+
+                $pointDistance = $this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
 
                 $distance += $pointDistance;
 
+                //pokud načítaná vzdálenost je větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi souborem, nepokracuje
                 if ($distance >= $eventDistance) {
 
-
                     $finishTime = $this->finishTimeCalculation($eventDistance,$distance, $point->time, $startDayTimestamp);
+
                     break;
                 }
 
@@ -143,23 +139,13 @@ class ResultService
             $i++;
         }
 
-       // dump($eventDistance);
-        //dd($distance);
-
-
-
-
-
-
-
-
-
+        // pokud skončí cyklus a vzdálenost je menší než délka závodu, tak se vyhodí vyjimka
         if ($distance < $eventDistance) {
             throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
         }
         else
         {
-
+            //pokud to je ok, vrací se pole s výsledky
             return [
                 'finish_time' => $finishTime['finish_time'],
                 'finish_time_sec' => $finishTime['finish_time_sec'],
@@ -175,96 +161,92 @@ class ResultService
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private function nonameYet($userId,$activityId)
+    /**
+     * automaticke nahravani dat za Stravy
+     */
+    public function dataStravaProcessing($activityData, $registration)
     {
 
-        $activityId = $this->removePossibleSlashBehindString($activityId);
-
-        $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('id',$userId)->first();
+        //dd($activityData);
 
 
-        if($user->strava_expires_at > time())
-        {
+        $eventDate = Carbon::parse($activityData['start_date'])->format('Y-m-d');
 
-            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+        $events = Event::where('date_start', '<=', $eventDate)
+        ->where('date_end', '>=', $eventDate)
+        ->orderBy('distance', 'DESC')
+        ->get(['id', 'distance']);
 
-            $url = "https://www.strava.com/api/v3/activities/".$activityId."/streams?keys=time,latlng,altitude&key_by_type=true";
+        $user = User::where('strava_id', 128967935)->value('id');    //value narozdil od first bere pouze potrebny sloupec
+        // dd($user);
+
+        if (!isset($events)) {
+            //TODO dopsat vyjimku, ze neexistuje zadny zavod v urcenem casovem obdobi
+
+            dd("neni zadny zavod");
+        }
+
+
+        foreach ($events as $event) {
+            // dump( $activityData['distance']);
+
+            if ($activityData['distance'] >= $event['distance']) {
+
+
+                //dd($event['id']);
+
+
+                if (isset($registration->registrationExists($event['id'], $user)->id)) {
+                    $registrationId = $registration->registrationExists($event['id'], $user)->id;
+                    //dd( $registration_id );
+
+                    $trackPoints = [];
+                    $coordinates = Polyline::decode($activityData['map']['summary_polyline']);
+                    // dd($coordinates);
+                    foreach ($coordinates as $coordinate) {
+                        $trackPoints[] = [
+                            'latitude' => $coordinate[0],
+                            'longitude' => $coordinate[1],
+                            'user_id' => $user
+
+                        ];
+                    }
+
+                    //delka jednotliveho zavodu uvedena v db
+                    $this->eventDistance = $event['distance']; //bude lepsi poslat jako parametr, ne?
+                    // $finishTime = $this->finishTimeCalculation($trackPoint['time'],$trackPoint['distance'],$startDayTimestamp);
+                    $finishTime = $this->finishTimeCalculation($activityData['elapsed_time'], $activityData['distance']);
+
+                    //dd($trackPoints);
 
 
 
 
-            $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url)->json();
+                    return [
+                        'finish_time' => $finishTime['finish_time'],
+                        'finish_time_sec' => $finishTime['finish_time_sec'],
+                        'average_time_per_km' => $finishTime['average_time_per_km'],
+                        'track_points' => $trackPoints,
+                        'registration_id' => $registrationId,
+                        'finish_time_date' => $eventDate
+                    ];
 
 
+                } else {
 
-            if($response)
-            {
-                $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=false";
-                $response += Http::withToken($token)->get($url)->json();
-                dd($response);
+                    // dump('neni prihlasen');
+                    //uzivatel neni prihlasen k zavodu, ktery delkove vyhovuje
+                }
 
-                //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
+
+            } else {
+                //dump('zadna trat delkove nevyhovuje');
             }
 
-        }
-        else
-        {
-            $response = Http::post('https://www.strava.com/oauth/token', [
-                'client_id' => '117954',
-                'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
-                'refresh_token' => $user->strava_refresh_token,
-                'grant_type' => 'refresh_token',
-            ]);
-
-            $body = $response->body();
-            $content = json_decode($body, true);
-
-
-            $user1 = User::where('id',$user->id)->first();
-            $user1->strava_access_token = $content['access_token'];
-            $user1->strava_refresh_token = $content['refresh_token'];
-            $user1->strava_expires_at = $content['expires_at'];
-
-
-            $user1->save();
-
-
-
-            $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=true";
-            $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url);
-            $data = $content;
-
-            $data = $user1;
-            $data .= "tady jsem";
-
-
 
         }
 
-    }
 
-    public function getSubdomain($url)
-    {
-        $parseUrl = parse_url($url);
-
-        $explodeHost = explode('.', $parseUrl['host']);
-
-        return $explodeHost[0];
     }
 
 
@@ -272,61 +254,9 @@ class ResultService
 
 
 
-    public function getActivityId($string)
-    {
-        $lastChar = substr($string, -1);
-        if($lastChar == '/')
-        {
-            $string = substr($string, 0, -1);
-        }
-
-
-        return substr($string, strrpos($string, '/') + 1);
-    }
-
-
-
-
-
-
-    public function getActivityIdFromStravaShareLink($shareLink)
-    {
-
-        $lastChar = substr($shareLink, -1);
-        if($lastChar == '/')
-        {
-            $shareLink = substr($shareLink, 0, -1);
-        }
-
-        $container = [];
-        $history = Middleware::history($container);
-
-        $stack = HandlerStack::create();
-        $stack->push($history);
-
-        $client = new Client([
-            'handler' => $stack,
-            'headers' => [
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-            ]
-        ]);
-
-        $client->get($shareLink);
-
-        foreach ($container as $transaction) {
-            $finalUrl = (string)$transaction['request']->getUri();
-        }
-
-        if (preg_match('/\/activities\/(\d+)/', $finalUrl, $matches)) {
-            $activityId = $matches[1];
-            return $activityId;
-        }
-        else {
-            return false;
-        }
-}
-
-
+    /**
+     * zatím sloužilo pro simulaci nahrani post pozadavku ze stravy
+     */
 
     public function dataFromStravaStream($activityData, $registration, $userId)
     {
@@ -460,180 +390,81 @@ class ResultService
 
 
 
-    private function finishTimeCalculation($eventDistance, $rawActivityDistance, $rawDayTimestamp, $startDayTimestamp = null)
-    {
-        if ($startDayTimestamp == null) {
-            $rawFinishTimeSec = $rawDayTimestamp;
-        }
-        else {
-            $t = new Carbon($rawDayTimestamp);
-            $finishDayTimestamp = $t->timestamp;
-
-            $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
-        }
-
-       // dump($eventDistance);
-        //dump($rawActivityDistance);
 
 
-        $finishTime = $this->finishTimeRecountAccordingDistance($eventDistance, $rawActivityDistance, $rawFinishTimeSec);
-        //dd($finishTime);
+    /**
+     * to je nahravani z autodistance upload
+     */
 
-        return [
-            'finish_time' => $finishTime['finish_time'],
-            'finish_time_sec' => intval(round($finishTime['finish_time_sec'], 0)),
-            'average_time_per_km' => $this->averageTimePerKm($eventDistance,$finishTime['finish_time_sec'])
-        ];
-
-    }
-
-
-    private function finishTimeRecountAccordingDistance($eventDistance, $activityDistance, $rawFinishTimeSec)
-    {
-         //kolik sekund trva 1 metr
-        $secPerMeter = $rawFinishTimeSec / $activityDistance;
-
-
-       //kolik metru za 1 sekundu, nepouzito, ale musel jsem si to zformulovat pro tu svou blbou palici
-        $meterPerSec  =   $activityDistance / $rawFinishTimeSec;
-
-
-
-        $plusDistance = $activityDistance - $eventDistance;
-
-        $plusSecond = $plusDistance * $secPerMeter;
-
-        $finishTimeSec = intval(round($rawFinishTimeSec - $plusSecond));
-
-
-        $finishTime = Carbon::createFromTimestamp($finishTimeSec)->format('G:i:s');
-
-        return [
-            "finish_time" => $finishTime,
-            "finish_time_sec" => $finishTimeSec
-        ];
-
-    }
-
-
-    private function activityDistanceCalculation($activityDataArray)
-    {
-        $lastPointLat = null;
-        $lastPointLon = null;
-        $currentPointLat = null;
-        $currentPointLon = null;
-        $distance = 0;
-
-
-        foreach ($activityDataArray as $point) {
-            $lastPointLat = $currentPointLat;
-            $lastPointLon = $currentPointLon;
-            $currentPointLat = floatval($point['latlng'][0]);
-            $currentPointLon = floatval($point['latlng'][1]);
-
-            if ($lastPointLat != null) {
-                $pointDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
-                $distance += $pointDistance;
-            }
-        }
-
-        return $distance;
-    }
-
-
-
-
-
-
-
-
-
-    public function dataStravaProcessing($activityData, $registration)
+    private function nonameYet($userId,$activityId)
     {
 
-        //dd($activityData);
+        $activityId = $this->removePossibleSlashBehindString($activityId);
+
+        $user = User::select('id','strava_access_token','strava_refresh_token','strava_expires_at')->where('id',$userId)->first();
 
 
-        $eventDate = Carbon::parse($activityData['start_date'])->format('Y-m-d');
+        if($user->strava_expires_at > time())
+        {
 
-        $events = Event::where('date_start', '<=', $eventDate)
-        ->where('date_end', '>=', $eventDate)
-        ->orderBy('distance', 'DESC')
-        ->get(['id', 'distance']);
+            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
 
-        $user = User::where('strava_id', 128967935)->value('id');    //value narozdil od first bere pouze potrebny sloupec
-        // dd($user);
-
-        if (!isset($events)) {
-            //TODO dopsat vyjimku, ze neexistuje zadny zavod v urcenem casovem obdobi
-
-            dd("neni zadny zavod");
-        }
-
-
-        foreach ($events as $event) {
-            // dump( $activityData['distance']);
-
-            if ($activityData['distance'] >= $event['distance']) {
-
-
-                //dd($event['id']);
-
-
-                if (isset($registration->registrationExists($event['id'], $user)->id)) {
-                    $registrationId = $registration->registrationExists($event['id'], $user)->id;
-                    //dd( $registration_id );
-
-                    $trackPoints = [];
-                    $coordinates = Polyline::decode($activityData['map']['summary_polyline']);
-                    // dd($coordinates);
-                    foreach ($coordinates as $coordinate) {
-                        $trackPoints[] = [
-                            'latitude' => $coordinate[0],
-                            'longitude' => $coordinate[1],
-                            'user_id' => $user
-
-                        ];
-                    }
-
-                    //delka jednotliveho zavodu uvedena v db
-                    $this->eventDistance = $event['distance']; //bude lepsi poslat jako parametr, ne?
-                    // $finishTime = $this->finishTimeCalculation($trackPoint['time'],$trackPoint['distance'],$startDayTimestamp);
-                    $finishTime = $this->finishTimeCalculation($activityData['elapsed_time'], $activityData['distance']);
-
-                    //dd($trackPoints);
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."/streams?keys=time,latlng,altitude&key_by_type=true";
 
 
 
 
-                    return [
-                        'finish_time' => $finishTime['finish_time'],
-                        'finish_time_sec' => $finishTime['finish_time_sec'],
-                        'average_time_per_km' => $finishTime['average_time_per_km'],
-                        'track_points' => $trackPoints,
-                        'registration_id' => $registrationId,
-                        'finish_time_date' => $eventDate
-                    ];
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url)->json();
 
 
-                } else {
 
-                    // dump('neni prihlasen');
-                    //uzivatel neni prihlasen k zavodu, ktery delkove vyhovuje
-                }
+            if($response)
+            {
+                $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=false";
+                $response += Http::withToken($token)->get($url)->json();
+                dd($response);
 
-
-            } else {
-                //dump('zadna trat delkove nevyhovuje');
+                //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
             }
 
+        }
+        else
+        {
+            $response = Http::post('https://www.strava.com/oauth/token', [
+                'client_id' => '117954',
+                'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+                'refresh_token' => $user->strava_refresh_token,
+                'grant_type' => 'refresh_token',
+            ]);
+
+            $body = $response->body();
+            $content = json_decode($body, true);
+
+
+            $user1 = User::where('id',$user->id)->first();
+            $user1->strava_access_token = $content['access_token'];
+            $user1->strava_refresh_token = $content['refresh_token'];
+            $user1->strava_expires_at = $content['expires_at'];
+
+
+            $user1->save();
+
+
+
+            $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=true";
+            $token = $user->strava_access_token;
+            $response = Http::withToken($token)->get($url);
+            $data = $content;
+
+            $data = $user1;
+            $data .= "tady jsem";
+
+
 
         }
 
-
     }
-
-
 
 
 
@@ -792,6 +623,166 @@ class ResultService
 
 
         }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * vyextrahuje id aktivity z odkazu na strave
+    */
+
+    public function getActivityIdFromStravaShareLink($shareLink)
+    {
+
+        $lastChar = substr($shareLink, -1);
+        if($lastChar == '/')
+        {
+            $shareLink = substr($shareLink, 0, -1);
+        }
+
+        $container = [];
+        $history = Middleware::history($container);
+
+        $stack = HandlerStack::create();
+        $stack->push($history);
+
+        $client = new Client([
+            'handler' => $stack,
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+            ]
+        ]);
+
+        $client->get($shareLink);
+
+        foreach ($container as $transaction) {
+            $finalUrl = (string)$transaction['request']->getUri();
+        }
+
+        if (preg_match('/\/activities\/(\d+)/', $finalUrl, $matches)) {
+            $activityId = $matches[1];
+            return $activityId;
+        }
+        else {
+            return false;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    private function finishTimeCalculation($eventDistance, $rawActivityDistance, $rawDayTimestamp, $startDayTimestamp = null)
+    {
+        if ($startDayTimestamp == null) {
+            $rawFinishTimeSec = $rawDayTimestamp;
+        }
+        else {
+            $t = new Carbon($rawDayTimestamp);
+            $finishDayTimestamp = $t->timestamp;
+
+            $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
+        }
+
+       // dump($eventDistance);
+        //dump($rawActivityDistance);
+
+
+        $finishTime = $this->finishTimeRecountAccordingDistance($eventDistance, $rawActivityDistance, $rawFinishTimeSec);
+        //dd($finishTime);
+
+        return [
+            'finish_time' => $finishTime['finish_time'],
+            'finish_time_sec' => intval(round($finishTime['finish_time_sec'], 0)),
+            'average_time_per_km' => $this->averageTimePerKm($eventDistance,$finishTime['finish_time_sec'])
+        ];
+
+    }
+
+
+    private function finishTimeRecountAccordingDistance($eventDistance, $activityDistance, $rawFinishTimeSec)
+    {
+         //kolik sekund trva 1 metr
+        $secPerMeter = $rawFinishTimeSec / $activityDistance;
+
+
+       //kolik metru za 1 sekundu, nepouzito, ale musel jsem si to zformulovat pro tu svou blbou palici
+        $meterPerSec  =   $activityDistance / $rawFinishTimeSec;
+
+
+
+        $plusDistance = $activityDistance - $eventDistance;
+
+        $plusSecond = $plusDistance * $secPerMeter;
+
+        $finishTimeSec = intval(round($rawFinishTimeSec - $plusSecond));
+
+
+        $finishTime = Carbon::createFromTimestamp($finishTimeSec)->format('G:i:s');
+
+        return [
+            "finish_time" => $finishTime,
+            "finish_time_sec" => $finishTimeSec
+        ];
+
+    }
+
+
+    private function activityDistanceCalculation($activityDataArray)
+    {
+        $lastPointLat = null;
+        $lastPointLon = null;
+        $currentPointLat = null;
+        $currentPointLon = null;
+        $distance = 0;
+
+
+        foreach ($activityDataArray as $point) {
+            $lastPointLat = $currentPointLat;
+            $lastPointLon = $currentPointLon;
+            $currentPointLat = floatval($point['latlng'][0]);
+            $currentPointLon = floatval($point['latlng'][1]);
+
+            if ($lastPointLat != null) {
+                $pointDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+                $distance += $pointDistance;
+            }
+        }
+
+        return $distance;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         private function duplicityCheck($userId, $time)
@@ -1075,6 +1066,28 @@ class ResultService
 
 
         }
+
+
+    public function getSubdomain($url)
+    {
+        $parseUrl = parse_url($url);
+
+        $explodeHost = explode('.', $parseUrl['host']);
+
+        return $explodeHost[0];
+    }
+
+    public function getActivityId($string)
+    {
+        $lastChar = substr($string, -1);
+        if($lastChar == '/')
+        {
+            $string = substr($string, 0, -1);
+        }
+
+
+        return substr($string, strrpos($string, '/') + 1);
+    }
 
 
 

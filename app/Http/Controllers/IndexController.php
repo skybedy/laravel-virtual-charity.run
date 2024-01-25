@@ -2,52 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Event;
-use App\Services\ResultService;
-use App\Models\Registration;
+use App\Exceptions\DuplicateFileException;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
-use App\Exceptions\DuplicateFileException;
-use App\Models\TrackPoint;
-use Illuminate\Database\UniqueConstraintViolationException;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
+use App\Models\Event;
+use App\Models\Registration;
 use App\Models\Result;
-
+use App\Models\TrackPoint;
+use App\Services\ResultService;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class IndexController extends Controller
 {
     public function index(Request $request, Event $event)
     {
-        
-        if($request->user() == null)
-        {
+
+        if ($request->user() == null) {
             return view('index.index', [
                 'events' => $event::All(),
             ]);
-        }
-        else
-        {
+        } else {
             return view('index/index', [
                 'events' => $event->eventList($request->user()->id),
             ]);
         }
-        
+
     }
 
-    public function autodistanceUpload(Request $request,ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
+    public function autodistanceUpload(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
         $request->validate([
             'place' => 'required|string|max:100',
         ]);
-        
+
         /*
-       try 
+       try
        {
            $finishTime = $resultService->overallDistance($request,$registration);
-       } 
+       }
        catch (SmallDistanceException $e)
        {
            return back()->withError($e->getMessage())->withInput();
@@ -74,84 +70,58 @@ class IndexController extends Controller
            }
        }*/
 
+        $finishTime = $resultService->overallDistance($request, $registration);
 
+        $result = new Result();
+        $result->registration_id = $finishTime['registration_id'];
+        $result->finish_time_date = $finishTime['finish_time_date'];
+        $result->finish_time = $finishTime['finish_time'];
+        $result->average_time_per_km = $finishTime['average_time_per_km'];
+        $result->finish_time_sec = $finishTime['finish_time_sec'];
+        // $result->duplicity_check = $finishTime['duplicity_check'];
+        $result->place = $request->place;
 
+        //  dd($result);
 
-       $finishTime = $resultService->overallDistance($request,$registration);
+        DB::beginTransaction();
 
+        try {
+            $result->save();
+        } catch (QueryException $e) {
+            return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
+        }
 
-
-       $result = new Result();
-       $result->registration_id = $finishTime['registration_id'];
-       $result->finish_time_date = $finishTime['finish_time_date'];
-       $result->finish_time = $finishTime['finish_time'];
-       $result->average_time_per_km = $finishTime['average_time_per_km'];
-       $result->finish_time_sec = $finishTime['finish_time_sec'];  
-      // $result->duplicity_check = $finishTime['duplicity_check'];  
-       $result->place = $request->place; 
-
-     //  dd($result);
-
-       DB::beginTransaction();
-       
-       try{
-           $result->save();
-       }
-       catch(QueryException $e)
-
-       {
-           return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
-       }
-
-
-       for($i = 0; $i < count($finishTime['track_points']); $i++)
-       {
-           $finishTime['track_points'][$i]['result_id'] = $result->id;
-       }
-
+        for ($i = 0; $i < count($finishTime['track_points']); $i++) {
+            $finishTime['track_points'][$i]['result_id'] = $result->id;
+        }
 
       // $trackPoint::insert($finishTime['track_points']);
-       
-       try{
-           $trackPoint::insert($finishTime['track_points']);
-           DB::commit();
-       }
-       catch (UniqueConstraintViolationException $e) 
-       {
-           
-        dd($e);
-        if($e->errorInfo[1] == 1062)
-           {
-               DB::rollback();
-               return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
-           }
-       }
-      
-       $r = Result::where('registration_id', $finishTime['registration_id'])
-       ->orderBy('finish_time', 'asc')
-       ->get();
 
+        try {
+            $trackPoint::insert($finishTime['track_points']);
+            DB::commit();
+        } catch (UniqueConstraintViolationException $e) {
 
+            dd($e);
+            if ($e->errorInfo[1] == 1062) {
+                DB::rollback();
 
+                return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
+            }
+        }
 
-       $lastId = $result->id;
-       foreach($r as $key => $value)
-       {
-           if($value->id == $lastId)
-           {
-               $rank = $key + 1;
-           }
+        $r = Result::where('registration_id', $finishTime['registration_id'])
+            ->orderBy('finish_time', 'asc')
+            ->get();
 
-           Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
-       }
+        $lastId = $result->id;
+        foreach ($r as $key => $value) {
+            if ($value->id == $lastId) {
+                $rank = $key + 1;
+            }
 
-
-
-
-
+            Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
+        }
 
     }
-
-
-
 }

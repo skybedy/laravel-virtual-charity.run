@@ -4,10 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -28,7 +28,7 @@ class User extends Authenticatable
         'password',
         'facebook_id',
         'google_id',
-        ];
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -50,10 +50,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-
     public function events(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class, 'registrations','user_id','event_id');
+        return $this->belongsToMany(Event::class, 'registrations', 'user_id', 'event_id');
     }
-
 }
