@@ -152,6 +152,7 @@ class StravaController extends Controller
         }
         else
         {
+
             $response = Http::post('https://www.strava.com/oauth/token', [
                 'client_id' => '117954',
                 'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',

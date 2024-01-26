@@ -57,17 +57,18 @@ class EventController extends Controller
 
     public function uploadStoreUrl(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
-
+        //nejprve validace
         $request->validate(
             [
                 'strava_url' => 'required',
             ],
             [
                 'strava_url.required' => 'Je nutné vyplnit odkaz na Stravy.',
-            ]);
-
+            ]
+        );
+        //urceni, zda jde o link z prohlizece nebo z apky
         $subdomain = $resultService->getSubdomain($request['strava_url']);
-
+        // ziskani id aktivity
         if ($subdomain == 'www')
         {
             $activityId = $resultService->getActivityId($request['strava_url']);
@@ -84,6 +85,10 @@ class EventController extends Controller
         $this->test($request->user()->id, $activityId);
 
     }
+
+
+
+
 
 
 
@@ -112,15 +117,33 @@ class EventController extends Controller
                 //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
             }
 
-        } else {
-            $response = Http::post('https://www.strava.com/oauth/token', [
-                'client_id' => '117954',
-                'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+        }
+        else
+        {
+            $url = config('strava.token.url');
+
+            $params = [
+                'client_id' => config('strava.client_id'),
+                'client_secret' => config('strava.client_secret'),
                 'refresh_token' => $user->strava_refresh_token,
                 'grant_type' => 'refresh_token',
-            ]);
+            ];
 
-            $body = $response->body();
+            $response1 = Http::dd()->withUrlParameters($params)->post($url)->json();
+
+
+            /*
+            $response1 = Http::post('https://www.strava.com/oaut/token', [
+                'client_id' => config('strava.client_id'),
+                'client_secret' => config('strava.client_secret'),
+                'refresh_token' => $user->strava_refresh_token,
+                'grant_type' => 'refresh_token',
+            ]);*/
+
+            dd($response1);
+
+
+            $body = $response1->body();
             $content = json_decode($body, true);
 
             $user1 = User::where('id', $user->id)->first();
@@ -142,29 +165,11 @@ class EventController extends Controller
 
     }
 
-    public function uploadStore(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+
+
+
+    private function activityFinishTime($resultService,$request)
     {
-        dd(config('strava.stream.params'));
-
-        $request->validate(
-            [
-                //'gpx_file' => 'required|mimetypes:application/gpx+xml|max:10000',
-                'gpx_file' => 'required|max:10000',
-            ],
-            [
-                'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
-            ]);
-
-        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
-        {
-            $registration_id = $registration->registrationExists($request->eventId, $request->user()->id)->id;
-        }
-        else
-        {
-            return back()->withError('registration_required')->withInput();
-        }
-
-
         try
         {
             $finishTime = $resultService->activityFinishData($request);
@@ -195,6 +200,38 @@ class EventController extends Controller
                 // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
             }
         }
+
+        return $finishTime;
+
+    }
+
+
+
+
+
+    public function uploadStore(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    {
+
+        $request->validate(
+            [
+                //'gpx_file' => 'required|mimetypes:application/gpx+xml|max:10000',
+                'gpx_file' => 'required|max:10000',
+            ],
+            [
+                'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
+            ]);
+        // kontrola, zda uzivatel je registrovan na zavod
+        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
+        {
+            $registration_id = $registration->registrationExists($request->eventId, $request->user()->id)->id;
+        }
+        else
+        {
+            return back()->withError('registration_required')->withInput();
+        }
+
+
+        $finishTime = $this->activityFinishTime($resultService,$request);
 
 
         try
