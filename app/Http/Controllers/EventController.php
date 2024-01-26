@@ -52,6 +52,9 @@ class EventController extends Controller
         ]);
     }
 
+
+
+
     public function uploadStoreUrl(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
@@ -65,17 +68,27 @@ class EventController extends Controller
 
         $subdomain = $resultService->getSubdomain($request['strava_url']);
 
-        if ($subdomain == 'www') {
+        if ($subdomain == 'www')
+        {
             $activityId = $resultService->getActivityId($request['strava_url']);
-        } elseif ($subdomain == 'strava') {
+        }
+        elseif ($subdomain == 'strava')
+        {
             $activityId = $resultService->getActivityIdFromStravaShareLink($request['strava_url']);
-        } else {
+        }
+        else
+        {
             //'nejaky problem s url');
         }
 
         $this->test($request->user()->id, $activityId);
 
     }
+
+
+
+
+
 
     private function test($userId, $activityId)
     {
@@ -150,9 +163,10 @@ class EventController extends Controller
             return back()->withError('registration_required')->withInput();
         }
 
+
         try
         {
-            $finishTime = $resultService->finishTime($request);
+            $finishTime = $resultService->activityFinishData($request);
         }
         catch (SmallDistanceException $e)
         {

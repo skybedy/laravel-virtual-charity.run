@@ -39,8 +39,10 @@ class ResultService
     private $duplicityCheck;
 
 
-
-    public function finishTime($request)
+    /**
+     *  ziskani vysledkových dat z GPX souboru
+     */
+    public function activityFinishData($request)
     {
         $event = Event::where('id', $request->eventId);
 

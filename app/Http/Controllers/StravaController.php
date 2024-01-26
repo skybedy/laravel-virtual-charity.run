@@ -108,29 +108,34 @@ class StravaController extends Controller
         //}
     }
 
-    // zpracování streamu ze Stravy
 
-    public function postStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+
+
+    /**
+     *   zpracování webhook  ze Stravy
+    */
+   public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
+        // zaloguje se prijem dat ze Stravy
         Log::info('Webhook event received!', [
             'query' => $request->query(),
             'body' => $request->all(),
         ]);
-
+        //pokud to neni 'create'tak to nechcem
         if ($request->input('aspect_type') != 'create') {
             return;
         }
-
+        //z pozadavku si vezmeme id uzivatele Stravy a podle nej najdeme uzivatele v nasi databazi
         $stravaId = $request->input('owner_id');
-        //$expiresAt = User::where('strava_id','=',$input)->value('expires_at');
+
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('strava_id', $stravaId)->first();
-
-        if ($user->strava_expires_at > time()) {
-
-            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
+        //ted musime zjistit, jestli token pro REST API jeste plati
+        if ($user->strava_expires_at > time())
+        {
 
             $url = 'https://www.strava.com/api/v3/activities/'.$request->input('object_id').'/streams?keys=time,latlng,altitude&key_by_type=true';
+
 
             $token = $user->strava_access_token;
             $response = Http::withToken($token)->get($url)->json();
