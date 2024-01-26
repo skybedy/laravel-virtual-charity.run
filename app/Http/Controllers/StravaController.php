@@ -133,20 +133,25 @@ class StravaController extends Controller
         //ted musime zjistit, jestli token pro REST API jeste plati
         if ($user->strava_expires_at > time())
         {
-
-            $url = 'https://www.strava.com/api/v3/activities/'.$request->input('object_id').'/streams?keys=time,latlng,altitude&key_by_type=true';
-
+            //pokud token platí, vytahneme stream
+            $url = config('strava.stream.url').$request->input('object_id').config('strava.stream.params');
 
             $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url)->json();
 
-            if ($response) {
-                $url = 'https://www.strava.com/api/v3/activities/'.$request->input('object_id').'?include_all_efforts=false';
+            $response = Http::withToken($token)->get($url)->json();
+            //pokud dostaneme v poradku stream, tak vytahneme i detail aktivity
+            if ($response)
+            {
+                $url = config('strava.activity.url').$request->input('object_id').config('strava.activity.params');
+                // k predchozimu streamu pridame detail aktivity
                 $response += Http::withToken($token)->get($url)->json();
+
                 $data = $this->dataProcessing($resultService, $registration, $trackPoint, $event, $response, $user->id);
             }
 
-        } else {
+        }
+        else
+        {
             $response = Http::post('https://www.strava.com/oauth/token', [
                 'client_id' => '117954',
                 'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',

@@ -144,6 +144,7 @@ class EventController extends Controller
 
     public function uploadStore(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
+        dd(config('strava.stream.params'));
 
         $request->validate(
             [
