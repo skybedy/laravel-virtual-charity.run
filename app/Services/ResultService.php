@@ -12,6 +12,7 @@ use App\Exceptions\TimeMissingException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use App\Exceptions\DuplicityException;
+use App\Exceptions\DuplicityTimeException;
 use App\Models\TrackPoint;
 use App\Models\Registration;
 use Illuminate\Support\Facades\Log;
@@ -39,108 +40,91 @@ class ResultService
 
 
 
-    public function __construct()
-    {
-        //  $event = Event::where('id',$eventId);
-        //$this->eventDistance = $event->value('Distance');
-        //$this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
-        //$this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
-
-    }
-
-
     public function finishTime($request)
     {
-
         $event = Event::where('id', $request->eventId);
 
         $eventDistance = $event->value('distance');
 
+        $dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
 
-        $this->dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
-        $this->dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
+        $dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
 
-
-        $trackPointArray = [];
         $file = $request->file('gpx_file');
-        $xmlString = file_get_contents($file);
 
-        $xmlObject = simplexml_load_string(trim($xmlString));
-        $lastPointLat = null;
-        $lastPointLon = null;
-        $currentPointLat = null;
-        $currentPointLon = null;
-        $distance = 0;
+        $xmlObject = simplexml_load_string(trim($file->get()));
 
-        $originalDateTime = $xmlObject->metadata->time;
-        if ($originalDateTime == null) {
+        //datum a cas zacatku aktivity z metadat
+        $activityDateTime = $xmlObject->metadata->time;
+
+        // pokud není, tak to je spatne a takovy soubor neni mozne prijmout
+        if ($activityDateTime == null)
+        {
             throw new TimeMissingException();
         }
 
+        //datum aktivity pro dotaz do DB
+        $activityDate = date("Y-m-d", strtotime($activityDateTime));
 
-        $finishTimeDate = date("Y-m-d", strtotime($originalDateTime));
+        $distance = 0;
+
+        $trackPointArray = [];
+
+        $lastPointLat = $lastPointLon = $currentPointLat = $currentPointLon = $distance = null;
 
         $i = 1;
-        foreach ($xmlObject->trk->trkseg->trkpt as $point) {
 
+        foreach ($xmlObject->trk->trkseg->trkpt as $point) {
             // kontrola, jestli je GPX obsahuje elementy time
             if (!isset($point->time)) {
                 throw new TimeMissingException();
             }
-
             //prevedeni casu do Timestampu
             $time = $this->iso8601ToTimestamp($point->time);
-
-
             //kontrola, jestli je cas v rozsahu zavodu
-            if (!$this->isTimeInRange($time)) {
+            if (!$this->isTimeInRange($time, $dateEventStartTimestamp, $dateEventEndTimestamp))
+            {
                 throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
             }
-
             // zacatek startu aktivity, teoreticky by se měl shodovat s case v metadatech, ale pro jistotu
-            if ($i == 1) {
+            if ($i == 1)
+            {
                 $startDayTimestamp = $time;
             }
 
-
-            //inicializace promennych pro vypocet vzdalenosti
             $lastPointLat = $currentPointLat;
+
             $lastPointLon = $currentPointLon;
+
             $currentPointLat = floatval($point['lat']);
+
             $currentPointLon = floatval($point['lon']);
-
-
-            //inicializace  pole pro TrackPointy
+            //pridavani prvku do pole TrackPointArray
             $trackPointArray[] = [
                 'latitude' => $currentPointLat,
                 'longitude' => $currentPointLon,
                 'time' => $time,
                 'user_id' => $request->user()->id,
             ];
-
-
-            //pokud je to prvni bod, tak se nic nepocita
-            if ($lastPointLat != null) {
-
+            //pokud je to prvni, nebo prazdny bod, tak se nic nepocita
+            if ($lastPointLat != null)
+            {
                 $pointDistance = $this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
 
                 $distance += $pointDistance;
-
                 //pokud načítaná vzdálenost je větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi souborem, nepokracuje
-                if ($distance >= $eventDistance) {
-
+                if ($distance >= $eventDistance)
+                {
                     $finishTime = $this->finishTimeCalculation($eventDistance,$distance, $point->time, $startDayTimestamp);
 
                     break;
                 }
-
             }
-
             $i++;
         }
-
         // pokud skončí cyklus a vzdálenost je menší než délka závodu, tak se vyhodí vyjimka
-        if ($distance < $eventDistance) {
+        if ($distance < $eventDistance)
+        {
             throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
         }
         else
@@ -149,11 +133,10 @@ class ResultService
             return [
                 'finish_time' => $finishTime['finish_time'],
                 'finish_time_sec' => $finishTime['finish_time_sec'],
-                'finish_time_date' => $finishTimeDate,
+                'finish_time_date' => $activityDate,
                 'average_time_per_km' => $finishTime['average_time_per_km'],
                 'track_points' => $trackPointArray,
             ];
-
         }
     }
 
@@ -859,9 +842,9 @@ class ResultService
             return substr($timeObj->format('i:s'), 1);
         }
 
-        function isTimeInRange($time)
+        function isTimeInRange($time, $dateEventStartTimestamp, $dateEventEndTimestamp)
         {
-            if ($time >= $this->dateEventStartTimestamp && $time <= $this->dateEventEndTimestamp) {
+            if ($time >= $dateEventStartTimestamp && $time <= $dateEventEndTimestamp) {
                 return true;
             } else {
                 return false;
@@ -990,33 +973,38 @@ class ResultService
         }
 
 
-        public function resultSave($request,$registrationId,$finishTime)     {
+        public function resultSave($request,$registrationId,$finishTime)
+        {
             $result = new Result();
+
             $result->registration_id = $registrationId;
+
             $result->finish_time_date = $finishTime['finish_time_date'];
+
             $result->finish_time = $finishTime['finish_time'];
+
             $result->average_time_per_km = $finishTime['average_time_per_km'];
+
             $result->finish_time_sec = $finishTime['finish_time_sec'];
 
             DB::beginTransaction();
 
-
-            try{
+            try
+            {
                 $result->save();
             }
             catch(QueryException $e)
-
             {
-                dd($e);
-                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();;
+                return [
+                    'error' => 'ERROR_DB',
+                    'error_message' => $e->getMessage(),
+                ];
             }
-
 
             for($i = 0; $i < count($finishTime['track_points']); $i++)
             {
                 $finishTime['track_points'][$i]['result_id'] = $result->id;
             }
-
 
             $trackPoint = new TrackPoint();
 
@@ -1029,7 +1017,7 @@ class ResultService
                 if($e->errorInfo[1] == 1062)
                 {
                     DB::rollback();
-                    return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
+                    throw new DuplicityTimeException();
                 }
             }
 
@@ -1037,14 +1025,11 @@ class ResultService
             ->orderBy('finish_time', 'asc')
             ->get();
 
-
-
-
             $lastId = $result->id;
             foreach($r as $key => $value)
             {
                 if($value->id == $lastId)
-                {
+                 {
                     $rank = $key + 1;
                 }
 

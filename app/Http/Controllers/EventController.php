@@ -6,6 +6,7 @@ use App\Exceptions\DuplicateFileException;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
+use App\Exceptions\DuplicityTimeException;
 use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Result;
@@ -140,34 +141,71 @@ class EventController extends Controller
                 'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
             ]);
 
-        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id)) {
+        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
+        {
             $registration_id = $registration->registrationExists($request->eventId, $request->user()->id)->id;
-        } else {
+        }
+        else
+        {
             return back()->withError('registration_required')->withInput();
         }
 
-        try {
+        try
+        {
             $finishTime = $resultService->finishTime($request);
-        } catch (SmallDistanceException $e) {
+        }
+        catch (SmallDistanceException $e)
+        {
             return back()->withError($e->getMessage())->withInput();
-        } catch (TimeIsOutOfRangeException $e) {
+        }
+        catch (TimeIsOutOfRangeException $e)
+        {
             return back()->withError($e->getMessage())->withInput();
-        } catch (DuplicateFileException $e) {
+        }
+        catch (DuplicateFileException $e)
+        {
             return back()->withError($e->getMessage())->withInput();
-        } catch (TimeMissingException $e) {
+        }
+        catch (TimeMissingException $e)
+        {
             return back()->withError($e->getMessage())->withInput();
-        } catch (UniqueConstraintViolationException $e) {
-            //dd('tu');
+        }
+        catch (UniqueConstraintViolationException $e)
+        {
             $errorCode = $e->errorInfo[1];
-            if ($errorCode == 1062) {
+
+            if ($errorCode == 1062)
+            {
                 // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
                 // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
             }
         }
 
-        $resultSave = $resultService->resultSave($request, $registration_id, $finishTime);
 
-        //dd($resultSave);
+        try
+        {
+            $resultSave = $resultService->resultSave($request, $registration_id, $finishTime);
+        }
+        catch (DuplicityTimeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+
+
+
+
+
+        if (isset($resultSave['error']))
+        {
+            if ($resultSave['error'] == 'ERROR_DB')
+            {
+                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
+            }
+        }
+
+
+
+
 
         return view('events.results.post-upload', [
             'results' => $resultSave['results'],
@@ -177,6 +215,7 @@ class EventController extends Controller
         ]);
 
     }
+
 
     public function resultIndex(Request $request, Result $result, Event $event)
     {
