@@ -122,33 +122,22 @@ class EventController extends Controller
         {
             $url = config('strava.token.url');
 
-            $params = [
-                'client_id' => config('strava.client_id'),
-                'client_secret' => config('strava.client_secret'),
-                'refresh_token' => $user->strava_refresh_token,
-                'grant_type' => 'refresh_token',
-            ];
+            $params = config('strava.token.params');
 
-            $response1 = Http::dd()->withUrlParameters($params)->post($url)->json();
+            $params['refresh_token'] = $user->strava_refresh_token;
 
+            $response = Http::post($url,$params);
 
-            /*
-            $response1 = Http::post('https://www.strava.com/oaut/token', [
-                'client_id' => config('strava.client_id'),
-                'client_secret' => config('strava.client_secret'),
-                'refresh_token' => $user->strava_refresh_token,
-                'grant_type' => 'refresh_token',
-            ]);*/
+            $body = $response->body();
 
-            dd($response1);
-
-
-            $body = $response1->body();
             $content = json_decode($body, true);
 
             $user1 = User::where('id', $user->id)->first();
+
             $user1->strava_access_token = $content['access_token'];
+
             $user1->strava_refresh_token = $content['refresh_token'];
+
             $user1->strava_expires_at = $content['expires_at'];
 
             $user1->save();
@@ -164,6 +153,7 @@ class EventController extends Controller
         }
 
     }
+
 
 
 

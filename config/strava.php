@@ -3,9 +3,9 @@
 
 return [
 
-        'client_id' => '117954',
+        'client_id' => env('STRAVA_CLIENT_ID'),
 
-        'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+        'client_secret' => 'env(STRAVA_CLIENT_SECRET)',
 
         'stream' => [
                     'url' => 'https://www.strava.com/api/v3/activities/',
@@ -18,7 +18,12 @@ return [
                 ],
 
         'token' => [
-                    'url' => 'https://www.strava.com/oauth/token'
+                    'url' => 'https://www.strava.com/oauth/token',
+                    'params' => [
+                        'client_id' => env('STRAVA_CLIENT_ID'),
+                        'client_secret' => env('STRAVA_CLIENT_SECRET'),
+                        'grant_type' => 'refresh_token',
                 ]
+            ]
 
         ];
