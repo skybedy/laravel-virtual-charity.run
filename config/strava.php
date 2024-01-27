@@ -5,7 +5,7 @@ return [
 
         'client_id' => env('STRAVA_CLIENT_ID'),
 
-        'client_secret' => 'env(STRAVA_CLIENT_SECRET)',
+        'client_secret' => env('STRAVA_CLIENT_SECRET'),
 
         'stream' => [
                     'url' => 'https://www.strava.com/api/v3/activities/',

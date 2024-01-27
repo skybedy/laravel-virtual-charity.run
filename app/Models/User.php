@@ -54,4 +54,27 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Event::class, 'registrations', 'user_id', 'event_id');
     }
+
+    public function updateStravaToken($userId,$stravaToken)
+    {
+        $user = User::find($userId);
+
+        $user->strava_access_token = $stravaToken['access_token'];
+
+        $user->strava_refresh_token = $stravaToken['refresh_token'];
+
+        $user->strava_expires_at = $stravaToken['expires_at'];
+
+        $user->save();
+
+        return $user->strava_access_token;
+
+    }
+
+
+
+
+
+
+
 }

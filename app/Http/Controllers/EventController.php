@@ -82,7 +82,7 @@ class EventController extends Controller
             //'nejaky problem s url');
         }
 
-        $this->test($request->user()->id, $activityId);
+        $this->test($request->user()->id, $activityId, $resultService, $registration);
 
     }
 
@@ -95,61 +95,65 @@ class EventController extends Controller
 
 
 
-    private function test($userId, $activityId)
+    private function test($userId, $activityId, $resultService,$registration)
     {
 
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id', $userId)->first();
 
         if ($user->strava_expires_at > time()) {
 
-            //$url = "https://www.strava.com/api/v3/activities/".$request->input('object_id')."?include_all_efforts=true";
-
-            $url = 'https://www.strava.com/api/v3/activities/'.$activityId.'/streams?keys=time,latlng,altitude&key_by_type=true';
+            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
 
             $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url)->json();
+
+            $response = Http::withToken($token)->get($urlStream)->json();
 
             if ($response) {
+
+                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
+
+                $response += Http::withToken($token)->get($urlActivity)->json();
+
+                $finishTime = $resultService->dataFromStravaStream($response, $registration, $userId);
+
+                dd($finishTime);
+
+            }
+
+        }
+        else //TOKEN EXPIRED
+        {   // URL na Stravu na vymenu tokenu
+            $urlToken = config('strava.token.url');
+            // parametry pro vymenu tokenu
+            $params = config('strava.token.params');
+            // doplneni parametru o refresh token
+            $params['refresh_token'] = $user->strava_refresh_token;
+
+            $responseToken = Http::post($urlToken,$params);
+
+            $body = $responseToken->body();
+
+            $content = json_decode($body, true);
+
+
+            $user = new User();
+
+            $token = $user->updateStravaToken($userId,$content);
+
+            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
+
+            $response = Http::withToken($token)->get($urlStream)->json();
+
+            if ($response) {
+
                 $url = 'https://www.strava.com/api/v3/activities/'.$activityId.'?include_all_efforts=false';
+
                 $response += Http::withToken($token)->get($url)->json();
+
                 dd($response);
 
                 //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
             }
-
-        }
-        else
-        {
-            $url = config('strava.token.url');
-
-            $params = config('strava.token.params');
-
-            $params['refresh_token'] = $user->strava_refresh_token;
-
-            $response = Http::post($url,$params);
-
-            $body = $response->body();
-
-            $content = json_decode($body, true);
-
-            $user1 = User::where('id', $user->id)->first();
-
-            $user1->strava_access_token = $content['access_token'];
-
-            $user1->strava_refresh_token = $content['refresh_token'];
-
-            $user1->strava_expires_at = $content['expires_at'];
-
-            $user1->save();
-
-            $url = 'https://www.strava.com/api/v3/activities/'.$activityId.'?include_all_efforts=true';
-            $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url);
-            $data = $content;
-
-            $data = $user1;
-            $data .= 'tady jsem';
-
         }
 
     }
@@ -221,7 +225,7 @@ class EventController extends Controller
         }
 
 
-        $finishTime = $this->activityFinishTime($resultService,$request);
+        $finishTime = $resultService->activityFinishTime($request);
 
 
         try
