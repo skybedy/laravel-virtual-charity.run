@@ -7,6 +7,7 @@ use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
 use App\Exceptions\DuplicityTimeException;
+use Exception;
 use App\Models\Event;
 use App\Models\Registration;
 use App\Models\Result;
@@ -82,7 +83,7 @@ class EventController extends Controller
             //'nejaky problem s url');
         }
 
-        $this->test($request->user()->id, $activityId, $resultService, $registration);
+        $this->test($request, $activityId, $resultService, $registration);
 
     }
 
@@ -95,10 +96,10 @@ class EventController extends Controller
 
 
 
-    private function test($userId, $activityId, $resultService,$registration)
+    private function test($request,$activityId, $resultService,$registration)
     {
 
-        $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id', $userId)->first();
+        $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$request->user()->id,)->first();
 
         if ($user->strava_expires_at > time()) {
 
@@ -114,7 +115,8 @@ class EventController extends Controller
 
                 $response += Http::withToken($token)->get($urlActivity)->json();
 
-                $finishTime = $resultService->dataFromStravaStream($response, $registration, $userId);
+               // $finishTime = $resultService->dataFromStravaStream($response, $registration, $userId);
+                $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',$request);
 
                 dd($finishTime);
 
@@ -135,10 +137,9 @@ class EventController extends Controller
 
             $content = json_decode($body, true);
 
-
             $user = new User();
 
-            $token = $user->updateStravaToken($userId,$content);
+            $token = $user->updateStravaToken($request->user()->id,$content);
 
             $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
 
@@ -146,9 +147,9 @@ class EventController extends Controller
 
             if ($response) {
 
-                $url = 'https://www.strava.com/api/v3/activities/'.$activityId.'?include_all_efforts=false';
+                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
 
-                $response += Http::withToken($token)->get($url)->json();
+                $response += Http::withToken($token)->get($urlActivity)->json();
 
                 dd($response);
 
@@ -162,11 +163,22 @@ class EventController extends Controller
 
 
 
-    private function activityFinishTime($resultService,$request)
+    private function activityFinishTime($resultService,$methodName,$request)
     {
         try
         {
-            $finishTime = $resultService->activityFinishData($request);
+            //$finishTime = $resultService->activityFinishData($request);
+
+            if (method_exists($resultService, $methodName))
+            {
+                $finishTime = call_user_func([$resultService, $methodName], $request);
+            }
+            else
+            {
+                throw new Exception("Metoda neexistuje");
+            }
+
+
         }
         catch (SmallDistanceException $e)
         {
@@ -223,9 +235,17 @@ class EventController extends Controller
         {
             return back()->withError('registration_required')->withInput();
         }
+        //
 
 
-        $finishTime = $resultService->activityFinishTime($request);
+        try
+        {
+            $finishTime = $this->activityFinishTime($resultService,'activityFinishData',$request);
+        }
+        catch(Exception $e)
+        {
+            return back()->withError($e->getMessage());
+        }
 
 
         try
