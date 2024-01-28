@@ -67,6 +67,22 @@ class EventController extends Controller
                 'strava_url.required' => 'Je nutné vyplnit odkaz na Stravy.',
             ]
         );
+
+        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
+        {
+            $registrationId = $registration->registrationExists($request->eventId, $request->user()->id)->id;
+        }
+        else
+        {
+            return back()->withError('registration_required')->withInput();
+        }
+
+
+
+
+
+
+
         //urceni, zda jde o link z prohlizece nebo z apky
         $subdomain = $resultService->getSubdomain($request['strava_url']);
         // ziskani id aktivity
@@ -98,6 +114,11 @@ class EventController extends Controller
 
     private function test($request,$activityId, $resultService,$registration)
     {
+
+
+
+
+
 
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$request->user()->id,)->first();
 
@@ -171,7 +192,7 @@ class EventController extends Controller
 
             if (method_exists($resultService, $methodName))
             {
-                $finishTime = call_user_func([$resultService, $methodName], $request);
+                $finishTime = call_user_func_array([$resultService, $methodName], [$request]);
             }
             else
             {

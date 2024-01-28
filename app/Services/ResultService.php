@@ -43,43 +43,6 @@ class ResultService
 
 
 
-    public function activityFinishTime($request)
-    {
-        try
-        {
-            $finishTime = $this->activityFinishData($request);
-        }
-        catch (SmallDistanceException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
-        catch (TimeIsOutOfRangeException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
-        catch (DuplicateFileException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
-        catch (TimeMissingException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
-        catch (UniqueConstraintViolationException $e)
-        {
-            $errorCode = $e->errorInfo[1];
-
-            if ($errorCode == 1062)
-            {
-                // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
-                // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
-            }
-        }
-
-        return $finishTime;
-
-    }
-
 
 
 
@@ -302,7 +265,7 @@ class ResultService
      * zatím sloužilo pro simulaci nahrani post pozadavku ze stravy
      */
 
-    public function dataFromStravaStream($activityData, $registration, $userId)
+    public function dataFromStravaStream($activityData, $userId)
     {
         $trackPointArray = [];
 
@@ -350,8 +313,8 @@ class ResultService
             if ($activityDistance >= $event['distance']) {
 
                 //dump($key." tady delka odpovida");
-                if (isset($registration->registrationExists($event['id'], $userId)->id)) {
-                    $registrationId = $registration->registrationExists($event['id'], $userId)->id;
+                //if (isset($registration->registrationExists($event['id'], $userId)->id)) {
+                  //  $registrationId = $registration->registrationExists($event['id'], $userId)->id;
 
                     foreach($activityDataArray as $activityData)
                     {
@@ -402,12 +365,12 @@ class ResultService
 
                     //dump("tady odpovídá i delka a zavodnik je i zaregistrovany pod id ".$registrationId);
                     break;
-                } else {
+               // } else {
                     //log = dump('neni zaregistrovan k zadnemu zavodu');
 
                     //Log::info('Event '.$event['id'].' délkově odpovídá, ale uživatel id $request->user()->id. k nemu není přihlášený');
                     //continue;
-                }
+                //}
 
 
 
