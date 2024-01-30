@@ -318,8 +318,12 @@ class ResultService
      * zatím sloužilo pro simulaci nahrani post pozadavku ze stravy
      */
 
-    public function dataFromStravaStream($activityData, $userId)
+    public function dataFromStravaStream($args)
     {
+        $activityData = $args['activity_data'];
+        $userId = $args['user_id'];
+
+
         $trackPointArray = [];
 
         //pocatecni cas aktivity v UNIX sekundach
@@ -397,7 +401,7 @@ class ResultService
                                 'finish_time_sec' => $finishTime['finish_time_sec'],
                                 'average_time_per_km' => $finishTime['average_time_per_km'],
                                'track_points' => $trackPointArray,
-                                'registration_id' => $registrationId,
+                              //  'registration_id' => $registrationId,
                                 'finish_time_date' => $activityDate,
                             ];
 

@@ -95,91 +95,45 @@ class EventController extends Controller
 
         //$this->test($request, $activityId, $resultService, $registration);
 
-        $stravaStream = $resultService->getStreamFromStrava($request, $activityId);
-        dd($stravaStream);
+        $activityData = $resultService->getStreamFromStrava($request, $activityId);
 
-    }
-
-
-
-
-
-
-
-
-
-
-    private function test($request,$activityId, $resultService,$registration)
-    {
-
-
-
-
-
-
-
-        $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$request->user()->id,)->first();
-
-        if ($user->strava_expires_at > time()) {
-
-            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
-
-            $token = $user->strava_access_token;
-
-            $response = Http::withToken($token)->get($urlStream)->json();
-
-            if ($response) {
-
-                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
-
-                $response += Http::withToken($token)->get($urlActivity)->json();
-                //dd($response);
-
-               // $finishTime = $resultService->dataFromStravaStream($response, $registration, $userId);
-                $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',$request);
-
-                dd($finishTime);
-
-            }
-
+        try
+        {
+            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $request->user()->id]);
         }
-        else //TOKEN EXPIRED
-        {   // URL na Stravu na vymenu tokenu
-            $urlToken = config('strava.token.url');
-            // parametry pro vymenu tokenu
-            $params = config('strava.token.params');
-            // doplneni parametru o refresh token
-            $params['refresh_token'] = $user->strava_refresh_token;
+        catch(Exception $e)
+        {
+            return back()->withError($e->getMessage());
+        }
 
-            $responseToken = Http::post($urlToken,$params);
+        try
+        {
+            $resultSave = $resultService->resultSave($request, $registrationId, $finishTime);
+        }
+        catch (DuplicityTimeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
 
-            $body = $responseToken->body();
 
-            $content = json_decode($body, true);
-
-            $user = new User();
-
-            $token = $user->updateStravaToken($request->user()->id,$content);
-
-            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
-
-            $response = Http::withToken($token)->get($urlStream)->json();
-
-            if ($response) {
-
-                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
-
-                $response += Http::withToken($token)->get($urlActivity)->json();
-
-                dd($response);
-
-                //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
+        if (isset($resultSave['error']))
+        {
+            if ($resultSave['error'] == 'ERROR_DB')
+            {
+                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
             }
         }
 
+
+        return view('events.results.post-upload', [
+            'results' => $resultSave['results'],
+            'event' => $resultSave['event'],
+            'last_id' => $resultSave['last_id'],
+            'rank' => $resultSave['rank'],
+        ]);
+
+
     }
-
-
 
 
 
