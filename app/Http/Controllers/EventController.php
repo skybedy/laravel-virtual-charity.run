@@ -56,7 +56,7 @@ class EventController extends Controller
 
 
 
-    public function uploadStoreUrl(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    public function uploadStoreFromUrl(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
         //nejprve validace
         $request->validate(
@@ -77,12 +77,6 @@ class EventController extends Controller
             return back()->withError('registration_required')->withInput();
         }
 
-
-
-
-
-
-
         //urceni, zda jde o link z prohlizece nebo z apky
         $subdomain = $resultService->getSubdomain($request['strava_url']);
         // ziskani id aktivity
@@ -99,7 +93,10 @@ class EventController extends Controller
             //'nejaky problem s url');
         }
 
-        $this->test($request, $activityId, $resultService, $registration);
+        //$this->test($request, $activityId, $resultService, $registration);
+
+        $stravaStream = $resultService->getStreamFromStrava($request, $activityId);
+        dd($stravaStream);
 
     }
 
@@ -114,6 +111,7 @@ class EventController extends Controller
 
     private function test($request,$activityId, $resultService,$registration)
     {
+
 
 
 
@@ -135,6 +133,7 @@ class EventController extends Controller
                 $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
 
                 $response += Http::withToken($token)->get($urlActivity)->json();
+                //dd($response);
 
                // $finishTime = $resultService->dataFromStravaStream($response, $registration, $userId);
                 $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',$request);
@@ -184,7 +183,7 @@ class EventController extends Controller
 
 
 
-    private function activityFinishTime($resultService,$methodName,$request)
+    private function activityFinishTime($resultService,$methodName,$args)
     {
         try
         {
@@ -192,7 +191,7 @@ class EventController extends Controller
 
             if (method_exists($resultService, $methodName))
             {
-                $finishTime = call_user_func_array([$resultService, $methodName], [$request]);
+                $finishTime = call_user_func([$resultService, $methodName], $args);
             }
             else
             {
@@ -261,7 +260,7 @@ class EventController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'activityFinishData',$request);
+            $finishTime = $this->activityFinishTime($resultService,'activityFinishData',['request' => $request]);
         }
         catch(Exception $e)
         {

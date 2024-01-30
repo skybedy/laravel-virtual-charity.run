@@ -40,7 +40,58 @@ class ResultService
 
 
 
+    public function getStreamFromStrava($request,$activityId)
+    {
+        $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$request->user()->id,)->first();
 
+        if ($user->strava_expires_at > time())
+        {
+            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
+
+            $token = $user->strava_access_token;
+
+            $response = Http::withToken($token)->get($urlStream)->json();
+
+            if ($response)
+            {
+                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
+
+                $response += Http::withToken($token)->get($urlActivity)->json();
+            }
+        }
+        else //TOKEN EXPIRED
+        {   // URL na Stravu na vymenu tokenu
+            $urlToken = config('strava.token.url');
+            // parametry pro vymenu tokenu
+            $params = config('strava.token.params');
+            // doplneni parametru o refresh token
+            $params['refresh_token'] = $user->strava_refresh_token;
+
+            $responseToken = Http::post($urlToken,$params);
+
+            $body = $responseToken->body();
+
+            $content = json_decode($body, true);
+
+            $user = new User();
+
+            $token = $user->updateStravaToken($request->user()->id,$content);
+
+            $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
+
+            $response = Http::withToken($token)->get($urlStream)->json();
+
+            if ($response)
+            {
+                $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
+
+                $response += Http::withToken($token)->get($urlActivity)->json();
+            }
+        }
+
+        return $response;
+
+    }
 
 
 
@@ -64,8 +115,10 @@ class ResultService
     /**
      *  ziskani vysledkových dat z GPX souboru
      */
-    public function activityFinishData($request)
+    public function activityFinishData($args)
     {
+        $request = $args['request'];
+
         $event = Event::where('id', $request->eventId);
 
         $eventDistance = $event->value('distance');
