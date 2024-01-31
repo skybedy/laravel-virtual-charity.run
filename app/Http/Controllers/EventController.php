@@ -141,7 +141,6 @@ class EventController extends Controller
     {
         try
         {
-            //$finishTime = $resultService->activityFinishData($request);
 
             if (method_exists($resultService, $methodName))
             {

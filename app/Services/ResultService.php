@@ -227,8 +227,6 @@ class ResultService
     public function dataStravaProcessing($activityData, $registration)
     {
 
-        //dd($activityData);
-
 
         $eventDate = Carbon::parse($activityData['start_date'])->format('Y-m-d');
 
