@@ -134,9 +134,11 @@ class ResultService
     /**
      *  ziskani vysledkových dat z GPX souboru
      */
-    public function activityFinishData($args)
+    public function getActivityFinishDataFromGpx($args)
     {
         $request = $args['request'];
+
+        $userId = $request->user()->id;
 
         $event = Event::where('id', $request->eventId);
 
@@ -169,6 +171,7 @@ class ResultService
         $lastPointLat = $lastPointLon = $currentPointLat = $currentPointLon = $distance = null;
 
         $i = 1;
+        //TODO ZRUSIT $i a dat to do foreach
 
         foreach ($xmlObject->trk->trkseg->trkpt as $point)
         {
@@ -177,6 +180,7 @@ class ResultService
                 throw new TimeMissingException();
             }
             //prevedeni casu do Timestampu
+            //TODO MUSI SE PREVADET VSECKY CASY?
             $time = $this->iso8601ToTimestamp($point->time);
             //kontrola, jestli je cas v rozsahu zavodu
             if (!$this->isTimeInRange($time, $dateEventStartTimestamp, $dateEventEndTimestamp))
@@ -201,9 +205,10 @@ class ResultService
                 'latitude' => $currentPointLat,
                 'longitude' => $currentPointLon,
                 'time' => $time,
-                'user_id' => $request->user()->id,
+                'user_id' => $userId,
             ];
             //pokud je to prvni, nebo prazdny bod, tak se nic nepocita
+
             if ($lastPointLat != null)
             {
                 $pointDistance = $this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon);
@@ -332,14 +337,111 @@ class ResultService
 
 
 
+
+
+
     /**
      * zatím sloužilo pro simulaci nahrani post pozadavku ze stravy
      */
 
-    public function dataFromStravaStream($args)
+    public function getActivityFinishDataFromStravaStream($args)
+    {
+
+        $request = $args['request'];
+
+        $userId = $request->user()->id;
+
+        $event = Event::where('id', $request->eventId);
+
+        $eventDistance = $event->value('distance');
+
+        $dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
+
+        $dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
+
+        $activityData = $args['activity_data'];
+
+        $startDayTimestamp = strtotime($activityData['start_date_local']);
+        //datum aktivity pro dotaz do DB
+        $activityDate = date("Y-m-d", $startDayTimestamp);
+        //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
+        $activityDataArray = [];
+
+        // vytvoreni pole ve stejne strukture jak GPX soubor
+        foreach ($activityData['latlng']['data'] as $key => $val)
+        {
+            $activityDataArray[] = [
+                    'latlng' => $val,
+                    'time' => $activityData['time']['data'][$key] + $startDayTimestamp,
+                    'distance' => $activityData['distance']['data'][$key],
+                    'altitude' => $activityData['altitude']['data'][$key]
+                ];
+
+        }
+
+        $trackPointArray = [];
+
+        $lastPointLat = $lastPointLon = $currentPointLat = $currentPointLon = $distance = null;
+
+        foreach($activityDataArray as $point)
+        {
+
+
+            if (!$this->isTimeInRange($point['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
+            {
+                throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
+            }
+
+            $lastPointLat = $currentPointLat;
+
+            $lastPointLon = $currentPointLon;
+
+            $currentPointLat = floatval($point['latlng'][0]);
+
+            $currentPointLon = floatval($point['latlng'][1]);
+
+            //dump($lastPointLat);
+
+            $trackPointArray[] = [
+                'latitude' => $currentPointLat,
+                'longitude' => $currentPointLon,
+                'time' => $point['time'],
+                'user_id' => $userId,
+            ];
+
+
+            if ($lastPointLat != null) {
+
+                $pointDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+
+                $distance += $pointDistance;
+
+                if ($distance >= $eventDistance)
+                {
+                    $finishTime = $this->finishTimeCalculation($eventDistance,$point['distance'],$point['time'],$startDayTimestamp);
+
+                    return [
+                        'finish_time' => $finishTime['finish_time'],
+                        'finish_time_sec' => $finishTime['finish_time_sec'],
+                        'average_time_per_km' => $finishTime['average_time_per_km'],
+                        'track_points' => $trackPointArray,
+                      //  'registration_id' => $registrationId,
+                        'finish_time_date' => $activityDate,
+                    ];
+                }
+            }
+        }
+
+        throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
+
+    }
+
+
+    public function dataFromStravaStreamFromWebhook($args)
     {
         $activityData = $args['activity_data'];
-        $userId = $args['user_id'];
+        $request = $args['request'];
+        $userId = $request->user()->id;
 
 
         $trackPointArray = [];
@@ -381,6 +483,10 @@ class ResultService
         //výpočet celkové vzdálenosti aktivity
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
 
+        $request = $args['request'];
+
+        $event = Event::where('id', $request->eventId);
+        //dd($request->eventId);
 
         //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
         foreach ($events as $key => $event) {
@@ -464,6 +570,7 @@ class ResultService
 
 
     }
+
 
 
 
@@ -780,7 +887,7 @@ class ResultService
             $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
         }
 
-       // dump($eventDistance);
+        //dd($eventDistance);
         //dump($rawActivityDistance);
 
 
@@ -798,7 +905,7 @@ class ResultService
 
     private function finishTimeRecountAccordingDistance($eventDistance, $activityDistance, $rawFinishTimeSec)
     {
-         //kolik sekund trva 1 metr
+        //kolik sekund trva 1 metr
         $secPerMeter = $rawFinishTimeSec / $activityDistance;
 
 

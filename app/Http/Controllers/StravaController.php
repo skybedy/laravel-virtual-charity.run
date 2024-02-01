@@ -137,7 +137,7 @@ class StravaController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $activityData['user_id']]);
+            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $activityData]);
         }
         catch(Exception $e)
         {

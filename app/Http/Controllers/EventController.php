@@ -100,7 +100,7 @@ class EventController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $request->user()->id]);
+            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromStravaStream',['activity_data' => $activityData,'request' => $request]);
 
         }
         catch(Exception $e)
@@ -215,7 +215,7 @@ class EventController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'activityFinishData',['request' => $request]);
+            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromGpx',['request' => $request]);
         }
         catch(Exception $e)
         {
