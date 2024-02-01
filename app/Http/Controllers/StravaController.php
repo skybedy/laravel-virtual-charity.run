@@ -31,7 +31,7 @@ class StravaController extends Controller
 
         //return $dataStream;
 
-        $finishTime = $resultService->dataFromStravaStream($dataStream, $registration, $userId);
+        $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($dataStream, $registration, $userId);
 
         $result = new Result();
         $result->registration_id = $finishTime['registration_id'];
@@ -49,7 +49,7 @@ class StravaController extends Controller
         try {
             $result->save();
         } catch (QueryException $e) {
-            dd($e);
+            //dd($e);
 
             return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
         }
@@ -118,7 +118,7 @@ class StravaController extends Controller
 
 
 
-    public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    public function webhookPostStravaPokus(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
         // zaloguje se prijem dat ze Stravy
@@ -185,7 +185,7 @@ class StravaController extends Controller
     /**
      *   zpracování webhook  ze Stravy
     */
-   public function webhookPostStravaZal(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+   public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
         // zaloguje se prijem dat ze Stravy

@@ -437,11 +437,11 @@ class ResultService
     }
 
 
-    public function dataFromStravaStreamFromWebhook($args)
+    public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
-        $activityData = $args['activity_data'];
-        $request = $args['request'];
-        $userId = $request->user()->id;
+
+
+
 
 
         $trackPointArray = [];
@@ -456,7 +456,9 @@ class ResultService
 
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
         $activityDataArray = [];
-        foreach ($activityData['latlng']['data'] as $key => $val) {
+
+        foreach ($activityData['latlng']['data'] as $key => $val)
+        {
             $activityDataArray[] = [
                     'latlng' => $val,
                     'time' => $activityData['time']['data'][$key] + $startDayTimestamp,
@@ -464,7 +466,7 @@ class ResultService
                     'altitude' => $activityData['altitude']['data'][$key]
                 ];
 
-            }
+        }
 
 
 
@@ -483,10 +485,7 @@ class ResultService
         //výpočet celkové vzdálenosti aktivity
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
 
-        $request = $args['request'];
 
-        $event = Event::where('id', $request->eventId);
-        //dd($request->eventId);
 
         //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
         foreach ($events as $key => $event) {
@@ -494,8 +493,8 @@ class ResultService
             if ($activityDistance >= $event['distance']) {
 
                 //dump($key." tady delka odpovida");
-                //if (isset($registration->registrationExists($event['id'], $userId)->id)) {
-                  //  $registrationId = $registration->registrationExists($event['id'], $userId)->id;
+                if (isset($registration->registrationExists($event['id'], $userId)->id)) {
+                   $registrationId = $registration->registrationExists($event['id'], $userId)->id;
 
                     foreach($activityDataArray as $activityData)
                     {
@@ -546,12 +545,12 @@ class ResultService
 
                     //dump("tady odpovídá i delka a zavodnik je i zaregistrovany pod id ".$registrationId);
                     break;
-               // } else {
+                } else {
                     //log = dump('neni zaregistrovan k zadnemu zavodu');
 
                     //Log::info('Event '.$event['id'].' délkově odpovídá, ale uživatel id $request->user()->id. k nemu není přihlášený');
                     //continue;
-                //}
+                }
 
 
 

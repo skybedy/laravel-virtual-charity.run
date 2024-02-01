@@ -103,9 +103,31 @@ class EventController extends Controller
             $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromStravaStream',['activity_data' => $activityData,'request' => $request]);
 
         }
-        catch(Exception $e)
+        catch (SmallDistanceException $e)
         {
-            return back()->withError($e->getMessage());
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (TimeIsOutOfRangeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (DuplicateFileException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (TimeMissingException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (UniqueConstraintViolationException $e)
+        {
+            $errorCode = $e->errorInfo[1];
+
+            if ($errorCode == 1062)
+            {
+                // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
+                // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
+            }
         }
 
         try
@@ -141,8 +163,8 @@ class EventController extends Controller
 
     private function activityFinishTime($resultService,$methodName,$args)
     {
-        try
-        {
+        //try
+        //{
 
             if (method_exists($resultService, $methodName))
             {
@@ -154,7 +176,7 @@ class EventController extends Controller
             }
 
 
-        }
+       /* }
         catch (SmallDistanceException $e)
         {
             return back()->withError($e->getMessage())->withInput();
@@ -180,7 +202,7 @@ class EventController extends Controller
                 // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
                 // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
             }
-        }
+        }*/
 
         return $finishTime;
 
@@ -217,9 +239,31 @@ class EventController extends Controller
         {
             $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromGpx',['request' => $request]);
         }
-        catch(Exception $e)
+        catch (SmallDistanceException $e)
         {
-            return back()->withError($e->getMessage());
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (TimeIsOutOfRangeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (DuplicateFileException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (TimeMissingException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (UniqueConstraintViolationException $e)
+        {
+            $errorCode = $e->errorInfo[1];
+
+            if ($errorCode == 1062)
+            {
+                // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
+                // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
+            }
         }
 
 
