@@ -14,6 +14,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Exceptions\DuplicateFileException;
+use App\Exceptions\SmallDistanceException;
+use App\Exceptions\TimeIsOutOfRangeException;
+use App\Exceptions\TimeMissingException;
+use App\Exceptions\DuplicityTimeException;
+use Exception;
+
 
 class StravaController extends Controller
 {
@@ -111,10 +118,7 @@ class StravaController extends Controller
 
 
 
-    /**
-     *   zpracování webhook  ze Stravy
-    */
-   public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
         // zaloguje se prijem dat ze Stravy
@@ -126,8 +130,78 @@ class StravaController extends Controller
         if ($request->input('aspect_type') != 'create') {
             return;
         }
+
+        $activityData = $resultService->getStreamFromStrava($request, null);
+
+
+
+        try
+        {
+            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $activityData['user_id']]);
+        }
+        catch(Exception $e)
+        {
+            return back()->withError($e->getMessage());
+        }
+
+        try
+        {
+            $resultSave = $resultService->resultSave($request, $registrationId, $finishTime);
+        }
+        catch (DuplicityTimeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+
+
+        if (isset($resultSave['error']))
+        {
+            if ($resultSave['error'] == 'ERROR_DB')
+            {
+                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
+            }
+        }
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     *   zpracování webhook  ze Stravy
+    */
+   public function webhookPostStravaZal(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    {
+
+        // zaloguje se prijem dat ze Stravy
+        Log::info('Webhook event received!', [
+            'query' => $request->query(),
+            'body' => $request->all(),
+        ]);
+        //pokud to neni 'create'tak to nechcem
+        if ($request->input('aspect_type') != 'create')
+        {
+            return;
+        }
         //z pozadavku si vezmeme id uzivatele Stravy a podle nej najdeme uzivatele v nasi databazi
         $stravaId = $request->input('owner_id');
+
+
 
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('strava_id', $stravaId)->first();
         //ted musime zjistit, jestli token pro REST API jeste plati

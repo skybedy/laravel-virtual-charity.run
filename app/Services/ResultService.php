@@ -40,9 +40,24 @@ class ResultService
 
 
 
-    public function getStreamFromStrava($request,$activityId)
+    public function getStreamFromStrava($request,$activityId = null)
     {
-        $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$request->user()->id,)->first();
+        if($activityId == null)
+        {
+            $activityId = $request->input('object_id');
+
+            $stravaId = $request->input('owner_id');
+
+            $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('strava_id', $stravaId)->first();
+
+            $userId = $user->id;
+        }
+        else
+        {
+            $userId = $request->user()->id;
+
+            $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$userId)->first();
+        }
 
         if ($user->strava_expires_at > time())
         {
@@ -57,6 +72,8 @@ class ResultService
                 $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
 
                 $response += Http::withToken($token)->get($urlActivity)->json();
+
+                $response['user_id'] = $userId;
             }
         }
         else //TOKEN EXPIRED
@@ -75,7 +92,7 @@ class ResultService
 
             $user = new User();
 
-            $token = $user->updateStravaToken($request->user()->id,$content);
+            $token = $user->updateStravaToken($userId,$content);
 
             $urlStream = config('strava.stream.url').$activityId.config('strava.stream.params');
 
@@ -86,6 +103,8 @@ class ResultService
                 $urlActivity = config('strava.activity.url').$activityId.config('strava.activity.params');
 
                 $response += Http::withToken($token)->get($urlActivity)->json();
+
+                $response['user_id'] = $userId;
             }
         }
 
@@ -151,7 +170,8 @@ class ResultService
 
         $i = 1;
 
-        foreach ($xmlObject->trk->trkseg->trkpt as $point) {
+        foreach ($xmlObject->trk->trkseg->trkpt as $point)
+        {
             // kontrola, jestli je GPX obsahuje elementy time
             if (!isset($point->time)) {
                 throw new TimeMissingException();

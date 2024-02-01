@@ -96,10 +96,12 @@ class EventController extends Controller
         //$this->test($request, $activityId, $resultService, $registration);
 
         $activityData = $resultService->getStreamFromStrava($request, $activityId);
+        //dd($activityData['user_id']);
 
         try
         {
             $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $request->user()->id]);
+
         }
         catch(Exception $e)
         {
