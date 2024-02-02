@@ -293,18 +293,24 @@ class StravaController extends Controller
     {
 
         $url = 'https://www.strava.com/api/v3/activities/10531467027/streams?keys=time,latlng,altitude&key_by_type=true';
-        $token = '5a525bfc7d1210250d6727f701cb91db34d19300';
+        $token = 'bbeb54dc28b27c54bb12eeb72608f947ff27cb8a';
         $response = Http::withToken($token)->get($url)->json();
         //dd($response);
         if ($response) {
             $url = 'https://www.strava.com/api/v3/activities/10531467027?include_all_efforts=false';
-            $token = '5a525bfc7d1210250d6727f701cb91db34d19300';
+            $token = 'bbeb54dc28b27c54bb12eeb72608f947ff27cb8a';
             $response += Http::withToken($token)->get($url)->json();
             // dd($response);
 
             $user = $this->getUserByStravaId(100148951);
 
-            $finishTime = $resultService->dataFromStravaStream($response, $registration, $user->id);
+
+
+            $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($response, $registration, $user->id);
+
+
+
+
 
             $result = new Result();
             $result->registration_id = $finishTime['registration_id'];
@@ -313,7 +319,7 @@ class StravaController extends Controller
             $result->average_time_per_km = $finishTime['average_time_per_km'];
             $result->finish_time_sec = $finishTime['finish_time_sec'];
             // $result->duplicity_check = $finishTime['duplicity_check'];
-            $result->place = 'Nevim';
+            //$result->place = 'Nevim';
 
             // dd($result);
 

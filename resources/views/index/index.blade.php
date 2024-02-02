@@ -19,10 +19,11 @@
                 </div>
             </div>
 
+            @include('index.partials.event-list')
 
 
                 <ol class="text-4xl font-bold list-decimal list-inside mt-4">
-                   
+
                     <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 text-xl sm:text-4xl">
                         <div class="w-full sm:rounded-xl text-white text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
                             <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
@@ -43,11 +44,11 @@
                             <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
                         </div>
                     </div>
-                    
+
 
                 </ol>
 
-                @include('index.partials.event-list')
+
 
 
 

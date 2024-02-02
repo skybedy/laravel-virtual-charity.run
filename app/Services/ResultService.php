@@ -439,24 +439,15 @@ class ResultService
 
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
-
-
-
-
-
-        $trackPointArray = [];
-
         //pocatecni cas aktivity v UNIX sekundach
         $startDayTimestamp = strtotime($activityData['start_date_local']);
-
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
-
-
-
+        //pole pro ulozeni bodu trasy
+        $trackPointArray = [];
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
         $activityDataArray = [];
-
+        // vytvoreni pole ve stejne strukture jak GPX soubor
         foreach ($activityData['latlng']['data'] as $key => $val)
         {
             $activityDataArray[] = [
@@ -465,44 +456,33 @@ class ResultService
                     'distance' => $activityData['distance']['data'][$key],
                     'altitude' => $activityData['altitude']['data'][$key]
                 ];
-
         }
-
-
-
         //vypis zavodů v danném časovém období
         $events = Event::where('date_start', '<=', $activityDate)
         ->where('date_end', '>=', $activityDate)
         ->orderBy('distance', 'DESC')
         ->get(['id', 'distance']);
-
-        if (!isset($event)) {
-            //TODO dopsat vyjimku, ze neexistuje zadny zavod v urcenem casovem obdobi
-
+        //kontrola, jestli v daném časovém období existuje nějaký závod
+        if (!isset($event))
+        {
+            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod');
         }
-
-
         //výpočet celkové vzdálenosti aktivity
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
-
-
-
         //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
-        foreach ($events as $key => $event) {
-
+        foreach ($events as $key => $event)
+        {
+            dump($activityDistance.'-'.$event['distance']);
+            //kontrola, jestli délka aktivity odpovídá délce nejakeho závodu
             if ($activityDistance >= $event['distance']) {
-
-                //dump($key." tady delka odpovida");
+                //pokud ano, tak kontrola, jestli je uzivatel k nemu prihlasen
                 if (isset($registration->registrationExists($event['id'], $userId)->id)) {
-                   $registrationId = $registration->registrationExists($event['id'], $userId)->id;
-
+                   //pokud ano, tak si vezmeme id registrace uzivatele k zavodu
+                    $registrationId = $registration->registrationExists($event['id'], $userId)->id;
+                    //prochazeni pole s daty aktivity
                     foreach($activityDataArray as $activityData)
                     {
-
-
-
-
-                       // dd($activityData);
+                        //vytvorime TrackPointArray pro ulozeni do DB
                         $trackPointArray[] = [
                             'latitude' => $activityData['latlng'][0],
                             'longitude' => $activityData['latlng'][1],
@@ -512,19 +492,18 @@ class ResultService
                         ];
 
 
-
+                        dump($activityData['distance'].'-'.$event['distance']);
                         if($activityData['distance'] >= $event['distance'])
                         {
+                            dd();
                             $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
-                           // dd($finishTime);
-
 
                             return [
                                 'finish_time' => $finishTime['finish_time'],
                                 'finish_time_sec' => $finishTime['finish_time_sec'],
                                 'average_time_per_km' => $finishTime['average_time_per_km'],
                                'track_points' => $trackPointArray,
-                              //  'registration_id' => $registrationId,
+                               'registration_id' => $registrationId,
                                 'finish_time_date' => $activityDate,
                             ];
 
@@ -533,7 +512,6 @@ class ResultService
                         }
                     }
 
-                    //dd();
 
 
 
@@ -546,7 +524,6 @@ class ResultService
                     //dump("tady odpovídá i delka a zavodnik je i zaregistrovany pod id ".$registrationId);
                     break;
                 } else {
-                    //log = dump('neni zaregistrovan k zadnemu zavodu');
 
                     //Log::info('Event '.$event['id'].' délkově odpovídá, ale uživatel id $request->user()->id. k nemu není přihlášený');
                     //continue;
@@ -559,8 +536,10 @@ class ResultService
 
 
 
-            } else {
-                //log = dump($key.' na takovou délku v dannem obdobi neexistuje zavod');
+            }
+            else
+            {
+                Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod v takové délce');
             }
 
         }
