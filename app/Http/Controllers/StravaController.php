@@ -30,62 +30,51 @@ class StravaController extends Controller
     {
 
         //return $dataStream;
-
         $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($dataStream, $registration, $userId);
 
         $result = new Result();
-        $result->registration_id = $finishTime['registration_id'];
-        $result->finish_time_date = $finishTime['finish_time_date'];
-        $result->finish_time = $finishTime['finish_time'];
-        $result->average_time_per_km = $finishTime['average_time_per_km'];
-        $result->finish_time_sec = $finishTime['finish_time_sec'];
-        // $result->duplicity_check = $finishTime['duplicity_check'];
-        $result->place = 'Nevim';
 
-        // dd($result);
+        $result->registration_id = $finishTime['registration_id'];
+
+        $result->finish_time_date = $finishTime['finish_time_date'];
+
+        $result->finish_time = $finishTime['finish_time'];
+
+        $result->average_time_per_km = $finishTime['average_time_per_km'];
+
+        $result->finish_time_sec = $finishTime['finish_time_sec'];
 
         DB::beginTransaction();
 
-        try {
+        try
+        {
             $result->save();
-        } catch (QueryException $e) {
-            //dd($e);
-
-            return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
+        }
+        catch (QueryException $e)
+        {
+            Log::alert('Došlo k problému s nahráním dat', ['error' => $e->getMessage()]);
         }
 
-        for ($i = 0; $i < count($finishTime['track_points']); $i++) {
+        for ($i = 0; $i < count($finishTime['track_points']); $i++)
+        {
             $finishTime['track_points'][$i]['result_id'] = $result->id;
         }
 
-       // $trackPoint::insert($finishTime['track_points']);
-
         try {
             $trackPoint::insert($finishTime['track_points']);
-            DB::commit();
-        } catch (UniqueConstraintViolationException $e) {
 
-            dd($e);
-            if ($e->errorInfo[1] == 1062) {
+            DB::commit();
+        }
+        catch (UniqueConstraintViolationException $e)
+        {
+            if ($e->errorInfo[1] == 1062)
+            {
                 DB::rollback();
 
-                return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
+                Log::alert('Uzivatel '.$userId.' se pokusil nahrál aktivitu, ale ta už v databazi je.');
             }
         }
-
-        $r = Result::where('registration_id', $finishTime['registration_id'])
-            ->orderBy('finish_time', 'asc')
-            ->get();
-
-        $lastId = $result->id;
-        foreach ($r as $key => $value) {
-            if ($value->id == $lastId) {
-                $rank = $key + 1;
-            }
-
-            Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
-        }
-
+        Log::info('Uzivatel '.$userId.' nahral aktivitu.');
     }
 
     public function getStrava(Request $request)
@@ -114,70 +103,6 @@ class StravaController extends Controller
         //     \Log::info('neco-spatne-tu');
         //}
     }
-
-
-
-
-    public function webhookPostStravaPokus(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
-    {
-
-        // zaloguje se prijem dat ze Stravy
-        Log::info('Webhook event received!', [
-            'query' => $request->query(),
-            'body' => $request->all(),
-        ]);
-        //pokud to neni 'create'tak to nechcem
-        if ($request->input('aspect_type') != 'create') {
-            return;
-        }
-
-        $activityData = $resultService->getStreamFromStrava($request, null);
-
-
-
-        try
-        {
-            $finishTime = $this->activityFinishTime($resultService,'dataFromStravaStream',['activity_data' => $activityData,'user_id' => $activityData]);
-        }
-        catch(Exception $e)
-        {
-            return back()->withError($e->getMessage());
-        }
-
-        try
-        {
-            $resultSave = $resultService->resultSave($request, $registrationId, $finishTime);
-        }
-        catch (DuplicityTimeException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
-
-
-        if (isset($resultSave['error']))
-        {
-            if ($resultSave['error'] == 'ERROR_DB')
-            {
-                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
-            }
-        }
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -220,7 +145,7 @@ class StravaController extends Controller
                 // k predchozimu streamu pridame detail aktivity
                 $response += Http::withToken($token)->get($url)->json();
 
-                $data = $this->dataProcessing($resultService, $registration, $trackPoint, $event, $response, $user->id);
+                $this->dataProcessing($resultService, $registration, $trackPoint, $event, $response, $user->id);
             }
 
         }
@@ -241,12 +166,16 @@ class StravaController extends Controller
             $user1->strava_access_token = $content['access_token'];
             $user1->strava_refresh_token = $content['refresh_token'];
             $user1->strava_expires_at = $content['expires_at'];
-
             $user1->save();
 
             $url = 'https://www.strava.com/api/v3/activities/'.$request->input('object_id').'?include_all_efforts=true';
             $token = $user->strava_access_token;
             $response = Http::withToken($token)->get($url);
+
+
+
+
+
             $data = $content;
 
             $data = $user1;
@@ -254,8 +183,97 @@ class StravaController extends Controller
 
         }
 
-        return response($data, 200);
+        //return response($data, 200);
     }
+
+
+
+
+
+
+    public function autouploadStrava(ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    {
+
+        $url = 'https://www.strava.com/api/v3/activities/10531467027/streams?keys=time,latlng,altitude&key_by_type=true';
+        $token = 'd0bc94aeba4a6d704c3620ce286b1a3530b78f9b';
+        $response = Http::withToken($token)->get($url)->json();
+        //dd($response);
+        if ($response) {
+            $url = 'https://www.strava.com/api/v3/activities/10531467027?include_all_efforts=false';
+            $token = 'd0bc94aeba4a6d704c3620ce286b1a3530b78f9b';
+            $response += Http::withToken($token)->get($url)->json();
+            // dd($response);
+
+            $user = $this->getUserByStravaId(100148951);
+
+            $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($response, $registration, $user->id);
+
+            $result = new Result();
+
+            $result->registration_id = $finishTime['registration_id'];
+
+            $result->finish_time_date = $finishTime['finish_time_date'];
+
+            $result->finish_time = $finishTime['finish_time'];
+
+            $result->average_time_per_km = $finishTime['average_time_per_km'];
+
+            $result->finish_time_sec = $finishTime['finish_time_sec'];
+
+            DB::beginTransaction();
+
+            try
+            {
+                $result->save();
+            }
+            catch (QueryException $e)
+            {
+                Log::alert('Došlo k problému s nahráním dat', ['error' => $e->getMessage()]);
+            }
+
+            for ($i = 0; $i < count($finishTime['track_points']); $i++)
+            {
+                $finishTime['track_points'][$i]['result_id'] = $result->id;
+            }
+
+            try {
+                $trackPoint::insert($finishTime['track_points']);
+
+                DB::commit();
+            }
+            catch (UniqueConstraintViolationException $e)
+            {
+                if ($e->errorInfo[1] == 1062)
+                {
+                    DB::rollback();
+
+                    Log::alert('Uzivatel '.$user->id.' se pokusil nahrál aktivitu, ale ta už v databazi je.');
+                }
+            }
+
+        }
+
+
+        Log::info('Uzivatel '.$user->id.' nahral aktivitu.');
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private function getUserByStravaId($stravaId)
     {
@@ -289,85 +307,6 @@ class StravaController extends Controller
     }
 
     //simulace autonahrani ze Stravy
-    public function autouploadStrava(ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
-    {
-
-        $url = 'https://www.strava.com/api/v3/activities/10531467027/streams?keys=time,latlng,altitude&key_by_type=true';
-        $token = 'bbeb54dc28b27c54bb12eeb72608f947ff27cb8a';
-        $response = Http::withToken($token)->get($url)->json();
-        //dd($response);
-        if ($response) {
-            $url = 'https://www.strava.com/api/v3/activities/10531467027?include_all_efforts=false';
-            $token = 'bbeb54dc28b27c54bb12eeb72608f947ff27cb8a';
-            $response += Http::withToken($token)->get($url)->json();
-            // dd($response);
-
-            $user = $this->getUserByStravaId(100148951);
-
-
-
-            $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($response, $registration, $user->id);
-
-
-
-
-
-            $result = new Result();
-            $result->registration_id = $finishTime['registration_id'];
-            $result->finish_time_date = $finishTime['finish_time_date'];
-            $result->finish_time = $finishTime['finish_time'];
-            $result->average_time_per_km = $finishTime['average_time_per_km'];
-            $result->finish_time_sec = $finishTime['finish_time_sec'];
-            // $result->duplicity_check = $finishTime['duplicity_check'];
-            //$result->place = 'Nevim';
-
-            // dd($result);
-
-            DB::beginTransaction();
-
-            try {
-                $result->save();
-            } catch (QueryException $e) {
-                dd($e);
-
-                return back()->withError('Došlo k problému s nahráním souboru, kontaktujte timechip.cz@gmail.com')->withInput();
-            }
-
-            for ($i = 0; $i < count($finishTime['track_points']); $i++) {
-                $finishTime['track_points'][$i]['result_id'] = $result->id;
-            }
-
-        // $trackPoint::insert($finishTime['track_points']);
-
-            try {
-                $trackPoint::insert($finishTime['track_points']);
-                DB::commit();
-            } catch (UniqueConstraintViolationException $e) {
-
-                dd($e);
-                if ($e->errorInfo[1] == 1062) {
-                    DB::rollback();
-
-                    return back()->withError('Soubor obsahuje duplicitní časové údaje')->withInput();
-                }
-            }
-
-            $r = Result::where('registration_id', $finishTime['registration_id'])
-                ->orderBy('finish_time', 'asc')
-                ->get();
-
-            $lastId = $result->id;
-            foreach ($r as $key => $value) {
-                if ($value->id == $lastId) {
-                    $rank = $key + 1;
-                }
-
-                Result::where('id', $value->id)->update(['finish_time_order' => $key + 1]);
-            }
-
-        }
-
-    }
 
     public function enableStrava(Request $request)
     {

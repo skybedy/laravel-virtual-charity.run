@@ -436,13 +436,15 @@ class ResultService
 
     }
 
-
+    //otazka zda spis nevyvolat vyjimky a logovat v controlleru, asi predelat
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
+       //dd($activityData);
         //pocatecni cas aktivity v UNIX sekundach
         $startDayTimestamp = strtotime($activityData['start_date_local']);
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
+       // dd($activityDate);
         //pole pro ulozeni bodu trasy
         $trackPointArray = [];
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
@@ -457,95 +459,60 @@ class ResultService
                     'altitude' => $activityData['altitude']['data'][$key]
                 ];
         }
-        //vypis zavodů v danném časovém období
-        $events = Event::where('date_start', '<=', $activityDate)
-        ->where('date_end', '>=', $activityDate)
-        ->orderBy('distance', 'DESC')
-        ->get(['id', 'distance']);
-        //kontrola, jestli v daném časovém období existuje nějaký závod
-        if (!isset($event))
-        {
-            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod');
-        }
         //výpočet celkové vzdálenosti aktivity
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
+
+        $events = Event::where('date_start', '<=',$activityDate)
+                        ->where('date_end', '>=', $activityDate)
+                        ->where('distance', '<=', $activityDistance)
+                        ->orderBy('distance', 'DESC')
+                        ->get(['id', 'distance']);
+        //kontrola, jestli v daném časovém období existuje nějaký závod
+        if (count($events) == 0)
+        {
+            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod.');
+
+            exit();
+        }
         //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
         foreach ($events as $key => $event)
         {
-            dump($activityDistance.'-'.$event['distance']);
-            //kontrola, jestli délka aktivity odpovídá délce nejakeho závodu
-            if ($activityDistance >= $event['distance']) {
-                //pokud ano, tak kontrola, jestli je uzivatel k nemu prihlasen
-                if (isset($registration->registrationExists($event['id'], $userId)->id)) {
-                   //pokud ano, tak si vezmeme id registrace uzivatele k zavodu
-                    $registrationId = $registration->registrationExists($event['id'], $userId)->id;
-                    //prochazeni pole s daty aktivity
-                    foreach($activityDataArray as $activityData)
-                    {
-                        //vytvorime TrackPointArray pro ulozeni do DB
-                        $trackPointArray[] = [
-                            'latitude' => $activityData['latlng'][0],
-                            'longitude' => $activityData['latlng'][1],
-                            'time' => $activityData['time'],
-                            'altitude' => $activityData['altitude'],
-                            'user_id' => $userId,
-                        ];
-
-
-                        dump($activityData['distance'].'-'.$event['distance']);
-                        if($activityData['distance'] >= $event['distance'])
-                        {
-                            dd();
-                            $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
-
-                            return [
-                                'finish_time' => $finishTime['finish_time'],
-                                'finish_time_sec' => $finishTime['finish_time_sec'],
-                                'average_time_per_km' => $finishTime['average_time_per_km'],
-                               'track_points' => $trackPointArray,
-                               'registration_id' => $registrationId,
-                                'finish_time_date' => $activityDate,
-                            ];
-
-
-
-                        }
-                    }
-
-
-
-
-
-
-
-
-
-
-                    //dump("tady odpovídá i delka a zavodnik je i zaregistrovany pod id ".$registrationId);
-                    break;
-                } else {
-
-                    //Log::info('Event '.$event['id'].' délkově odpovídá, ale uživatel id $request->user()->id. k nemu není přihlášený');
-                    //continue;
-                }
-
-
-
-
-
-
-
-
-            }
-            else
+            //kontrola, jestli je uzivatel k nemu prihlasen
+            if (isset($registration->registrationExists($event['id'], $userId)->id))
             {
-                Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod v takové délce');
+                //pokud ano, tak si vezmeme id registrace uzivatele k zavodu
+                $registrationId = $registration->registrationExists($event['id'], $userId)->id;
+                //prochazeni pole s daty aktivity
+                foreach($activityDataArray as $activityData)
+                {
+                    //vytvorime TrackPointArray pro ulozeni do DB
+                    $trackPointArray[] = [
+                        'latitude' => $activityData['latlng'][0],
+                        'longitude' => $activityData['latlng'][1],
+                        'time' => $activityData['time'],
+                        'altitude' => $activityData['altitude'],
+                        'user_id' => $userId,
+                    ];
+                    //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
+                    if($activityData['distance'] >= $event['distance'])
+                    {
+                        $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
+
+                        return [
+                            'finish_time' => $finishTime['finish_time'],
+                            'finish_time_sec' => $finishTime['finish_time_sec'],
+                            'average_time_per_km' => $finishTime['average_time_per_km'],
+                            'track_points' => $trackPointArray,
+                            'registration_id' => $registrationId,
+                            'finish_time_date' => $activityDate,
+                        ];
+                    }
+                }
             }
+            Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
 
+            exit();
         }
-
-        dd();
-
 
     }
 
@@ -855,26 +822,25 @@ class ResultService
 
     private function finishTimeCalculation($eventDistance, $rawActivityDistance, $rawDayTimestamp, $startDayTimestamp = null)
     {
-        if ($startDayTimestamp == null) {
+        if ($startDayTimestamp == null)
+        {
             $rawFinishTimeSec = $rawDayTimestamp;
         }
         else {
             $t = new Carbon($rawDayTimestamp);
+
             $finishDayTimestamp = $t->timestamp;
 
             $rawFinishTimeSec = $finishDayTimestamp - $startDayTimestamp;
         }
 
-        //dd($eventDistance);
-        //dump($rawActivityDistance);
-
-
         $finishTime = $this->finishTimeRecountAccordingDistance($eventDistance, $rawActivityDistance, $rawFinishTimeSec);
-        //dd($finishTime);
 
         return [
             'finish_time' => $finishTime['finish_time'],
+
             'finish_time_sec' => intval(round($finishTime['finish_time_sec'], 0)),
+
             'average_time_per_km' => $this->averageTimePerKm($eventDistance,$finishTime['finish_time_sec'])
         ];
 
@@ -885,12 +851,6 @@ class ResultService
     {
         //kolik sekund trva 1 metr
         $secPerMeter = $rawFinishTimeSec / $activityDistance;
-
-
-       //kolik metru za 1 sekundu, nepouzito, ale musel jsem si to zformulovat pro tu svou blbou palici
-        $meterPerSec  =   $activityDistance / $rawFinishTimeSec;
-
-
 
         $plusDistance = $activityDistance - $eventDistance;
 
@@ -903,6 +863,7 @@ class ResultService
 
         return [
             "finish_time" => $finishTime,
+
             "finish_time_sec" => $finishTimeSec
         ];
 
@@ -934,93 +895,10 @@ class ResultService
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private function duplicityCheck($userId, $time)
-        {
-            $result = new Result();
-
-            $allCheckTimesTogether = [];
-
-            $allCheckTimesFromDb = $result->getDuplicityCheck($userId);
-
-
-            foreach ($allCheckTimesFromDb as $allCheckTimesArrays) {
-                foreach ($allCheckTimesArrays as $checkTimesJson) {
-                    $checkTimesArray = json_decode($checkTimesJson);
-
-                    if (is_array($checkTimesArray)) {
-                        $allCheckTimesTogether = array_merge($allCheckTimesTogether, $checkTimesArray);
-                    }
-                }
-            }
-
-            if (in_array($this->iso8601ToTimestamp($time), $allCheckTimesTogether)) {
-                return false;
-            } else {
-                return true;
-            }
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private function averageTimePerKm($eventDistance,$finishTimeSec)
         {
             $secondPerKm = round(($finishTimeSec * 1000) / $eventDistance);
+
             $timeObj = Carbon::createFromTime(0, 0, 0)->addSeconds($secondPerKm);
 
             return substr($timeObj->format('i:s'), 1);
@@ -1181,6 +1059,7 @@ class ResultService
             {
                 return [
                     'error' => 'ERROR_DB',
+
                     'error_message' => $e->getMessage(),
                 ];
             }
@@ -1194,6 +1073,7 @@ class ResultService
 
             try{
                 $trackPoint::insert($finishTime['track_points']);
+
                 DB::commit();
             }
             catch (UniqueConstraintViolationException $e)

@@ -209,9 +209,6 @@ class EventController extends Controller
     }
 
 
-
-
-
     public function uploadStore(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
@@ -254,16 +251,6 @@ class EventController extends Controller
         catch (TimeMissingException $e)
         {
             return back()->withError($e->getMessage())->withInput();
-        }
-        catch (UniqueConstraintViolationException $e)
-        {
-            $errorCode = $e->errorInfo[1];
-
-            if ($errorCode == 1062)
-            {
-                // Duplicitní záznam byl nalezen, zde můžete provést potřebné akce
-                // Například můžete záznam přeskočit, aktualizovat nebo vrátit chybovou zprávu uživateli
-            }
         }
 
 
