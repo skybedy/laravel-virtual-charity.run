@@ -10,10 +10,10 @@
                             <tr class="">
                                 <th class="border-none">Pořadí</th>
                                 <th class="border-none text-left px-2">Jméno</th>
-                                <th class="border-none text-left px-2">Tým/Město/Obec</th>
+                                <th class="border-none text-left px-2">Tým||Město||Obec</th>
                                 <th class="border-none text-left px-2">Kategorie</th>
-                                <th class="border-none text-left px-2">Místo a čas</th>
-                                <th class="border-none">Temp</th>
+                                <th class="border-none text-left px-2">Místo&&Mapa</th>
+                                <th class="border-none">Tempo</th>
                                 <th class="border-none">Čas</th>
                                 <th class="border-none">Rozdíl</th>
                             </tr>
@@ -28,8 +28,8 @@
                                     <td class="border px-2">{{ $result->lastname }} {{ $result->firstname }}</td>
                                     <td class="border px-2">{{ $result->team }}</td>
                                     <td class="border px-2">{{ $result->category_name }}</td>
-                                    <td class="border px-2"><a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">{{ $result->place }}, {{ $result->date }}</a></td>
-                                    <td class="border text-center">{{ $result->average_time_per_km }}</td>
+                                    <td class="border px-2">{{ $result->date }} <a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">mapa</a></td>
+                                    <td class="border text-center">{{ $result->pace }}</td>
                                     <td class="border text-center">{{ $result->best_finish_time }}</td>
                                     <td class="border text-center">{{ dynamic_distance($loop->iteration,$result->best_finish_time_sec,$best_time) }}</td>
                                 </tr>
@@ -39,7 +39,7 @@
                             <tr>
                                 <th class="border-none">#</th>
                                 <th class="border-none text-left px-2">Jméno</th>
-                                <th class="border-none text-left px-2">Místo/čas</th>
+                                <th class="border-none text-left px-2">Datum/Mapa</th>
                                 <th class="border-none">Čas</th>
                                 <th class="border-none">Tempo</th>
                             </tr>
@@ -52,9 +52,9 @@
                                 <tr class="odd:bg-gray-100 even:bg-white" id="result_{{ $result->id }}">
                                     <td class="border text-center">{{ $loop->iteration }}</td>
                                     <td class="border px-2">{{ $result->lastname }} {{ $result->firstname }}</td>
-                                    <td class="border px-2"><a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">{{ $result->place }}, {{ $result->date }}</a></td>
+                                    <td class="border px-2">{{ $result->date }}, <a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">mapa</a></td>
                                     <td class="border text-center">{{ $result->best_finish_time }}</td>
-                                    <td class="border text-center">{{ $result->average_time_per_km }}</td>
+                                    <td class="border text-center">{{ $result->pace }}</td>
                                 </tr>
                             @endforeach
                         </table>

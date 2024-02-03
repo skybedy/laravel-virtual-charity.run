@@ -7,6 +7,7 @@ use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
 use App\Exceptions\DuplicityTimeException;
+use App\Exceptions\NoStravaAuthorizeException;
 use Exception;
 use App\Models\Event;
 use App\Models\Registration;
@@ -93,10 +94,13 @@ class EventController extends Controller
             //'nejaky problem s url');
         }
 
-        //$this->test($request, $activityId, $resultService, $registration);
-
-        $activityData = $resultService->getStreamFromStrava($request, $activityId);
-        //dd($activityData['user_id']);
+        try{
+            $activityData = $resultService->getStreamFromStrava($request, $activityId);
+        }
+        catch (NoStravaAuthorizeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
 
         try
         {

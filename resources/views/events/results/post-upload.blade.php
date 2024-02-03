@@ -24,7 +24,7 @@
                         <tr>
                            <th class="border-none text-left px-2">Poř</th>
                             <th class="border-none text-left px-2">Datum</th>
-                            <th class="border-none text-left px-2">Místo</th>
+                            <th class="border-none text-left px-2">Tempo</th>
                             <th class="border-none px-1">Čas</th>
                         </tr>
 
@@ -37,7 +37,7 @@
                         
                               <td class="border text-center">{{ $loop->iteration }}</td>
                               <td class="border px-2 text-center">{{ $result->date }}</td>
-                              <td class="border px-2">{{ $result->place }}</td>
+                              <td class="border px-2">{{ $result->pace }}</td>
                               <td class="border text-center px-2">{{ $result->finish_time }}</td>
                         </tr>   
                   @endforeach

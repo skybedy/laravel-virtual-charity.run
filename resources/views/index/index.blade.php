@@ -21,7 +21,6 @@
 
             @include('index.partials.event-list')
 
-
                 <ol class="text-4xl font-bold list-decimal list-inside mt-4">
 
                     <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 text-xl sm:text-4xl">
@@ -31,7 +30,7 @@
                     </div>
                     <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-4 text-xl sm:text-4xl">
                         <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
-                            <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('enable_strava') }}>povolte</a> STRAVU..</li>
+                            <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('authorize_strava') }}>povolte</a> STRAVU..</li>
                         </div>
                     </div>
                     <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-4 text-xl sm:text-4xl">

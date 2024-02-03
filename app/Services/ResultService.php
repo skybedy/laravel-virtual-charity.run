@@ -9,6 +9,7 @@ use App\Models\Result;
 use App\Exceptions\SmallDistanceException;
 use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
+use App\Exceptions\NoStravaAuthorizeException;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use App\Exceptions\DuplicityException;
@@ -38,8 +39,6 @@ class ResultService
     private $dateEventEndTimestamp;
     private $duplicityCheck;
 
-
-
     public function getStreamFromStrava($request,$activityId = null)
     {
         if($activityId == null)
@@ -58,6 +57,11 @@ class ResultService
 
             $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$userId)->first();
         }
+        //kontrola, jestli uzivatel ma autorizovanou aplikaci na Strave
+        if(is_null($user->strava_access_token))
+        {
+            throw new NoStravaAuthorizeException();
+        };
 
         if ($user->strava_expires_at > time())
         {
@@ -107,29 +111,8 @@ class ResultService
                 $response['user_id'] = $userId;
             }
         }
-
         return $response;
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      *  ziskani vysledkových dat z GPX souboru
@@ -151,16 +134,13 @@ class ResultService
         $file = $request->file('gpx_file');
 
         $xmlObject = simplexml_load_string(trim($file->get()));
-
         //datum a cas zacatku aktivity z metadat
         $activityDateTime = $xmlObject->metadata->time;
-
         // pokud není, tak to je spatne a takovy soubor neni mozne prijmout
         if ($activityDateTime == null)
         {
             throw new TimeMissingException();
         }
-
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", strtotime($activityDateTime));
 
@@ -470,7 +450,7 @@ class ResultService
         //kontrola, jestli v daném časovém období existuje nějaký závod
         if (count($events) == 0)
         {
-            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období neexistuje žádný závod.');
+            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období a v patřičné délce neexistuje žádný závod.');
 
             exit();
         }
@@ -789,6 +769,7 @@ class ResultService
 
         $client = new Client([
             'handler' => $stack,
+            
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
             ]

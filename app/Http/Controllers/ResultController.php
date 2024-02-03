@@ -17,6 +17,17 @@ class ResultController extends Controller
         return view('result.index');
     }
 
+    public function resultUser(Request $request, Result $result)
+    {
+        $result->resultsIndividual($request->eventId,$request->userId);
+
+        return view('result.index');
+    }
+
+
+
+
+
     public function resultMap(Request $request, TrackPoint $trackPoint)
     {
         $data = '';
@@ -30,25 +41,4 @@ class ResultController extends Controller
         return response()->json($data);
     }
 
-    public function upload(Request $request, ResultService $resultService, Registration $registration)
-    {
-
-        $eventId = $request->event_id;
-        $userId = $request->user()->id;
-
-        //todo zmemena ta metoda pod tom
-        //  dd($registration->registrationExists($eventId,$userId)->id);
-        $finishTime = $resultService->finishTime($request);
-        // dd($finishTime);
-
-        $result = new Result();
-        $result->registration_id = $registration->registrationExists($request->event_id, $request->user()->id)->id;
-        $result->finishtime_order = $result->finishTimeOrder($request->registration_id);
-        $result->finishtime = $finishTime['finish_time'];
-        $result->finishtime_sec = $finishTime['finish_time_sec'];
-        $result->save();
-
-        dd($result);
-
-    }
 }

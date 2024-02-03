@@ -33,7 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/event/{eventId}/upload', [EventController::class, 'uploadStore'])->name('event.upload.store');
     Route::post('/event/{eventId}/upload-url', [EventController::class, 'uploadStoreFromUrl'])->name('event.upload.store.url');
     Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
-    Route::get('/enable-strava', [StravaController::class, 'enableStrava'])->name('enable_strava');
+    Route::get('/authorize-strava', [StravaController::class, 'authorizeStrava'])->name('authorize_strava');
 });
 
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
@@ -42,6 +42,7 @@ Route::get('/event/{eventId}/result', [EventController::class, 'resultIndex'])->
 Route::get('/event/{eventId}/startlist', [EventController::class, 'startlistIndex'])->name('event.startlist.index');
 
 Route::get('/result/{resultId}/map', [ResultController::class, 'resultMap'])->name('result.map');
+Route::get('/event/{eventId}/result/{userId}', [ResultsController::class, 'resultUser'])->name('result.user');
 
 Route::get('/registration/{eventId}', [RegistrationController::class, 'index'])->name('registration.index');
 Route::get('/result/{eventId}', [ResultController::class, 'index'])->name('result.index');
@@ -55,9 +56,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/registration/create/{eventId}', [RegistrationController::class, 'create'])->name('registration.create');
-
-    Route::get('/uploadResult', [ResultController::class, 'upload'])->name('result.upload');
-    Route::post('/uploadResult', [ResultController::class, 'upload'])->name('result.upload');
 
 });
 

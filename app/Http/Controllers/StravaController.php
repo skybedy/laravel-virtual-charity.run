@@ -24,110 +24,25 @@ use Exception;
 
 class StravaController extends Controller
 {
-    //  public function dataProcessing(ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
-
-    public function dataProcessing($resultService, $registration, $trackPoint, $event, $dataStream, $userId)
-    {
-
-        //return $dataStream;
-        $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($dataStream, $registration, $userId);
-
-        $result = new Result();
-
-        $result->registration_id = $finishTime['registration_id'];
-
-        $result->finish_time_date = $finishTime['finish_time_date'];
-
-        $result->finish_time = $finishTime['finish_time'];
-
-        $result->average_time_per_km = $finishTime['average_time_per_km'];
-
-        $result->finish_time_sec = $finishTime['finish_time_sec'];
-
-        DB::beginTransaction();
-
-        try
-        {
-            $result->save();
-        }
-        catch (QueryException $e)
-        {
-            Log::alert('Došlo k problému s nahráním dat', ['error' => $e->getMessage()]);
-        }
-
-        for ($i = 0; $i < count($finishTime['track_points']); $i++)
-        {
-            $finishTime['track_points'][$i]['result_id'] = $result->id;
-        }
-
-        try {
-            $trackPoint::insert($finishTime['track_points']);
-
-            DB::commit();
-        }
-        catch (UniqueConstraintViolationException $e)
-        {
-            if ($e->errorInfo[1] == 1062)
-            {
-                DB::rollback();
-
-                Log::alert('Uzivatel '.$userId.' se pokusil nahrál aktivitu, ale ta už v databazi je.');
-            }
-        }
-        Log::info('Uzivatel '.$userId.' nahral aktivitu.');
-    }
-
-    public function getStrava(Request $request)
-    {
-
-        \Log::info($request->query());
-        $VERIFY_TOKEN = 'STRAVA';
-
-        $mode = $request->query('hub_mode');
-        $token = $request->query('hub_verify_token');
-        $challenge = $request->query('hub_challenge');
-
-        //        if ($mode && $token) {
-        if ($mode === 'subscribe' && $token === $VERIFY_TOKEN) {
-            \Log::info('WEBHOOK_VERIFIED');
-
-            return response()->json(['hub.challenge' => $challenge]);
-        } else {
-
-            \Log::info('neco-spatne');
-
-            return response('Forbidden', 403);
-        }
-        // }
-        //   else{
-        //     \Log::info('neco-spatne-tu');
-        //}
-    }
-
-
-
 
     /**
      *   zpracování webhook  ze Stravy
     */
-   public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
+    public function webhookPostStrava(Request $request, ResultService $resultService, Registration $registration, TrackPoint $trackPoint, Event $event)
     {
 
-        // zaloguje se prijem dat ze Stravy
-        Log::info('Webhook event received!', [
-            'query' => $request->query(),
-            'body' => $request->all(),
-        ]);
+
         //pokud to neni 'create'tak to nechcem
         if ($request->input('aspect_type') != 'create')
         {
-            return;
+            exit();
         }
+
+        // zaloguje se prijem dat ze Stravy a budeme logovat jen 'create'
+        Log::info('Webhook event received!', ['query' => $request->query(),'body' => $request->all()]);
         //z pozadavku si vezmeme id uzivatele Stravy a podle nej najdeme uzivatele v nasi databazi
         $stravaId = $request->input('owner_id');
-
-
-
+        //ziskani Usera 
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('strava_id', $stravaId)->first();
         //ted musime zjistit, jestli token pro REST API jeste plati
         if ($user->strava_expires_at > time())
@@ -168,23 +83,125 @@ class StravaController extends Controller
             $user1->strava_expires_at = $content['expires_at'];
             $user1->save();
 
-            $url = 'https://www.strava.com/api/v3/activities/'.$request->input('object_id').'?include_all_efforts=true';
-            $token = $user->strava_access_token;
-            $response = Http::withToken($token)->get($url);
+            $url = config('strava.stream.url').$request->input('object_id').config('strava.stream.params');
+
+            $token = $user1->strava_access_token;
+
+            $response = Http::withToken($token)->get($url)->json();
+            //pokud dostaneme v poradku stream, tak vytahneme i detail aktivity
+            if ($response)
+            {
+                $url = config('strava.activity.url').$request->input('object_id').config('strava.activity.params');
+                // k predchozimu streamu pridame detail aktivity
+                $response += Http::withToken($token)->get($url)->json();
+
+                $this->dataProcessing($resultService, $registration, $trackPoint, $event, $response, $user->id);
+            }
 
 
-
-
-
-            $data = $content;
-
-            $data = $user1;
-            $data .= 'tady jsem';
 
         }
 
-        //return response($data, 200);
+        return response('OK', 200);
     }
+    
+
+
+
+
+
+
+
+
+
+    //  public function dataProcessing(ResultService $resultService,Registration $registration,TrackPoint $trackPoint,Event $event)
+
+    public function dataProcessing($resultService, $registration, $trackPoint, $event, $dataStream, $userId)
+    {
+
+        //return $dataStream;
+        $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($dataStream, $registration, $userId);
+
+        $result = new Result();
+
+        $result->registration_id = $finishTime['registration_id'];
+
+        $result->finish_time_date = $finishTime['finish_time_date'];
+
+        $result->finish_time = $finishTime['finish_time'];
+
+        $result->average_time_per_km = $finishTime['average_time_per_km'];
+
+        $result->finish_time_sec = $finishTime['finish_time_sec'];
+
+        DB::beginTransaction();
+
+        try
+        {
+            $result->save();
+        }
+        catch (QueryException $e)
+        {
+            Log::alert('Došlo k problému s nahráním dat', ['error' => $e->getMessage()]);
+
+            exit();
+        }
+
+        for ($i = 0; $i < count($finishTime['track_points']); $i++)
+        {
+            $finishTime['track_points'][$i]['result_id'] = $result->id;
+        }
+
+        try {
+            $trackPoint::insert($finishTime['track_points']);
+
+            DB::commit();
+        }
+        catch (UniqueConstraintViolationException $e)
+        {
+            if ($e->errorInfo[1] == 1062)
+            {
+                DB::rollback();
+
+                Log::alert('Uzivatel '.$userId.' se pokusil nahrál aktivitu, ale ta už v databazi je.');
+
+                exit();
+            }
+        }
+        
+        Log::info('Uzivatel '.$userId.' nahral aktivitu.');
+    }
+
+    public function getStrava(Request $request)
+    {
+
+        \Log::info($request->query());
+        $VERIFY_TOKEN = 'STRAVA';
+
+        $mode = $request->query('hub_mode');
+        $token = $request->query('hub_verify_token');
+        $challenge = $request->query('hub_challenge');
+
+        //        if ($mode && $token) {
+        if ($mode === 'subscribe' && $token === $VERIFY_TOKEN) {
+            \Log::info('WEBHOOK_VERIFIED');
+
+            return response()->json(['hub.challenge' => $challenge]);
+        } else {
+
+            \Log::info('neco-spatne');
+
+            return response('Forbidden', 403);
+        }
+        // }
+        //   else{
+        //     \Log::info('neco-spatne-tu');
+        //}
+    }
+
+
+
+
 
 
 
@@ -308,7 +325,7 @@ class StravaController extends Controller
 
     //simulace autonahrani ze Stravy
 
-    public function enableStrava(Request $request)
+    public function authorizeStrava(Request $request)
     {
         return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-run.cz/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read_all');
     }
