@@ -105,7 +105,6 @@ class EventController extends Controller
         try
         {
             $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromStravaStream',['activity_data' => $activityData,'request' => $request]);
-
         }
         catch (SmallDistanceException $e)
         {

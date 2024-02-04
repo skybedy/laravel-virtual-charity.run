@@ -111,6 +111,7 @@ class ResultService
                 $response['user_id'] = $userId;
             }
         }
+        
         return $response;
     }
 
@@ -216,7 +217,7 @@ class ResultService
                 'finish_time' => $finishTime['finish_time'],
                 'finish_time_sec' => $finishTime['finish_time_sec'],
                 'finish_time_date' => $activityDate,
-                'average_time_per_km' => $finishTime['average_time_per_km'],
+                'pace' => $finishTime['pace'],
                 'track_points' => $trackPointArray,
             ];
         }
@@ -246,7 +247,7 @@ class ResultService
         if (!isset($events)) {
             //TODO dopsat vyjimku, ze neexistuje zadny zavod v urcenem casovem obdobi
 
-            dd("neni zadny zavod");
+            //dd("neni zadny zavod");
         }
 
 
@@ -288,7 +289,7 @@ class ResultService
                     return [
                         'finish_time' => $finishTime['finish_time'],
                         'finish_time_sec' => $finishTime['finish_time_sec'],
-                        'average_time_per_km' => $finishTime['average_time_per_km'],
+                        'pace' => $finishTime['pace'],
                         'track_points' => $trackPoints,
                         'registration_id' => $registrationId,
                         'finish_time_date' => $eventDate
@@ -403,7 +404,7 @@ class ResultService
                     return [
                         'finish_time' => $finishTime['finish_time'],
                         'finish_time_sec' => $finishTime['finish_time_sec'],
-                        'average_time_per_km' => $finishTime['average_time_per_km'],
+                        'pace' => $finishTime['pace'],
                         'track_points' => $trackPointArray,
                       //  'registration_id' => $registrationId,
                         'finish_time_date' => $activityDate,
@@ -481,7 +482,7 @@ class ResultService
                         return [
                             'finish_time' => $finishTime['finish_time'],
                             'finish_time_sec' => $finishTime['finish_time_sec'],
-                            'average_time_per_km' => $finishTime['average_time_per_km'],
+                            'pace' => $finishTime['pace'],
                             'track_points' => $trackPointArray,
                             'registration_id' => $registrationId,
                             'finish_time_date' => $activityDate,
@@ -537,7 +538,7 @@ class ResultService
             {
                 $url = "https://www.strava.com/api/v3/activities/".$activityId."?include_all_efforts=false";
                 $response += Http::withToken($token)->get($url)->json();
-                dd($response);
+               // dd($response);
 
                 //$data = $this->dataProcessing($resultService,$registration,$trackPoint,$event,$response,$user->id);
             }
@@ -714,7 +715,7 @@ class ResultService
                         return [
                             'finish_time' => $finishTime['finish_time'],
                             'finish_time_sec' => $finishTime['finish_time_sec'],
-                            'average_time_per_km' => $finishTime['average_time_per_km'],
+                            'pace' => $finishTime['pace'],
                             'track_points' => $trackPointArray1,
                             'registration_id' => $registrationId,
                             'finish_time_date' => $finishTimeDate,
@@ -822,7 +823,7 @@ class ResultService
 
             'finish_time_sec' => intval(round($finishTime['finish_time_sec'], 0)),
 
-            'average_time_per_km' => $this->averageTimePerKm($eventDistance,$finishTime['finish_time_sec'])
+            'pace' => $this->averageTimePerKm($eventDistance,$finishTime['finish_time_sec'])
         ];
 
     }
@@ -1026,7 +1027,7 @@ class ResultService
 
             $result->finish_time = $finishTime['finish_time'];
 
-            $result->average_time_per_km = $finishTime['average_time_per_km'];
+            $result->pace = $finishTime['pace'];
 
             $result->finish_time_sec = $finishTime['finish_time_sec'];
 

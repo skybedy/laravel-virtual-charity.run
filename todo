@@ -1,2 +1,4 @@
 potreba pridat vyjimku, kdyz nepujde nacist gpx, treba ted se stalo, ze byla na zacatku mezera, odstranil jsem to sice 
 pres trim(), ale muzou byt i jine duvody
+- ve strava controller a v result service se opakuje kod na overeni platnosti tokenu
+- osetrit, kdyz se nekdo pres odkaz pokusi nahrat aktivitu nekoho jineho

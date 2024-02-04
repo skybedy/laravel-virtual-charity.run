@@ -62,7 +62,6 @@ class StravaController extends Controller
 
                 $this->dataProcessing($resultService, $registration, $trackPoint, $event, $response, $user->id);
             }
-
         }
         else
         {
@@ -75,12 +74,17 @@ class StravaController extends Controller
             ]);
 
             $body = $response->body();
+            
             $content = json_decode($body, true);
 
             $user1 = User::where('id', $user->id)->first();
+            
             $user1->strava_access_token = $content['access_token'];
+            
             $user1->strava_refresh_token = $content['refresh_token'];
+            
             $user1->strava_expires_at = $content['expires_at'];
+            
             $user1->save();
 
             $url = config('strava.stream.url').$request->input('object_id').config('strava.stream.params');
@@ -130,7 +134,7 @@ class StravaController extends Controller
 
         $result->finish_time = $finishTime['finish_time'];
 
-        $result->average_time_per_km = $finishTime['average_time_per_km'];
+        $result->pace = $finishTime['pace'];
 
         $result->finish_time_sec = $finishTime['finish_time_sec'];
 
@@ -233,7 +237,7 @@ class StravaController extends Controller
 
             $result->finish_time = $finishTime['finish_time'];
 
-            $result->average_time_per_km = $finishTime['average_time_per_km'];
+            $result->pace = $finishTime['pace'];
 
             $result->finish_time_sec = $finishTime['finish_time_sec'];
 
@@ -275,21 +279,6 @@ class StravaController extends Controller
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private function getUserByStravaId($stravaId)

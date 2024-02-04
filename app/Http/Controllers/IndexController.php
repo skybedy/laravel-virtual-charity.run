@@ -76,10 +76,10 @@ class IndexController extends Controller
         $result->registration_id = $finishTime['registration_id'];
         $result->finish_time_date = $finishTime['finish_time_date'];
         $result->finish_time = $finishTime['finish_time'];
-        $result->average_time_per_km = $finishTime['average_time_per_km'];
+        $result->pace = $finishTime['pace'];
         $result->finish_time_sec = $finishTime['finish_time_sec'];
         // $result->duplicity_check = $finishTime['duplicity_check'];
-        $result->place = $request->place;
+       // $result->place = $request->place;
 
         //  dd($result);
 
