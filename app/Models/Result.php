@@ -21,7 +21,7 @@ class Result extends Model
         return self::join('registrations', 'results.registration_id', '=', 'registrations.id')
             ->join('users', 'registrations.user_id', '=', 'users.id')
             ->join('categories', 'registrations.category_id', '=', 'categories.id')
-            ->selectRaw('MIN(results.id) AS id,MIN(SUBSTRING(results.finish_time,2)) AS best_finish_time,MIN(results.finish_time_sec) as best_finish_time_sec,DATE_FORMAT(MIN(results.finish_time_date),"%e.%c.") AS date, registrations.id AS registration_id, MIN(users.firstname) AS firstname, MIN(users.lastname) AS lastname, MIN(users.team) AS team,MIN(categories.name) AS category_name,MIN(results.pace) AS pace')
+            ->selectRaw('results.id,MIN(SUBSTRING(results.finish_time,2)) AS best_finish_time,results.finish_time_sec as best_finish_time_sec,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date, registrations.id AS registration_id, users.firstname, users.lastname, users.team, categories.name AS category_name,results.pace')
             ->where('registrations.event_id', $eventId)
             ->groupBy('registrations.id')
             ->orderBy('best_finish_time')
@@ -41,7 +41,7 @@ class Result extends Model
             ->where('users.id', $userId)
             ->orderBy('results.finish_time_sec')
             ->get());
-         
+
     }
 
 
