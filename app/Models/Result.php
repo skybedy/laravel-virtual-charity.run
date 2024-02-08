@@ -21,7 +21,7 @@ class Result extends Model
         return self::join('registrations', 'results.registration_id', '=', 'registrations.id')
             ->join('users', 'registrations.user_id', '=', 'users.id')
             ->join('categories', 'registrations.category_id', '=', 'categories.id')
-            ->selectRaw('results.id,MIN(SUBSTRING(results.finish_time,2)) AS best_finish_time,results.finish_time_sec as best_finish_time_sec,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date, registrations.id AS registration_id, users.firstname, users.lastname, users.team, categories.name AS category_name,results.pace')
+            ->selectRaw('results.id,MIN(SUBSTRING(results.finish_time,2)) AS best_finish_time,results.finish_time_sec as best_finish_time_sec,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date, registrations.id AS registration_id, users.firstname, users.lastname, users.team, users.id AS user_id,categories.name AS category_name,results.pace,COUNT(results.id) AS count')
             ->where('registrations.event_id', $eventId)
             ->groupBy('registrations.id')
             ->orderBy('best_finish_time')
@@ -33,16 +33,19 @@ class Result extends Model
     {
         //return self::join('registrations', 'results.registration_id', '=', 'registrations.id')
 
-        dd(self::select('results.id', 'results.finish_time', 'results.finish_time_sec', 'results.finish_time_date', 'results.pace', 'registrations.id AS registration_id', 'users.firstname', 'users.lastname', 'users.team', 'categories.name AS category_name')
+     /*   dd(self::select('results.id', 'results.finish_time', 'results.finish_time_sec', 'results.finish_time_date', 'results.pace', 'registrations.id AS registration_id', 'users.firstname', 'users.lastname', 'users.team', 'categories.name AS category_name')
             ->join('registrations', 'results.registration_id', '=', 'registrations.id')
             ->join('users', 'registrations.user_id', '=', 'users.id')
             ->join('categories', 'registrations.category_id', '=', 'categories.id')
             ->where('registrations.event_id', $eventId)
             ->where('users.id', $userId)
             ->orderBy('results.finish_time_sec')
-            ->get());
+            ->get());*/
 
-    }
+            $x = self::where('registration_ID', 4)->get();
+            dd($x);
+
+        }
 
 
 

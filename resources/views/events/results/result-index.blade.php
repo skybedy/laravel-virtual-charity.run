@@ -18,14 +18,21 @@
                                 <th class="border-none">Rozdíl</th>
                             </tr>
                             @foreach ($results as $result )
-                                @if($loop->iteration == 1) 
+                                @if($loop->iteration == 1)
                                     @php
                                         $best_time = $result->best_finish_time_sec;
                                     @endphp
                                 @endif
                                 <tr class="odd:bg-gray-100 even:bg-white" id="result_{{ $result->id }}">
                                     <td class="border text-center">{{ $loop->iteration }}</td>
-                                    <td class="border px-2">{{ $result->lastname }} {{ $result->firstname }}</td>
+                                    <td class="border px-2">
+                                        @if($result->count > 1)
+
+                                            <a href="{{ route('result.user',[$result->user_id,$event->id]) }}" class="text-blue-700 underline">{{ $result->lastname }} {{ $result->firstname }}</a>
+                                        @else
+                                        {{ $result->lastname }} {{ $result->firstname }}
+                                        @endif
+                                    </td>
                                     <td class="border px-2">{{ $result->team }}</td>
                                     <td class="border px-2">{{ $result->category_name }}</td>
                                     <td class="border px-2">{{ $result->date }} <a class="test_tr underline text-blue-700" href="{{ route('result.map',$result->id) }}">mapa</a></td>
@@ -44,7 +51,7 @@
                                 <th class="border-none">Tempo</th>
                             </tr>
                             @foreach ($results as $result )
-                                @if($loop->iteration == 1) 
+                                @if($loop->iteration == 1)
                                     @php
                                         $best_time = $result->best_finish_time_sec;
                                     @endphp
@@ -69,14 +76,14 @@
 
 
         <script>
-        
+
           $('a').on('click', function () {
       var value = gpx_test_file.trim();
       //console.log(value);
       //if (!value) { return alert("Vložte do textového pole obsah GPX souboru"); }
       var m = new SMap(JAK.gel("m"));
       var xmlDoc = JAK.XML.createDocument(value);
-   
+
       var gpx = new SMap.Layer.GPX(xmlDoc, null, {maxPoints:500}); /* GPX vrstva */
       m.addDefaultLayer(SMap.DEF_BASE).enable();
       m.addLayer(gpx); /* Přidáme ji do mapy */
