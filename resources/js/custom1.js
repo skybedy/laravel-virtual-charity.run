@@ -2,12 +2,11 @@ import $ from 'jquery';
 
 $(() => {
 
-      
       $('a.test_tr').on('click', function(e) {
             e.preventDefault();
             $(".dynamickyPridany").remove();
 
-            var url = $(this).attr('href'); 
+            var url = $(this).attr('href');
             $.getJSON(url, function(response) {
                   var gpxx = zacatek;
                   gpxx += response;
@@ -17,7 +16,7 @@ $(() => {
 
                   var m = new SMap(JAK.gel("m"));
                   var xmlDoc = JAK.XML.createDocument(value);
-               
+
                   var gpx = new SMap.Layer.GPX(xmlDoc, null, {maxPoints:500}); /* GPX vrstva */
                   m.addDefaultLayer(SMap.DEF_BASE).enable();
                   m.addLayer(gpx); /* Přidáme ji do mapy */
@@ -36,13 +35,13 @@ $(() => {
            if($(window).width() < 640)
            {
             var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="5"><div id="m" style="height:300px"></div></td></tr>'); // Vytvoření nového řádku
-            $("#result_table_sm #"+trId).after(novyRadek); 
+            $("#result_table_sm #"+trId).after(novyRadek);
 
            }
            else
            {
             var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="8"><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
-            $("#result_table #"+trId).after(novyRadek); 
+            $("#result_table #"+trId).after(novyRadek);
 
            }
 
@@ -59,6 +58,59 @@ $(() => {
 var zacatek = '<?xml version="1.0" encoding="UTF-8"?><gpx><trk><trkseg>';
 
 var konec = '</trkseg></trk></gpx>';
+
+
+
+$(document).on('click', 'a[href*="/event/result/"]', function(e) {
+
+    var trId =  $(this).closest('tr').attr('id');
+    // Váš kód
+    e.preventDefault(); // Zabraňte výchozímu chování
+
+    $.getJSON($(this).attr('href'), function(response) {
+        var str = "";
+        for (var key in response) {
+            if (response.hasOwnProperty(key)) {
+                var value = response[key];
+                str += '<tr class="bg-red-100">';
+                str += '<td class="border" colspan="4"></td>';
+                str += '<td class="border px-2">'+response[key].date+'<a class="test_tr underline text-blue-700" href="">mapa</a></td>'
+                str += '<td class="border text-center">'+response[key].pace+'</td>';
+                str += '<td class="border text-center">'+response[key].finish_time+'</td>';
+                str += '<td class="border text-center"></td>';
+                str += '</tr>';
+
+
+
+
+
+            }
+        }
+
+        if($(window).width() < 640)
+        {
+           $("#result_table_sm #"+trId).after(str);
+
+        }
+        else
+        {
+            $("#result_table #"+trId).after(str);
+
+        }
+
+    }).fail(function(xhr) {
+        // Zpracování chyb
+        console.error(xhr);
+    });
+  });
+
+
+
+
+
+
+
+
 
 
 });

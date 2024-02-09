@@ -291,7 +291,6 @@ class EventController extends Controller
 
     }
 
-
     public function resultIndex(Request $request, Result $result, Event $event)
     {
         return view('events.results.result-index', [
