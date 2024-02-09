@@ -28,7 +28,7 @@
                                     <td class="border px-2">
                                         @if($result->count > 1)
 
-                                            <a href="{{ route('result.user',[$result->user_id,$event->id]) }}" class="text-blue-700 underline">{{ $result->lastname }} {{ $result->firstname }}</a>
+                                            <a href="{{ route('result.user',$result->registration_id) }}" class="text-blue-700 underline">{{ $result->lastname }} {{ $result->firstname }}</a>
                                         @else
                                         {{ $result->lastname }} {{ $result->firstname }}
                                         @endif

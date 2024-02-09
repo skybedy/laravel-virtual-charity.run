@@ -29,7 +29,7 @@ class Result extends Model
 
     }
 
-    public function resultsIndividual($eventId,$userId)
+    public function resultsIndividual($registrationId)
     {
         //return self::join('registrations', 'results.registration_id', '=', 'registrations.id')
 
@@ -42,8 +42,24 @@ class Result extends Model
             ->orderBy('results.finish_time_sec')
             ->get());*/
 
-            $x = self::where('registration_ID', 4)->get();
-            dd($x);
+
+ /*            $x = self::join('registrations', 'results.registration_id', '=', 'registrations.id')
+                        ->join('users', 'registrations.user_id', '=', 'users.id')
+                        ->where('registrations.event_id', 1)
+                        ->get(['results.finish_time','users.firstname','users.lastname','users.team']);*/
+
+                $x = self::selectRaw('SUBSTRING(finish_time,2) AS finish_time,pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+                            ->where('registration_id', $registrationId)
+                            ->orderBy('finish_time','ASC')
+                            ->skip(1)
+                            ->take(PHP_INT_MAX)
+                            ->get();
+
+                            foreach($x as $y)
+                            {
+                                dump($y->finish_time);
+                            }
+dd();
 
         }
 

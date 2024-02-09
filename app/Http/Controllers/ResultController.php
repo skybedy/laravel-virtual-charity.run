@@ -19,7 +19,7 @@ class ResultController extends Controller
 
     public function resultUser(Request $request, Result $result)
     {
-        $result->resultsIndividual($request->eventId,$request->userId);
+        $result->resultsIndividual($request->registrationId);
 
         return view('result.index');
     }
