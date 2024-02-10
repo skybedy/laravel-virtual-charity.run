@@ -3,9 +3,26 @@ import $ from 'jquery';
 $(() => {
 
      // $('a.test_tr').on('click', function(e) {
-      $('table#result_table').on('click','a.test_tr',function(e){
+      $(document).on('click','a.test_tr',function(e){
             e.preventDefault();
-            $(".dynamickyPridany").remove();
+           // $(".dynamickyPridany").remove();
+
+
+            $(document).on('click', function(e) {
+
+                console.log($(".dynamickyPridany").length);
+                if ($(e.target).closest('tr').attr('class') != 'dynamickyPridany')
+                {
+
+
+                if($(".dynamickyPridany").length > 0)
+                {
+                   $(".dynamickyPridany").remove();
+                }
+                }
+
+            });
+
 
             var url = $(this).attr('href');
             $.getJSON(url, function(response) {
@@ -49,9 +66,13 @@ $(() => {
 
       });
 
-      $(document).on('click', '.dynamickyPridany', function() {
-            $(this).remove(); // Odstranění řádku po dokončení animace
-      });
+
+
+
+
+
+
+
 
 
 
