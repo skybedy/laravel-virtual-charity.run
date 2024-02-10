@@ -16,7 +16,7 @@ class Result extends Model
         return $this->hasMany(TrackPoint::class);
     }
 
-    public function resultsOverall($eventId)
+    public function resultsOverallZal($eventId)
     {
         return self::join('registrations', 'results.registration_id', '=', 'registrations.id')
             ->join('users', 'registrations.user_id', '=', 'users.id')
@@ -27,6 +27,45 @@ class Result extends Model
             ->orderBy('best_finish_time')
             ->get();
     }
+
+
+    public function resultsOverall($eventId)
+    {
+        $sql = "SELECT
+        r1.registration_id,
+        SUBSTRING(r1.finish_time,2) AS best_finish_time,
+        r1.finish_time_sec as best_finish_time_sec,
+        DATE_FORMAT(r1.finish_time_date,'%e.%c.') AS date,
+        r1.pace,
+        r1.id,
+        r.category_id,
+        u.lastname,
+        u.firstname,
+        c.name,
+        counts.count
+    FROM results r1
+    JOIN registrations r ON r1.registration_id = r.id
+    JOIN users u ON r.user_id = u.id
+    JOIN categories c ON r.category_id = c.id
+    JOIN (
+        SELECT registration_id, COUNT(*) AS count
+        FROM results
+        GROUP BY registration_id
+    ) counts ON r1.registration_id = counts.registration_id
+    WHERE
+        r1.finish_time = (
+            SELECT MIN(r2.finish_time)
+            FROM results r2
+            WHERE r1.registration_id = r2.registration_id
+        ) AND r.event_id = ?
+    ORDER BY best_finish_time asc";
+        $result = self::hydrate(DB::select($sql, [$eventId]));
+        return $result;
+    }
+
+
+
+
 
     public function resultsIndividual($registrationId)
     {
