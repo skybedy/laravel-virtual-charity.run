@@ -2,7 +2,8 @@ import $ from 'jquery';
 
 $(() => {
 
-      $('a.test_tr').on('click', function(e) {
+     // $('a.test_tr').on('click', function(e) {
+      $('table#result_table').on('click','a.test_tr',function(e){
             e.preventDefault();
             $(".dynamickyPridany").remove();
 
@@ -40,7 +41,7 @@ $(() => {
            }
            else
            {
-            var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="8"><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
+            var novyRadek = $('<tr class="dynamickyPridany"><td class="text-center" colspan="9"><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
             $("#result_table #"+trId).after(novyRadek);
 
            }
@@ -63,8 +64,12 @@ var konec = '</trkseg></trk></gpx>';
 
 $(document).on('click', 'a[href*="/event/result/"]', function(e) {
 
+    var hrefValue = $(this).attr('href'); // Získání hodnoty atributu href
+
+    var resultId = hrefValue.match(/result\/(\d+)/)[1]; // Získání čísla za slovem "result" a za lomítkem
+
     var trId =  $(this).closest('tr').attr('id');
-    // Váš kód
+
     e.preventDefault(); // Zabraňte výchozímu chování
 
     $.getJSON($(this).attr('href'), function(response) {
@@ -72,9 +77,9 @@ $(document).on('click', 'a[href*="/event/result/"]', function(e) {
         for (var key in response) {
             if (response.hasOwnProperty(key)) {
                 var value = response[key];
-                str += '<tr class="bg-red-100">';
+                str += '<tr id="dynamic_result_indiviual_'+ key +'" class="bg-red-100">';
                 str += '<td class="border" colspan="4"></td>';
-                str += '<td class="border px-2">'+response[key].date+'<a class="test_tr underline text-blue-700" href="">mapa</a></td>'
+                str += '<td class="border px-2">'+response[key].date+'<a class="test_tr underline text-blue-700" href="/result/'+ resultId +'/map">mapa</a></td>'
                 str += '<td class="border text-center">'+response[key].pace+'</td>';
                 str += '<td class="border text-center">'+response[key].finish_time+'</td>';
                 str += '<td class="border text-center"></td>';
