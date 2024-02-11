@@ -69,7 +69,7 @@ class Result extends Model
 
     public function resultsIndividual($registrationId)
     {
-        return self::selectRaw('SUBSTRING(finish_time,2) AS finish_time,pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+        return self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
             ->where('registration_id', $registrationId)
             ->orderBy('finish_time','ASC')
             ->skip(1)
