@@ -41,7 +41,7 @@ class Result extends Model
         r.category_id,
         u.lastname,
         u.firstname,
-        c.name,
+        c.name AS category_name,
         counts.count
     FROM results r1
     JOIN registrations r ON r1.registration_id = r.id
@@ -59,8 +59,10 @@ class Result extends Model
             WHERE r1.registration_id = r2.registration_id
         ) AND r.event_id = ?
     ORDER BY best_finish_time asc";
-        $result = self::hydrate(DB::select($sql, [$eventId]));
-        return $result;
+
+      $result = self::hydrate(DB::select($sql, [$eventId]));
+
+      return $result;
     }
 
 
