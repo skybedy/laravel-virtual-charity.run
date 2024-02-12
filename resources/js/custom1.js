@@ -6,9 +6,16 @@ $(() => {
       $('table#result_table').on('click','a.result_map',function(e){
             e.preventDefault();
 
+            if ($('.tr_map_xhr').length) {
+                console.log("ano");
+                $(".tr_map_xhr").remove();
+                return;
+            } else {
+                console.log("ne");
+            }
 
 
-                $(".tr_map").remove();
+
 
 
 
@@ -44,13 +51,13 @@ $(() => {
            var trId =  $(this).closest('tr').attr('id');
            if($(window).width() < 640)
            {
-            var novyRadek = $('<tr id="tr_map"><td class="text-center" colspan="5"><div id="m" style="height:300px"></div></td></tr>'); // Vytvoření nového řádku
+            var novyRadek = $('<tr class="tr_map_xhr"><td class="text-center" colspan="5"><div id="m" style="height:300px"></div></td></tr>'); // Vytvoření nového řádku
             $("#result_table_sm #"+trId).after(novyRadek);
 
            }
            else
            {
-            var novyRadek = $('<tr class="tr_map" style="position:relative"><td class="text-center" colspan="9"><div id="close_map" style="padding:2px 10px;border:2px solid black;background:white;position:absolute;right:100px;top:17px;z-index:1000;cursor:pointer">Zavřít mapu</div><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
+            var novyRadek = $('<tr id="" class="tr_map_xhr" style="position:relative"><td class="text-center" colspan="9"><div id="close_map" style="padding:2px 10px;border:2px solid black;background:white;position:absolute;right:100px;top:17px;z-index:1000;cursor:pointer">Zavřít mapu</div><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
             $("#result_table #"+trId).after(novyRadek);
 
            }
@@ -139,7 +146,7 @@ $(document).on('click', 'a[href*="/event/result/"]', function(e) {
 
                 str += '<td class="border px-2 text-center">'+response[key].date+'</td>'
 
-                str += '<td class="border text-center"><a class="result_map flex justify-center" href="/result/'+ response[key].id +'/map"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="blue" class="w-6 h-6"><path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 7c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd" /></svg></a></td>';
+                str += '<td class="border text-center"><a class="result_map result_map_xhr flex justify-center" href="/result/'+ response[key].id +'/map"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="blue" class="w-6 h-6"><path fill-rule="evenodd" d="m7.539 14.841.003.003.002.002a.755.755 0 0 0 .912 0l.002-.002.003-.003.012-.009a5.57 5.57 0 0 0 .19-.153 15.588 15.588 0 0 0 2.046-2.082c1.101-1.362 2.291-3.342 2.291-5.597A5 5 0 0 0 3 7c0 2.255 1.19 4.235 2.292 5.597a15.591 15.591 0 0 0 2.046 2.082 8.916 8.916 0 0 0 .189.153l.012.01ZM8 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd" /></svg></a></td>';
 
                 str += '<td class="border text-center">'+response[key].pace+'</td>';
 
