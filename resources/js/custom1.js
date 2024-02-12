@@ -2,26 +2,29 @@ import $ from 'jquery';
 
 $(() => {
 
-     // $('a.test_tr').on('click', function(e) {
       $('table#result_table').on('click','a.result_map',function(e){
             e.preventDefault();
 
-            if ($('.tr_map_xhr').length) {
-                console.log("ano");
-                $(".tr_map_xhr").remove();
-                return;
-            } else {
-                console.log("ne");
+            // $('.dynamic_result_individual_xhr').remove();
+
+            var trId =  $(this).closest('tr').attr('id');
+
+            if ($('.tr_map_xhr').length)
+            {
+                if ($('.'+trId).length)
+                {
+                    $(".tr_map_xhr").remove();
+
+                    return;
+                }
+                else
+                {
+                    $(".tr_map_xhr").remove();
+                }
             }
 
 
-
-
-
-
-
-
-           // $('[id^="dynamic_result_individual_"]').remove();
+            // $('[id^="dynamic_result_individual_"]').remove();
 
             var url = $(this).attr('href');
             $.getJSON(url, function(response) {
@@ -48,7 +51,7 @@ $(() => {
 
 
 
-           var trId =  $(this).closest('tr').attr('id');
+
            if($(window).width() < 640)
            {
             var novyRadek = $('<tr class="tr_map_xhr"><td class="text-center" colspan="5"><div id="m" style="height:300px"></div></td></tr>'); // Vytvoření nového řádku
@@ -57,7 +60,7 @@ $(() => {
            }
            else
            {
-            var novyRadek = $('<tr id="" class="tr_map_xhr" style="position:relative"><td class="text-center" colspan="9"><div id="close_map" style="padding:2px 10px;border:2px solid black;background:white;position:absolute;right:100px;top:17px;z-index:1000;cursor:pointer">Zavřít mapu</div><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
+            var novyRadek = $('<tr class="tr_map_xhr '+ trId +'" style="position:relative"><td class="text-center" colspan="9"><div id="close_map" style="padding:2px 10px;border:2px solid black;background:white;position:absolute;right:100px;top:17px;z-index:1000;cursor:pointer">Zavřít mapu</div><div id="m" style="height:400px"></div></td></tr>'); // Vytvoření nového řádku
             $("#result_table #"+trId).after(novyRadek);
 
            }
@@ -69,7 +72,7 @@ $(() => {
 
       $(document).on('click', '#close_map', function()
       {
-            $('.tr_map').remove();
+            $('.tr_map_xhr').remove();
       });
 
 
@@ -99,14 +102,35 @@ $(document).on('click', 'a[href*="/event/result/"]', function(e) {
 
     e.preventDefault(); // Zabraňte výchozímu chování
 
-    $(".tr_map").remove();
+    var hrefValue = $(this).attr('href'); // Získání hodnoty atributu href
+
+    var userId = hrefValue.match(/result\/(\d+)/)[1]; // Získání čísla za slovem "result" a za lomítkem
+
+
+    var trId =  $(this).closest('tr').attr('id');
+
+
+
+    $(".tr_map_xhr").remove();
+
 
 
     if($('[id^="dynamic_result_individual_"]').length > 0)
     {
 
+        if ($('.user_' + userId).length)
+        {
+            $('[id^="dynamic_result_individual_"]').remove();
 
-        $('[id^="dynamic_result_individual_"]').remove()
+            return;
+        }
+        else
+        {
+            $('[id^="dynamic_result_individual_"]').remove();
+        }
+
+
+
 
        // return;
     }
@@ -114,19 +138,16 @@ $(document).on('click', 'a[href*="/event/result/"]', function(e) {
 
     $(document).on('click', '[id^="dynamic_result_individual_"]', function(e) {
 
-        $('[id^="dynamic_result_individual_"]').remove()
+        //alert();
 
-         return;
+        //   $('[id^="dynamic_result_individual_"]').remove()
+
+        // return;
     })
 
 
 
 
-    var hrefValue = $(this).attr('href'); // Získání hodnoty atributu href
-
-    var resultId = hrefValue.match(/result\/(\d+)/)[1]; // Získání čísla za slovem "result" a za lomítkem
-
-    var trId =  $(this).closest('tr').attr('id');
 
 
 
@@ -140,7 +161,7 @@ $(document).on('click', 'a[href*="/event/result/"]', function(e) {
 
                 var value = response[key];
 
-                str += '<tr id="dynamic_result_individual_'+ key +'" class="bg-red-100 text-blue-700">';
+                str += '<tr id="dynamic_result_individual_'+ key +'" class="dynamic_result_individual_xhr user_'+ userId  +' bg-red-100 text-blue-700">';
 
                 str += '<td class="border" colspan="4"></td>';
 
