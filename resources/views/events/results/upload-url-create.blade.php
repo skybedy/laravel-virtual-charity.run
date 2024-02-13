@@ -38,15 +38,15 @@
                                 </form>
 
                                 <div class="mt-10">
-                                    <h3 class="text-gray-800 underline text-2xl">Příklady možných odkazů</h3>
+                                    <h3 class="text-gray-800 underline text-xl sm:text-2xl">Příklady možných odkazů</h3>
 
-                                    <div class="text-xl text-orange-700 font-black mt-10">1) https://www.strava.com/activities/123456789</div>
-                                    <p> Toto je odkaz, který zkopírujete z adresního řádku prohlížeče (Chrome,Firefox,Edge, atd.), bez ohledu na to, jestli jste v počítači/notebooku, nebo na mobilu/tabletu a na stránce, na které je běh, který chcete nahrát do výsledků VirtualRunu <br>
+                                    <div class="text-base sm:text-xl text-orange-700 font-black mt-5 sm:mt-10">1) https://www.strava.com/activities/12345678</div>
+                                    <p class="mt-2"> Toto je odkaz, který zkopírujete z adresního řádku prohlížeče (Chrome,Firefox,Edge, atd.), bez ohledu na to, jestli jste v počítači/notebooku, nebo na mobilu/tabletu a na stránce, na které je běh, který chcete nahrát do výsledků VirtualRunu <br>
                                     Číslo za posledním lomítkem "123456789" bude v reálu samozřejmě nahrazeno číslem vaší aktivity. </p>
                                     <div class="mt-2"><img class="img-fluid border" src="/strava-url-browser-example.png" /></div>
                                     <hr class="mt-10">
-                                    <div class="text-orange-700 text-xl font-black mt-10">2) https://strava.app.link/abc123</div>
-                                    <p>Narozdíl od prvního způsobu, kde se kopíruje odkaz z adesního řádku prohlížeče, tady se kopíruje z mobilní aplikace prostřednictvím sdílení do schránky, počemž pak vznikne odkaz ve tvaru uvedeném výše.<br>
+                                    <div class="text-orange-700 text-base sm:text-xl font-black mt-10">2) https://strava.app.link/abc123</div>
+                                    <p class="mt-2">Narozdíl od prvního způsobu, kde se kopíruje odkaz z adesního řádku prohlížeče, tady se kopíruje z mobilní aplikace prostřednictvím sdílení do schránky, počemž pak vznikne odkaz ve tvaru uvedeném výše.<br>
                                      Vzhledem ke skutečnosti, že vývoj aplikací nejen od Stravy je rychlý, může se způsob sdílení do schránky lišit v závislosti na verzi aplikace, operačního systému, atd.<br> Zde je ve 2 krocích uveden příklad pro Android, pro iOS se to může v nějakých detailech lišit.<br>
                                     Samozřejmě i zde budou znaky za posledním lomítkem "abc123" v reálu nahrazeny znaky vaší aktivity.</p>
                                     </p>
