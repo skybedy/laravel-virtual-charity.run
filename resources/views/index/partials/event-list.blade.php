@@ -11,7 +11,7 @@
                             @if($event->registration_status == 0)
                                 <a class="w-full inline-block text-center hover:bg-red-700 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2  mt-5 sm:mt-5" href="{{ route('registration.create',$event->id) }}">Zaregistrovat se</a>
                             @else
-                                <a class="w-full inline-block text-center hover:bg-red-700 hover:text-white rounded  bg-green-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-5" href="{{ route('event.upload.create',$event->id) }}">Nahrát běh</a>
+                                <a class="w-full inline-block text-center hover:bg-red-700 hover:text-white rounded  bg-green-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-5" href="{{ route('event.upload-url.create',$event->id) }}">Nahrát běh</a>
                             @endif
 
                             <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white rounded  bg-blue-400 text-white md:text-xl px-4 py-6 sm:py-2  mt-4 sm:mt-3" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>

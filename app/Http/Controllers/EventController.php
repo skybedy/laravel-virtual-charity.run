@@ -47,13 +47,19 @@ class EventController extends Controller
         ]);
     }
 
-    public function uploadCreate(Request $request, Event $event)
+    public function uploadUrlCreate(Request $request, Event $event)
     {
-        return view('events.results.upload-create', [
+        return view('events.results.upload-url-create', [
             'event' => $event::find($request->eventId),
         ]);
     }
 
+    public function uploadFileCreate(Request $request, Event $event)
+    {
+        return view('events.results.upload-file-create', [
+            'event' => $event::find($request->eventId),
+        ]);
+    }
 
 
 

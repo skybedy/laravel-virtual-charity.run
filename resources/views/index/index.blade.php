@@ -14,7 +14,7 @@
 
 
             <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-5">
-                <div class="w-full sm:rounded-xl text-white  text-5xl sm:text-4xl text-center font-black bg-gray-600 py-5 ">
+                <div class="w-full sm:rounded-xl text-white  text-5xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-5 ">
                     100% FREE
                 </div>
             </div>
