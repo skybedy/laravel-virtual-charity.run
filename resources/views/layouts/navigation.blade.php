@@ -1,5 +1,5 @@
 
-<nav x-data="{ open: false }" class="border-b-2 border-orange-400 bg-[#fefdf9] py-4">
+<nav x-data="{ open: false }" class="border-y-2 border-orange-400 bg-[#fefdf9] py-4">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto  sm:px-6 lg:px-8">
 

@@ -52,7 +52,7 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-slate-200">
+        <div class="min-h-screen sm:bg-slate-200">
             @include('layouts.navigation')
 
 
