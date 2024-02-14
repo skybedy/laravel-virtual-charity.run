@@ -9,7 +9,7 @@ return [
 
         'stream' => [
                     'url' => 'https://www.strava.com/api/v3/activities/',
-                    'params' => '/streams?keys=time,latlng,altitude&key_by_type=true',
+                    'params' => '/streams?keys=time,latlng,altitude,cadence&key_by_type=true',
                 ],
 
         'activity' => [

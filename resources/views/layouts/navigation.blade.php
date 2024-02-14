@@ -135,26 +135,18 @@
                         </div>
                 </div>
 
-
-
-
                 <!-- Navigation Links -->
                 <div class="hidden space-x-6 lg:space-x-8 sm:-my-px sm:ms-10 md:flex bg-red-70">
                     <x-nav-link :href="route('index')" :active="request()->routeIs('index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Hlavní strana') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('event.index')" :active="request()->routeIs('event.index')" class="text-lg lg:text-xl text-gray-600">
+                        {{ __('Závody') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('how_it_works.index')" :active="request()->routeIs('how_it_works.index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Jak na to') }}
                     </x-nav-link>
                 </div>
-
-
-
-
-
-
-
-
 
             <!-- Settings Dropdown -->
             <div class="hidden md:flex sm:items-center sm:ms-6">

@@ -41,6 +41,7 @@ class Result extends Model
         r.category_id,
         u.lastname,
         u.firstname,
+        u.team,
         c.name AS category_name,
         counts.count
     FROM results r1

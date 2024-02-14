@@ -111,7 +111,7 @@ class ResultService
                 $response['user_id'] = $userId;
             }
         }
-        
+
         return $response;
     }
 
@@ -136,6 +136,8 @@ class ResultService
 
         $xmlObject = simplexml_load_string(trim($file->get()));
         //datum a cas zacatku aktivity z metadat
+        //ziskani vsech namespace
+        $namespaces = $xmlObject->getNamespaces(true);
         $activityDateTime = $xmlObject->metadata->time;
         // pokud není, tak to je spatne a takovy soubor neni mozne prijmout
         if ($activityDateTime == null)
@@ -181,12 +183,26 @@ class ResultService
             $currentPointLat = floatval($point['lat']);
 
             $currentPointLon = floatval($point['lon']);
+
+            if(isset($namespaces['ns3']))
+            {
+                $cad = (string) $point->extensions->children($namespaces['ns3'])->TrackPointExtension->cad;
+            }
+            elseif(isset($namespaces['gpxtpx']))
+            {
+                $cad = (string) $point->extensions->children($namespaces['gpxtpx'])->TrackPointExtension->cad;
+            }
+            else
+            {
+                $cad = null;
+            }
             //pridavani prvku do pole TrackPointArray
             $trackPointArray[] = [
                 'latitude' => $currentPointLat,
                 'longitude' => $currentPointLon,
                 'time' => $time,
                 'user_id' => $userId,
+                'cadence' => (string) $cad,
             ];
             //pokud je to prvni, nebo prazdny bod, tak se nic nepocita
 
@@ -355,7 +371,8 @@ class ResultService
                     'latlng' => $val,
                     'time' => $activityData['time']['data'][$key] + $startDayTimestamp,
                     'distance' => $activityData['distance']['data'][$key],
-                    'altitude' => $activityData['altitude']['data'][$key]
+                    'altitude' => $activityData['altitude']['data'][$key],
+                    'cadence' => $activityData['cadence']['data'][$key],
                 ];
 
         }
@@ -388,6 +405,7 @@ class ResultService
                 'longitude' => $currentPointLon,
                 'time' => $point['time'],
                 'user_id' => $userId,
+                'cadence' => $point['cadence'],
             ];
 
 
@@ -437,7 +455,8 @@ class ResultService
                     'latlng' => $val,
                     'time' => $activityData['time']['data'][$key] + $startDayTimestamp,
                     'distance' => $activityData['distance']['data'][$key],
-                    'altitude' => $activityData['altitude']['data'][$key]
+                    'altitude' => $activityData['altitude']['data'][$key],
+                    'cadence' => $activityData['cadence']['data'][$key]
                 ];
         }
         //výpočet celkové vzdálenosti aktivity
@@ -473,6 +492,8 @@ class ResultService
                         'time' => $activityData['time'],
                         'altitude' => $activityData['altitude'],
                         'user_id' => $userId,
+                        'cadence' => $activityData['cadence'],
+
                     ];
                     //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
                     if($activityData['distance'] >= $event['distance'])
@@ -770,7 +791,7 @@ class ResultService
 
         $client = new Client([
             'handler' => $stack,
-            
+
             'headers' => [
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
             ]
