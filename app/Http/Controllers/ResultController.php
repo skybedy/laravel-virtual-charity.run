@@ -17,6 +17,20 @@ class ResultController extends Controller
         return view('result.index');
     }
 
+    public function manage(Request $request,Result $result)
+    {
+        return view('result.manage', [
+            'results' => $result->getAllUserResults($request->user()->id)
+        ]);
+    }
+
+
+
+
+
+
+
+
     public function resultUser(Request $request, Result $result)
     {
         return response()->json($result->resultsIndividual($request->registrationId));

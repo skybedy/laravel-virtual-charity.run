@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/event/{eventId}/upload-url', [EventController::class, 'uploadStoreFromUrl'])->name('event.upload.store.url');
     Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
     Route::get('/authorize-strava', [StravaController::class, 'authorizeStrava'])->name('authorize_strava');
+    Route::get('/result/manage', [ResultController::class, 'manage'])->name('result.manage');
 });
 
 Route::get('/event', [EventController::class, 'index'])->name('event.index');

@@ -87,6 +87,32 @@ class Result extends Model
     }
 
 
+    public function getAllUserResults($userId)
+    {
+
+        $events = DB::table('events')->select('id','name')->get()->toArray();
+
+        foreach($events as $event){
+            $event->results = self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace','registrations.event_id')
+                ->where('registrations.user_id', $userId)
+                ->where('registrations.event_id', $event->id)
+                ->join('registrations', 'results.registration_id', '=', 'registrations.id')
+                ->join('events', 'registrations.event_id', '=', 'events.id')
+                ->join('categories', 'registrations.category_id', '=', 'categories.id')
+                ->orderBy('results.finish_time_date', 'ASC')
+                ->get()->toArray();
+        }
+
+
+return $events;
+
+
+
+
+
+    }
+
+
 
 
 }
