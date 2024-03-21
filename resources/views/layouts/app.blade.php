@@ -18,51 +18,19 @@
         <script type="text/javascript">Loader.load();</script>
 
         <style>
-            #m img {
-                max-width: none;
+            body{
+       background-image: url('bg_virtual_run.png');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
             }
-
-            input[type=file] {
-  widh: 100%;
-  mx-width: 100%;
-  color: #444;
-  padding: 5px;
-  background: #fff;
-  border-radius: 6px;
-  bordr: 1px solid blue;
-}
-
-input[type=file]::file-selector-button {
-  margin-right: 20px;
-  border: none;
-  background: #084cdf;
-  padding: 4px 20px;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  transition: background .2s ease-in-out;
-}
-
-input[type=file]::file-selector-button:hover {
-  background: #0d45a5;
-}
         </style>
 
 
 
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen sm:bg-slate-200">
-            @include('layouts.navigation')
+    <body>
 
-
-            <!-- Page Content -->
-            <main>
-                <div class="bg-blue-400 text-white font-black py-2 text-center border-y  border-blue-500 mt-2 shadow-lg">Aplikace je zatím v testovacím režimu.</div>
-
-                {{ $slot }}
-            </main>
-        </div>
 
     </body>
 </html>
