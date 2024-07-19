@@ -316,6 +316,6 @@ class StravaController extends Controller
 
     public function authorizeStrava(Request $request)
     {
-        return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-run.cz/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read_all');
+        return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-charity.run/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read_all');
     }
 }

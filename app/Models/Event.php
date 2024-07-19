@@ -28,6 +28,7 @@ class Event extends Model
                     ->where('registrations.user_id', '=', $userId);
             })
             ->selectRaw('CASE WHEN registrations.user_id IS NULL THEN null ELSE 1 END as registration_status')
+            ->orderBy('events.id', 'asc')
             ->get();
     }
 
