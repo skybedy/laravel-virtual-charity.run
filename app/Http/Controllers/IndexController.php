@@ -21,15 +21,15 @@ class IndexController extends Controller
     public function index(Request $request, Event $event)
     {
 
- 
+
         if ($request->user() == null) {
             return view('index.index', [
                 'events' => $event::where('platform_id', env('PLATFORM',2))->get(),
             ]);
         } else {
             return view('index/index', [
-                //'events' => $event->eventList($request->user()->id),
-                'events' => $event::where('platform_id', 2)->get(),
+                'events' => $event->eventList($request->user()->id),
+                //'events' => $event::where('platform_id', 2)->get(),
             ]);
         }
 
