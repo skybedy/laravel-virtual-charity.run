@@ -40,8 +40,8 @@ return [
     'google' => [
         'client_id' => '81604204242-69c7g24se3ogved24mm0btqi62s8sl9a.apps.googleusercontent.com',
         'client_secret' => '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',
-        //'redirect' => 'http://localhost:81/auth/google/callback',
-        'redirect' => 'https://virtual-run.cz/auth/google/callback',
+        'redirect' => 'http://localhost:8000/auth/google/callback',
+      //  'redirect' => 'https://virtual-run.cz/auth/google/callback',
     ],
 
 ];

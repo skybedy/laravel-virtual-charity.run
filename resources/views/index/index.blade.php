@@ -15,7 +15,7 @@
 
             <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-1 sm:mt-5">
                 <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-2 sm:py-5 ">
-                    100% FREE
+                    ROUND 1, 1 - 31.8.23
                 </div>
             </div>
 
