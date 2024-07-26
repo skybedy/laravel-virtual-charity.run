@@ -13,15 +13,17 @@
             @endif
 
 
-            <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-1 sm:mt-5">
-                <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-2 sm:py-5 ">
-                    ROUND 1
-                </div>
-            </div>
+
 
 
 
             @include('index.partials.event-list')
+
+            <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:p-4 mt-1 sm:mt-5">
+                <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-2 sm:py-5 ">
+                    Startovné pro všechny 3 závody je 110 Kč a celé jde na účet charitativní organizace Z nesnáze 21
+                </div>
+            </div>
 
                 <ol class="text-4xl font-bold list-decimal list-inside mt-4">
 

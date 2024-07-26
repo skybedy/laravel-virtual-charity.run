@@ -58,7 +58,22 @@ input[type=file]::file-selector-button:hover {
 
             <!-- Page Content -->
             <main>
-                <div class="bg-blue-400 text-white font-black py-2 text-center border-y  border-blue-500 mt-2 shadow-lg">Aplikace je zatím v testovacím režimu.</div>
+                    @if (session('success'))
+                        <x-flash-message type="success" :message="session('success')" />
+                    @endif
+
+                    @if (session('error'))
+                        <x-flash-message type="error" :message="session('error')" />
+                    @endif
+
+                    @if (session('warning'))
+                        <x-flash-message type="warning" :message="session('warning')" />
+                    @endif
+
+                    @if (session('info'))
+                        <x-flash-message type="info" :message="session('info')" />
+                    @endif
+
 
                 {{ $slot }}
             </main>

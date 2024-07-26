@@ -1,7 +1,12 @@
 
             <div class=" sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-4">
-
                 <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:px-4 mt-1 sm:mt-5">
+                    <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-2 sm:py-5 ">
+                        ROUND 1
+                    </div>
+                </div>
+
+                <div class="bg-gray-100 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl sm:px-4 mt-1 sm:mt-3">
                     <div class="w-full sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-red-500 sm:bg-gray-600 py-2 sm:py-5 ">
                         1 - 31. 8. 2024
                     </div>

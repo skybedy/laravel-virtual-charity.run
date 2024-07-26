@@ -34,9 +34,9 @@ class RegistrationController extends Controller
                 'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
             ]);
 
-            session()->flash('status', 'Byli jste úspěšně zaregistrováni');
+            session()->flash('success', 'Byli jste úspěšně zaregistrováni');
         } else {
-            session()->flash('status', 'Na tento závod už jsme vás zaregistrovali');
+            session()->flash('info', 'Na tento závod už jsme vás zaregistrovali');
         }
 
         return redirect()->back();
