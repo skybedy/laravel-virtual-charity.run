@@ -15,6 +15,47 @@
 
 
 
+            <div class=" sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-4">
+                <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
+
+                    <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center bg-black">
+                        <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  sm:rounded-2xl  text-white text-center font-black bg-gray-600 mt-10 sm:mt-0 px-3 pt-4  sm:py-5 md:pt-0 pb-3 lg:pb-0">
+                            <div class="text-4xl sm:text-[3.4rem] md:text-3xl sm:mt-7 xl:mt-3 mx-3 lg:mx-7 mb-1">Startovné 111 Kč</div>
+                        </div>
+                    </div>
+
+                    <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
+                        <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  lg:h-96 xl:h-96 sm:rounded-2xl  text-white text-center font-black bg-gray-600 mt-10 sm:mt-0 px-3 pt-4  sm:py-5 md:pt-0 pb-3 lg:pb-0">
+                            <div class="text-4xl sm:text-[3.4rem] md:text-7xl lg:text-8xl xl:text-9xl  sm:mt-7 xl:mt-3 border-b border-white mx-3 lg:mx-7 mb-1">bla</div>
+                        </div>
+                    </div>
+
+                    <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
+                        <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  lg:h-96 xl:h-96 sm:rounded-2xl  text-white text-center font-black bg-gray-600 mt-10 sm:mt-0 px-3 pt-4  sm:py-5 md:pt-0 pb-3 lg:pb-0">
+                            <div class="text-4xl sm:text-[3.4rem] md:text-7xl lg:text-8xl xl:text-9xl  sm:mt-7 xl:mt-3 border-b border-white mx-3 lg:mx-7 mb-1">bla</div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             @include('index.partials.event-list')
