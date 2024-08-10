@@ -24,10 +24,13 @@ class RegistrationController extends Controller
     public function create(Request $request, Category $category, Registration $registration)
     {
 
+
         $eventId = $request->eventId;
         $userId = $request->user()->id;
+        $serieId = 2;
 
-        if (! $registration->registrationExists($eventId, $userId)) {
+        if (! $registration->registrationExists($eventId, $userId,$serieId)) {
+            dd('neni');
             $registration->create([
                 'event_id' => $eventId,
                 'user_id' => $userId,

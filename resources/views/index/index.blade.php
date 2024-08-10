@@ -30,7 +30,7 @@
             </div>
             <div class=" sm:bg-white shadow-sm sm:rounded-2xl mt-4 p-4">
                 <div class="sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-gray-600 py-2 sm:py-5">
-                        1. KOLO = 1 - 31. 8. 2024
+                        1. KOLO ~ 1 - 31. 8. 2024
                 </div>
             </div>
 
