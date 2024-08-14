@@ -26,23 +26,41 @@ class RegistrationController extends Controller
 
 
         $eventId = $request->eventId;
+
         $userId = $request->user()->id;
+
         $serieId = 2;
 
-        if (! $registration->registrationExists($eventId, $userId,$serieId)) {
-            dd('neni');
-            $registration->create([
-                'event_id' => $eventId,
-                'user_id' => $userId,
-                'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-            ]);
+        $registrationSerieExists = $registration->registrationExists($userId, $serieId);
 
-            session()->flash('success', 'Byli jste úspěšně zaregistrováni');
-        } else {
-            session()->flash('info', 'Na tento závod už jsme vás zaregistrovali');
+      //  dd($registrationSerieExists);
+
+        if ($registrationSerieExists->isEmpty()) {
+
+            dd('budete muset zaplatit');
         }
+        else
+        {
 
-        return redirect()->back();
+            $registrationEventExists = $registrationSerieExists->firstWhere('event_id', $eventId);
+
+            if($registrationEventExists)
+            {
+                session()->flash('info', 'Na tento závod už jsme vás zaregistrovali');
+            }
+            else
+            {
+                $registration->create([
+                    'event_id' => $eventId,
+                    'user_id' => $userId,
+                    'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
+                ]);
+
+                session()->flash('success', 'Byli jste úspěšně zaregistrováni');
+            }
+
+            return redirect()->back();
+        }
 
     }
 }
