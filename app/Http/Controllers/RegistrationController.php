@@ -37,7 +37,9 @@ class RegistrationController extends Controller
 
         if ($registrationSerieExists->isEmpty()) {
 
-            dd('budete muset zaplatit');
+            return view('registrations.payment', [
+                //'events' => $event->eventList($request->user()->id),
+            ]);
         }
         else
         {
