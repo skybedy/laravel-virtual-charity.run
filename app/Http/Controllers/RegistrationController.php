@@ -5,11 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Registration;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
+use Stripe\StripeClient;
 use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class RegistrationController extends Controller
 {
+
+
+    protected $stripe;
+
+    public function __construct(StripeClient $stripe)
+    {
+        $this->stripe = $stripe;
+    }
+
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -68,13 +81,13 @@ class RegistrationController extends Controller
 
     }
 
-    public function checkoutx()
+    public function checkoutx(StripeClient $stripe)
     {
 
 
-        $stripe = new \Stripe\StripeClient("sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8");
 
-       Stripe::setApiKey('sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8');
+
+
 
 
         header('Content-Type: application/json');
@@ -108,23 +121,29 @@ header("Location:  {$checkout_session->url}");
 
 public function checkout()
 {
-    // Nastavení Stripe tajného klíče
-    Stripe::setApiKey('sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8');
+
+   // $stripe = new \Stripe\StripeClient("sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8");
+
+
 
     // Definujte svou doménu
     $YOUR_DOMAIN = env('APP_URL'); // nebo 'http://localhost:8000'
 
     // Vytvoření Stripe Checkout Session
-    $checkout_session = Session::create([
+    $checkout_session = $this->stripe->checkout->sessions->create([
         'line_items' => [[
-            'price' => 'price_1PrcVW2LSxhftJEaFkT5JRFh', // Nahraďte svým Price ID
+            'price' => 'price_1Ps2b62LSxhftJEaYiBynuav', // Nahraďte svým Price ID
             'quantity' => 1,
         ]],
+        'payment_method_types' => ['card'],
         'mode' => 'payment',
         'success_url' => route('payment.success'),
         'cancel_url' => route('payment.cancel'),
         'automatic_tax' => [
             'enabled' => true,
+        ],
+        'payment_intent_data' => [
+            'transfer_data' => ['destination' => 'acct_1PVCy52Nh58389XO'],
         ],
     ]);
 
@@ -150,21 +169,6 @@ public function checkout()
 
 
 
-        /*
-        $product = $stripe->products->create([
-            'name' => 'Starter Subscription',
-            'description' => '$12/Month subscription',
-          ]);
-          dump("Success! Here is your starter subscription product id: {$product->id}");
-
-          $price = $stripe->prices->create([
-            'unit_amount' => 1200,
-            'currency' => 'usd',
-            'recurring' => ['interval' => 'month'],
-            'product' => $product['id'],
-          ]);
-         dd("Success! Here is your starter subscription price id: {$price->id}");*/
-
 
     }
 
@@ -177,4 +181,45 @@ public function checkout()
     {
 dd('cancel');
     }
+
+
+
+
+
+
+    public function checkoutxxxx()
+    {
+
+
+            $product = $this->stripe->products->create([
+                'name' => 'Startovne Virtual Charity Run',
+                'description' => 'Startovne',
+              ]);
+              dump("Super, startovne ID =  {$product->id}");
+
+              $price = $this->stripe->prices->create([
+                'unit_amount' => 111,
+                'currency' => 'czk',
+                'recurring' => ['interval' => 'month'],
+                'product' => $product['id'],
+              ]);
+             dd("ID platby je {$price->id}");
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
