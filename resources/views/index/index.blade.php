@@ -20,7 +20,7 @@
                         Startovné na všechny 3 závody 111 Kč
                     </div>
                     <div class="bg-gray-600 rounded-xl py-5">
-                        Přímá platba fundrasingové platformě Znesnáze21
+                        Přímá platba dárcovské platformě Znesnáze
                     </div>
                 </div>
 

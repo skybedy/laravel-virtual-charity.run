@@ -16,6 +16,7 @@
 
         <script src="https://api.mapy.cz/loader.js"></script>
         <script type="text/javascript">Loader.load();</script>
+        <script src="https://js.stripe.com/v3/"></script>
 
         <style>
             #m img {
@@ -52,7 +53,7 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen sm:bg-slate-200">
+        <div class="min-h-screen sm:bg-blue-50">
             @include('layouts.navigation')
 
 
