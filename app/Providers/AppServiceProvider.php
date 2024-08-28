@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         });*/
 
         $this->app->singleton(StripeClient::class, function ($app) {
-            return new StripeClient('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');
+            return new StripeClient('sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8');
         });
 
 

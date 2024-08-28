@@ -132,7 +132,7 @@ public function checkout()
     // Vytvoření Stripe Checkout Session
     $checkout_session = $this->stripe->checkout->sessions->create([
         'line_items' => [[
-            'price' => 'price_1Ps2b62LSxhftJEaYiBynuav', // Nahraďte svým Price ID
+            'price' => 'price_1Ps1uS2LSxhftJEav9dO6DNQ', // Nahraďte svým Price ID
             'quantity' => 1,
         ]],
         'payment_method_types' => ['card'],
@@ -143,7 +143,7 @@ public function checkout()
             'enabled' => true,
         ],
         'payment_intent_data' => [
-            'transfer_data' => ['destination' => 'acct_1PVCy52Nh58389XO'],
+            'transfer_data' => ['destination' => 'acct_1PsJsP09SrMQLpVO'],
         ],
     ]);
 

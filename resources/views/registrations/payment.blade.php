@@ -4,7 +4,13 @@
             <div class="bg-white overflow-hidden sm:rounded-lg boder p-6 boder-blue-300 shadow-lg">
                 <x-h2 style="style-1">STARTOVNÉ</x-h2>
                 <x-p style="style-1">
-                    <img src="/gpay-icon.png" class="float-left mr-5 mb-1 w-[16%]" />
+
+
+                    <img src="/master.jpg" class="float-left mr-5 mb-1 w-[16%]" />
+
+
+
+
                     Pokud jste se ocitli na této stránce, znamená to, že jste stiskli tlačítko "Registrovat" a ještě nemáte zaplaceno startovné.<br>
                     Startovné je 111 Kč a kromě poplatků poskytovateli platební brány <a target="_blank" class="underline" href="https://stripe.com">Stripe</a> jde celé na účet dárcovské platformy <a class="underline" target="_blank" href="https://www.znesnaze21.cz">Znesnáze</a>.<br>
                     Zaplacením startovného na jeden závod vám automaticky vzniká právo registrovat se na zbývající závody v rámci jednoho kola, bez dalšího placení.
