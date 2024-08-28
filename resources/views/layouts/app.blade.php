@@ -11,6 +11,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -19,6 +20,8 @@
         <script src="https://js.stripe.com/v3/"></script>
 
         <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
             #m img {
                 max-width: none;
             }
@@ -47,6 +50,15 @@ input[type=file]::file-selector-button {
 input[type=file]::file-selector-button:hover {
   background: #0d45a5;
 }
+
+.indie-flower-regular {
+  font-family: "Indie Flower", cursive;
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+
         </style>
 
 
