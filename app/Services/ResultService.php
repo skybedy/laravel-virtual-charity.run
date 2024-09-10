@@ -1048,9 +1048,10 @@ class ResultService
 
             $result->finish_time = $finishTime['finish_time'];
 
-            $result->pace = $finishTime['pace'];
+            $result->pace_km = $finishTime['pace'];
 
             $result->finish_time_sec = $finishTime['finish_time_sec'];
+
 
             DB::beginTransaction();
 
@@ -1060,10 +1061,12 @@ class ResultService
             }
             catch(QueryException $e)
             {
+
                 return [
                     'error' => 'ERROR_DB',
 
                     'error_message' => $e->getMessage(),
+
                 ];
             }
 
@@ -1073,6 +1076,7 @@ class ResultService
             }
 
             $trackPoint = new TrackPoint();
+
 
             try{
                 $trackPoint::insert($finishTime['track_points']);
@@ -1084,6 +1088,7 @@ class ResultService
                 if($e->errorInfo[1] == 1062)
                 {
                     DB::rollback();
+
                     throw new DuplicityTimeException();
                 }
             }
@@ -1093,6 +1098,7 @@ class ResultService
             ->get();
 
             $lastId = $result->id;
+
             foreach($r as $key => $value)
             {
                 if($value->id == $lastId)
@@ -1106,7 +1112,7 @@ class ResultService
             $event = new Event();
 
             return [
-                'results' =>  Result::selectRaw('id,DATE_FORMAT(finish_time_date,"%e.%c") AS date,finish_time')
+                'results' =>  Result::selectRaw('id,DATE_FORMAT(finish_time_date,"%e.%c") AS date,finish_time,pace_km')
                 ->where('registration_id', $registrationId)
                 ->orderBy('finish_time', 'asc')
                 ->get(),

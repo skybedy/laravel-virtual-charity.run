@@ -36,7 +36,7 @@ class Result extends Model
         SUBSTRING(r1.finish_time,2) AS best_finish_time,
         r1.finish_time_sec as best_finish_time_sec,
         DATE_FORMAT(r1.finish_time_date,'%e.%c.') AS date,
-        r1.pace,
+        r1.pace_km AS pace,
         r1.id,
         r.category_id,
         u.lastname,
@@ -72,7 +72,7 @@ class Result extends Model
 
     public function resultsIndividual($registrationId)
     {
-        return self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+        return self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace_km AS pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
             ->where('registration_id', $registrationId)
             ->orderBy('finish_time','ASC')
             ->skip(1)
@@ -93,7 +93,7 @@ class Result extends Model
         $events = DB::table('events')->select('id','name')->get()->toArray();
 
         foreach($events as $event){
-            $event->results = self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace','registrations.event_id')
+            $event->results = self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace_km','registrations.event_id')
                 ->where('registrations.user_id', $userId)
                 ->where('registrations.event_id', $event->id)
                 ->join('registrations', 'results.registration_id', '=', 'registrations.id')

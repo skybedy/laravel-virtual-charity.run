@@ -59,6 +59,8 @@ class User extends Authenticatable
     {
         $user = User::find($userId);
 
+        dd($stravaToken);
+
         $user->strava_access_token = $stravaToken['access_token'];
 
         $user->strava_refresh_token = $stravaToken['refresh_token'];
