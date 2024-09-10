@@ -41,6 +41,7 @@ class RegistrationController extends Controller
 
 
         $eventId = $request->eventId;
+       // dd($eventId);
 
         $userId = $request->user()->id;
 
@@ -48,12 +49,11 @@ class RegistrationController extends Controller
 
         $registrationSerieExists = $registration->registrationExists($userId, $serieId);
 
-      //  dd($registrationSerieExists);
 
         if ($registrationSerieExists->isEmpty()) {
 
             return view('registrations.payment', [
-                //'events' => $event->eventList($request->user()->id),
+                'eventId' => $eventId,
             ]);
         }
         else
@@ -63,23 +63,32 @@ class RegistrationController extends Controller
 
             if($registrationEventExists)
             {
-                session()->flash('info', 'Na tento závod už jsme vás zaregistrovali');
+                session()->flash('info', 'Na tento závod už je registrace provedená');
             }
             else
             {
-                $registration->create([
-                    'event_id' => $eventId,
-                    'user_id' => $userId,
-                    'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-                ]);
-
-                session()->flash('success', 'Byli jste úspěšně zaregistrováni');
+                $this->store($request,$registration,$category);
             }
 
             return redirect()->back();
         }
 
     }
+
+    public function store(Request $request,Registration $registration, Category $category)
+    {
+        $registration->create([
+            'event_id' => $request->eventId,
+            'user_id' =>  $userId = $request->user()->id,
+            'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
+        ]);
+
+        session()->flash('success', 'Byli jste úspěšně zaregistrováni');
+
+        return redirect()->route('index');
+    }
+
+
 
     public function checkoutx(StripeClient $stripe)
     {
@@ -119,12 +128,12 @@ header("Location:  {$checkout_session->url}");
 
 
 
-public function checkout()
+public function checkout(Request $request)
 {
 
    // $stripe = new \Stripe\StripeClient("sk_test_51PVCa82LSxhftJEam6p0Npc4iMggfZdpR6aeVDjmncI9nKQPxocVn2Am2F9uoXF2Q7cy4lr8DbQF6cUpO2Gkp8Qd00Yu5e5aN8");
 
-
+    $event_id = $request->eventId;
 
     // Definujte svou doménu
     $YOUR_DOMAIN = env('APP_URL'); // nebo 'http://localhost:8000'
@@ -137,7 +146,7 @@ public function checkout()
         ]],
         'payment_method_types' => ['card'],
         'mode' => 'payment',
-        'success_url' => route('payment.success'),
+        'success_url' => route('payment.success',$event_id),
         'cancel_url' => route('payment.cancel'),
         'automatic_tax' => [
             'enabled' => true,

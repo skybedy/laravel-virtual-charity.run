@@ -59,9 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/registration/create/checkout', [RegistrationController::class, 'checkout'])->name('registration.checkout');
+    Route::get('/registration/create/checkout/{eventId}', [RegistrationController::class, 'checkout'])->name('registration.checkout');
     Route::get('/registration/create/{eventId}', [RegistrationController::class, 'create'])->name('registration.create');
-    Route::get('/registration/create/checkout/success', [RegistrationController::class, 'success'])->name('payment.success');
+    Route::get('/registration/create/checkout/success/{eventId}', [RegistrationController::class, 'store'])->name('payment.success');
     Route::get('/registration/create/checkout/cancel', [RegistrationController::class, 'cancel'])->name('payment.cancel');
 
 
