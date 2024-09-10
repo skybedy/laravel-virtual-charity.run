@@ -47,7 +47,7 @@ class RegistrationController extends Controller
 
         $serieId = 2;
 
-        $registrationSerieExists = $registration->registrationExists($userId, $serieId);
+        $registrationSerieExists = $registration->registrationExists($userId, $eventId, $serieId);
 
 
         if ($registrationSerieExists->isEmpty()) {

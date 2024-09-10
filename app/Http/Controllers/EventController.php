@@ -75,9 +75,9 @@ class EventController extends Controller
             ]
         );
 
-        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
+        if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
         {
-            $registrationId = $registration->registrationExists($request->eventId, $request->user()->id)->id;
+            $registrationId = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
         }
         else
         {
@@ -230,9 +230,9 @@ class EventController extends Controller
                 'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
             ]);
         // kontrola, zda uzivatel je registrovan na zavod
-        if (isset($registration->registrationExists($request->eventId, $request->user()->id)->id))
+        if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
         {
-            $registration_id = $registration->registrationExists($request->eventId, $request->user()->id)->id;
+            $registration_id = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
         }
         else
         {

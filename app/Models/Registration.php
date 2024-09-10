@@ -14,15 +14,22 @@ class Registration extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function registrationExists($userId, $serieId)
+    public function registrationExists($userId, $eventId, $serieId)
     {
-       // dd(self::where(['user_id' => $userId])->first('id'));
+       if(is_null($serieId))
+        {
+            $return =  self::where(['user_id' => $userId,'event_id' => $eventId])->first('id');
+        }
+        else
+        {
+            $return = self::join('events as e', 'e.id', '=', 'registrations.event_id')
+                ->where('e.serie_id', $serieId)
+                ->where('registrations.user_id', $userId)
+                ->select('registrations.event_id')
+                ->get();
+        }
 
-       return(self::join('events as e', 'e.id', '=', 'registrations.event_id')
-            ->where('e.serie_id', $serieId)
-            ->where('registrations.user_id', $userId)
-            ->select('registrations.event_id')
-            ->get());
+        return $return;
 
     }
 }
