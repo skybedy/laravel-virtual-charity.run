@@ -13,37 +13,48 @@
                     @endif
 
                     <div class="overflow-auto">
-                        <table id="result_table" class="hidden md:table table-auto border-collapse w-full mt-5">
+
+                        @php
+                             $current_race = null;
+                        @endphp
+
+                        @if ($results->count() > 0)
+                            <table id="result_table" class="hidden md:table table-auto border-collapse w-full mt-5">
+
+                                @foreach ($results as $result)
+                                    @if($current_race != $result->race_name)
+                                        <tr class="text-center">
+                                            <td class="border-none" colspan="4">
+                                                <h2 class="text-2xl font-bold">{{ $result->race_name }}</h2>
+                                            </td>
+                                        </tr>
+                                        <tr class="text-center">
+                                            <th class="border-none">Datum</th>
+                                            <th class="border-none px-2">Čas</th>
+                                            <th class="border-none px-2">Tempo</th>
+                                            <th class="border-none px-2"></th>
+                                        </tr>
+
+                                        @endif
 
 
-                        @foreach ($results as $result)
-                            @if (count($result->results) > 0)
-                                <tr><td class="text-center text-red-600 underline py-3 text-5xl">{{ $result->name }}</td><td colspan="3"></td></tr>
-                                <tr class="text-center">
-                                    <th class="border-none">Datum</th>
-                                    <th class="border-none px-2">Čas</th>
-                                    <th class="border-none px-2">Tempo</th>
-                                    <th class="border-none px-2"></th>
 
-                                </tr>
-
-                                @foreach ($result->results as $result)
-                                    <tr class="text-center odd:bg-gray-100 even:bg-white">
-                                        <td class="border">{{ $carbon::parse($result['finish_time_date'])->format('j.n.') }}</td>
-                                        <td class="border">{{ $result['finish_time'] }}</td>
-                                        <td class="border">{{ $result['pace_km'] }}</td>
+                                    <tr class="text-center odd:bg-gra-100 even:bg-whit">
+                                        <td class="border">{{ $carbon::parse($result->finish_time_date)->format('j.n.') }}</td>
+                                        <td class="border">{{ $result->finish_time }}</td>
+                                        <td class="border">{{ $result->pace_km }}</td>
                                         <td class="border py-1">
-                                            <a class="text-red-600" href="{{ route('result.delete',['resultId' => $result['id']]) }}">Smazat výsledek</a>
+                                            <a class="text-red-600" href="{{ route('result.delete',['resultId' => $result->id]) }}">Smazat výsledek</a>
                                         </td>
                                     </tr>
-
+                                    @php
+                                        $current_race = $result->race_name;
+                                    @endphp
                                 @endforeach
-                            @endif
+                            </table>
+                        @endif
 
 
-                        @endforeach
-
-                        </table>
 
 
 

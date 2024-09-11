@@ -90,22 +90,37 @@ class Result extends Model
     public function getAllUserResults($userId)
     {
 
-        $events = DB::table('events')->select('id','name')->get()->toArray();
+     //   $events = Event::select('id', 'name')->where('platform_id' , env('PLATFORM'))->orderBy('id','ASC')->get();
 
-        foreach($events as $event){
-            $event->results = self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace_km','registrations.event_id')
+      //  dd($events);
+
+      /*
+      foreach($events as $event){
+
+            return self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace_km','registrations.event_id')
                 ->where('registrations.user_id', $userId)
                 ->where('registrations.event_id', $event->id)
-
                 ->join('registrations', 'results.registration_id', '=', 'registrations.id')
                 ->join('events', 'registrations.event_id', '=', 'events.id')
                 ->join('categories', 'registrations.category_id', '=', 'categories.id')
                 ->orderBy('results.finish_time_date', 'ASC')
-                ->get()->toArray();
-        }
+                ->get();
+        }*/
+
+        return  DB::table('results as r')
+        ->join('registrations as r2', 'r.registration_id', '=', 'r2.id')
+        ->join('events as e', 'e.id', '=', 'r2.event_id')
+        ->join('users as u', 'u.id', '=', 'r2.user_id')
+        ->where('e.platform_id', env('PLATFORM'))
+        ->where('u.id', $userId)
+        ->orderBy('e.id','ASC')
+        ->orderBy('r.finish_time_sec', 'ASC')
+        ->select('r.*', 'e.name as race_name')
+        ->get();
 
 
-return $events;
+
+
 
 
 

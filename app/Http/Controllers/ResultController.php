@@ -19,6 +19,8 @@ class ResultController extends Controller
 
     public function manage(Request $request,Result $result)
     {
+
+       // dd($result->getAllUserResults($request->user()->id));
         return view('result.manage', [
             'results' => $result->getAllUserResults($request->user()->id)
         ]);
