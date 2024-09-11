@@ -31,12 +31,9 @@
                                     <tr class="text-center odd:bg-gray-100 even:bg-white">
                                         <td class="border">{{ $carbon::parse($result['finish_time_date'])->format('j.n.') }}</td>
                                         <td class="border">{{ $result['finish_time'] }}</td>
-                                        <td class="border">{{ $result['pace'] }}</td>
+                                        <td class="border">{{ $result['pace_km'] }}</td>
                                         <td class="border py-1">
-                                            <form>
-                                                <input type="hidden" name="result_id" value="{{ $result['id'] }}">
-                                                <input type="submit" class="px-3 bg-red-500 border-2 border-red-600  text-white rounded cursor-pointer" value="Smazat">
-                                            </form>
+                                            <a class="text-red-600" href="{{ route('result.delete',['resultId' => $result['id']]) }}">Smazat výsledek</a>
                                         </td>
                                     </tr>
 

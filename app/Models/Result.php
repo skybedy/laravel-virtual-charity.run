@@ -96,6 +96,7 @@ class Result extends Model
             $event->results = self::select('results.id', 'results.finish_time', 'results.finish_time_date', 'results.pace_km','registrations.event_id')
                 ->where('registrations.user_id', $userId)
                 ->where('registrations.event_id', $event->id)
+
                 ->join('registrations', 'results.registration_id', '=', 'registrations.id')
                 ->join('events', 'registrations.event_id', '=', 'events.id')
                 ->join('categories', 'registrations.category_id', '=', 'categories.id')

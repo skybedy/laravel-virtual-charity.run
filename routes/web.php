@@ -29,7 +29,7 @@ Route::post('/webhook', [StravaController::class, 'webhookPostStrava'])->name('p
 Route::get('/webhook/autoupload', [StravaController::class, 'autouploadStrava'])->name('autoupload_strava');
 
 Route::get('/registration/{eventId}', [RegistrationController::class, 'index'])->name('registration.index');
-Route::get('/result/{eventId}', [ResultController::class, 'index'])->name('result.index');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/event/{eventId}/upload-url', [EventController::class, 'uploadUrlCreate'])->name('event.upload-url.create');
@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/authorize-strava', [StravaController::class, 'authorizeStrava'])->name('authorize_strava');
     Route::get('/result/manage', [ResultController::class, 'manage'])->name('result.manage');
 });
+
+Route::get('/result/{eventId}', [ResultController::class, 'index'])->name('result.index');
+Route::get('/result/{resultId}/delete', [ResultController::class, 'delete'])->name('result.delete');
 
 Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{eventId}', [EventController::class, 'show'])->name('event.show');
