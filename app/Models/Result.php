@@ -90,7 +90,7 @@ class Result extends Model
     public function getAllUserResults($userId)
     {
 
-     //   $events = Event::select('id', 'name')->where('platform_id' , env('PLATFORM'))->orderBy('id','ASC')->get();
+     //   $events = Event::select('id', 'name')->where('platform_id' , env('PLATFORM_ID'))->orderBy('id','ASC')->get();
 
       //  dd($events);
 
@@ -111,7 +111,7 @@ class Result extends Model
         ->join('registrations as r2', 'r.registration_id', '=', 'r2.id')
         ->join('events as e', 'e.id', '=', 'r2.event_id')
         ->join('users as u', 'u.id', '=', 'r2.user_id')
-        ->where('e.platform_id', env('PLATFORM'))
+        ->where('e.platform_id', env('PLATFORM_ID'))
         ->where('u.id', $userId)
         ->orderBy('e.id','ASC')
         ->orderBy('r.finish_time_sec', 'ASC')

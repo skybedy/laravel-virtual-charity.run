@@ -28,7 +28,7 @@ Route::get('/webhook', [StravaController::class, 'getStrava'])->name('get_strava
 Route::post('/webhook', [StravaController::class, 'webhookPostStrava'])->name('post_strava');
 Route::get('/webhook/autoupload', [StravaController::class, 'autouploadStrava'])->name('autoupload_strava');
 
-Route::get('/registration/{eventId}', [RegistrationController::class, 'index'])->name('registration.index');
+
 
 
 Route::middleware('auth')->group(function () {
@@ -63,12 +63,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/registration/create/checkout/{eventId}', [RegistrationController::class, 'checkout'])->name('registration.checkout');
-    Route::get('/registration/create/{eventId}', [RegistrationController::class, 'create'])->name('registration.create');
+    //Route::get('/registration/create/{eventId}', [RegistrationController::class, 'create'])->name('registration.create');
+    Route::get('/registration/create', [RegistrationController::class, 'create'])->name('registration.create');
+
     Route::get('/registration/create/checkout/success/{eventId}', [RegistrationController::class, 'store'])->name('payment.success');
     Route::get('/registration/create/checkout/cancel', [RegistrationController::class, 'cancel'])->name('payment.cancel');
 
 
 });
+
+Route::get('/registration/{eventId}', [RegistrationController::class, 'index'])->name('registration.index');
 
 Route::controller(RegisteredProviderUserController::class)->group(function () {
     Route::get('auth/{provider}', 'redirectToProvider');

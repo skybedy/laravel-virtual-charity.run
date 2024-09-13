@@ -19,20 +19,22 @@
                         @endphp
 
                         @if ($results->count() > 0)
-                            <table id="result_table" class="hidden md:table table-auto border-collapse w-full mt-5">
+                            <div class="flex justify-center">
+                            <table id="result_table" class="hidden md:table  border-collapse w-full my-10 mx-5">
 
                                 @foreach ($results as $result)
                                     @if($current_race != $result->race_name)
-                                        <tr class="text-center">
-                                            <td class="border-none" colspan="4">
-                                                <h2 class="text-2xl font-bold">{{ $result->race_name }}</h2>
-                                            </td>
+                                        <tr>
+                                            <td colspan="4" class="border bg-orange-600 text-3xl font-bold  text-center text-white py-2"><h2>{{ $result->race_name }}</h2></td>
+
                                         </tr>
+
+
                                         <tr class="text-center">
-                                            <th class="border-none">Datum</th>
-                                            <th class="border-none px-2">Čas</th>
-                                            <th class="border-none px-2">Tempo</th>
-                                            <th class="border-none px-2"></th>
+                                            <th class="border">Datum</th>
+                                            <th class="border px-2">Čas</th>
+                                            <th class="border px-2">Tempo</th>
+                                            <th class="border px-2"></th>
                                         </tr>
 
                                         @endif
@@ -44,7 +46,7 @@
                                         <td class="border">{{ $result->finish_time }}</td>
                                         <td class="border">{{ $result->pace_km }}</td>
                                         <td class="border py-1">
-                                            <a class="text-red-600" href="{{ route('result.delete',['resultId' => $result->id]) }}">Smazat výsledek</a>
+                                            <a class="text-blue-600" href="{{ route('result.delete',['resultId' => $result->id]) }}">Smazat výsledek</a>
                                         </td>
                                     </tr>
                                     @php
@@ -52,6 +54,7 @@
                                     @endphp
                                 @endforeach
                             </table>
+                            </div>
                         @endif
 
 
