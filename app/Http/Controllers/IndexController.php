@@ -29,7 +29,6 @@ class IndexController extends Controller
         } else {
             return view('index/index', [
                 'events' => $event->eventList($request->user()->id),
-                //'events' => $event::where('platform_id', 2)->get(),
             ]);
         }
 

@@ -7,6 +7,7 @@ use App\Models\Registration;
 use App\Models\Event;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
+use Carbon\Carbon;
 
 class RegistrationController extends Controller
 {
@@ -65,44 +66,10 @@ class RegistrationController extends Controller
     }
 
 
-    public function create(Request $request, Category $category, Registration $registration)
+    public function create()
     {
-      //  dd("tu");
-        //$eventId = $request->eventId;
-        //dd($eventId);
-
-        $userId = $request->user()->id;
-
-
-
-        $registrationSerieExists = $registration->registrationExists($userId, env('ACTIVE_SERIE_ID'));
-
-
-        if ($registrationSerieExists->isEmpty()) {
-
-            return view('registrations.payment', [
-                'eventId' => 1,
-            ]);
-        }
-        else
-        {
-
-            $registrationEventExists = $registrationSerieExists->firstWhere('event_id', $eventId);
-
-            if($registrationEventExists)
-            {
-                session()->flash('info', 'Na tento závod už je registrace provedená');
-            }
-            else
-            {
-                $this->store($request,$registration,category: $category);
-            }
-
-            return redirect()->back();
-        }
-
+        return view('registrations.payment');
     }
-
 
 
 
@@ -110,13 +77,19 @@ class RegistrationController extends Controller
     {
 
         $events = Event::where(['platform_id' => env("PLATFORM_ID"),'serie_id' => env("ACTIVE_SERIE_ID")])->pluck('id');
-        dd($events);
 
-        $registration->create([
-            'event_id' => $request->eventId,
-            'user_id' =>   $request->user()->id,
-            'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-        ]);
+        $now = Carbon::now();
+
+        foreach ($events as $eventId) {
+            $registrations[] = [
+                'event_id' => $eventId,
+                'user_id' => $request->user()->id,
+                'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+        $registration->bulkInsert($registrations);
 
         session()->flash('success', 'Byli jste úspěšně zaregistrováni');
 
@@ -127,7 +100,7 @@ class RegistrationController extends Controller
     public function checkout(Request $request,StripeClient $stripe)
     {
 
-        $event_id = $request->eventId;
+        //$event_id = $request->eventId;
 
         // Vytvoření Stripe Checkout Session
         $checkout_session = $stripe->checkout->sessions->create([
@@ -138,7 +111,7 @@ class RegistrationController extends Controller
             ]],
             'payment_method_types' => ['card'],
             'mode' => 'payment',
-            'success_url' => route('payment.success',$event_id),
+            'success_url' => route('payment.success'),
             'cancel_url' => route('payment.cancel'),
             'automatic_tax' => [
                 'enabled' => true,

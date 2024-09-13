@@ -16,21 +16,13 @@ class Registration extends Model
 
     public function registrationExists($userId,  $serieId)
     {
-       if(is_null($serieId))
-        {
-            $return =  self::where('user_id',$userId)->first('id');
-        }
-        else
-        {
-            $return = self::join('events as e', 'e.id', '=', 'registrations.event_id')
+        $return = self::join('events as e', 'e.id', '=', 'registrations.event_id')
                 ->where('e.serie_id', $serieId)
                 ->where('registrations.user_id', $userId)
                 ->select('registrations.event_id')
                 ->get();
-        }
 
         return $return;
-
     }
 
    //na kazdy zavod zvlast
@@ -52,4 +44,12 @@ class Registration extends Model
         return $return;
 
     }
+
+    public function bulkInsert(array $registrations)
+    {
+        return self::insert($registrations);
+    }
+
+
+
 }
