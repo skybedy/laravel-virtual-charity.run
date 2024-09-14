@@ -129,7 +129,7 @@ class RegistrationController extends Controller
 
     public function cancel()
     {
-        dd('cancel');
+        return redirect()->route('index')->with('error', 'Platba byla zrušena');
     }
 
 
