@@ -14,16 +14,16 @@
 
 
                                 <div class="px-6">
-                                <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white rounded  bg-blue-400 text-white md:text-xl px-4 py-6 sm:py-2  mt-4 sm:mt-3" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>
-                                <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white  rounded  bg-yellow-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-4 sm:mt-3" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
+                                <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2  mt-4 sm:mt-3" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>
+                                <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white  rounded  bg-yellow-500 text-white md:text-xl px-4 py-6 sm:py-2 mt-4 sm:mt-3" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
                                 @if($event->registration_status == 0)
 
-                                    <span class="w-full inline-block text-center rounded  bg-red-400 text-red-500 md:text-xl px-4 py-6 sm:py-2  mt-5 sm:mt-3">Administrace</span>
+                                    <span class="w-full inline-block text-center rounded  bg-green-400 text-green-500 md:text-xl px-4 py-6 sm:py-2  mt-5 sm:mt-3">Administrace</span>
                                 @else
                                     @php
                                         $registration_status = 1;
                                     @endphp
-                                    <a class="w-full inline-block text-center hover:bg-red-700 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-3" href="{{ route('event.show',$event->id) }}">Administrace</a>
+                                    <a class="w-full inline-block text-center hover:bg-green-400 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-3" href="{{ route('event.show',$event->id) }}">Administrace</a>
                                 @endif
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                     </div>
                     @if($registration_status == 0)
                     <div class=" mt-5 sm:mt-4 px-2">
-                        <a class="block text-center sm:rounded-xl  bg-gradient-to-b from-green-400 to-green-500 hover:bg-red-700 hover:text-black   text-white font-black text-4xl px-4 sm:py-8 xl:py-4 " href="{{ route('registration.create') }}">ZAREGISTROVAT SE</a>
+                        <a class="block text-center sm:rounded-xl  bg-gradient-to-b from-blue-400 to-blue-500  hover:text-yellow-500   text-white font-black text-4xl px-4 sm:py-8 xl:py-4 " href="{{ route('registration.create') }}">ZAREGISTROVAT SE</a>
                     </div>
                     @endif
 
