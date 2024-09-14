@@ -20,9 +20,13 @@
                     <x-nav-link :href="route('index')" :active="request()->routeIs('index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Hlavní strana') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('event.index')" :active="request()->routeIs('event.index')" class="text-lg lg:text-xl text-gray-600">
+
+                    <!--
+                     <x-nav-link :href="route('event.index')" :active="request()->routeIs('event.index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Závody') }}
                     </x-nav-link>
+                -->
+
                     <x-nav-link :href="route('how_it_works.index')" :active="request()->routeIs('how_it_works.index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Jak na to') }}
                     </x-nav-link>
