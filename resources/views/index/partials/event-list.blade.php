@@ -12,14 +12,14 @@
                                 <div class="text-4xl sm:text-[3.4rem] md:text-7xl lg:text-8xl xl:text-9xl border-b border-white mx-3 lg:mx-7">{{ $event->name }}</div>
                                 <div class="px-6">
                                     <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2  mt-4 sm:mt-3" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>
-                                    <a class="w-full inline-block text-center  hover:bg-red-700 hover:text-white  rounded  bg-yellow-500 text-white md:text-xl px-4 py-6 sm:py-2 mt-4 sm:mt-3" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
+                                    <a class="w-full inline-block text-center  hover:bg-yellow-700 hover:text-white  rounded  bg-yellow-500 text-white md:text-xl px-4 py-6 sm:py-2 mt-4 sm:mt-3" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
                                     @if($event->registration_status == 0)
                                         <span class="w-full inline-block text-center rounded  bg-green-400 text-green-500 md:text-xl px-4 py-6 sm:py-2  mt-5 sm:mt-3">Administrace</span>
                                     @else
                                         @php
                                             $registration_status = 1;
                                         @endphp
-                                        <a class="w-full inline-block text-center hover:bg-green-400 hover:text-white rounded  bg-red-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-3" href="{{ route('event.show',$event->id) }}">Administrace</a>
+                                        <a class="w-full inline-block text-center hover:bg-green-600 hover:text-red rounded  bg-green-400 text-white md:text-xl px-4 py-6 sm:py-2 mt-5 sm:mt-3" href="{{ route('event.show',$event->id) }}">Administrace</a>
                                     @endif
                                 </div>
                             </div>

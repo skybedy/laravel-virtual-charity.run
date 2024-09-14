@@ -109,15 +109,14 @@ class RegistrationController extends Controller
                 'price' => env('STRIPE_PRICE_ID'), // Production Price ID
                 'quantity' => 1,
             ]],
-            'payment_method_types' => ['card'],
+
             'mode' => 'payment',
             'success_url' => route('payment.success'),
             'cancel_url' => route('payment.cancel'),
-            'automatic_tax' => [
-                'enabled' => true,
-            ],
+
             'payment_intent_data' => [
                 'transfer_data' => ['destination' => env('STRIPE_CONNECT_CLIENT_ID')],
+                'setup_future_usage' => 'on_session', //mozna kvuli apple kdyz nebude fungovat,dat pryč
             ],
         ]);
 
