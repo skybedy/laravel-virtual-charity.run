@@ -281,6 +281,7 @@ class ResultService
                     //dd( $registration_id );
 
                     $trackPoints = [];
+
                     $coordinates = Polyline::decode($activityData['map']['summary_polyline']);
                     // dd($coordinates);
                     foreach ($coordinates as $coordinate) {

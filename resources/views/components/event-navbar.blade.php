@@ -10,15 +10,18 @@
             <div class="flex h-10  px-1 justify-center sm:justify-between">
                   <div class="flex">
                         <div class="space-x-5  sm:-my-px flex justify-center">
+                            <x-nav-link :href="route('event.startlist.index',$event->id)" :active="request()->routeIs('event.startlist.index')" class="text-blue-600">
+                                {{ __('Startovka') }}
+                            </x-nav-link>
                             <x-nav-link :href="route('event.result.index',$event->id)" :active="request()->routeIs('event.result.index')" class="text-blue-600">
                                 {{ __('Výsledky') }}
-                              </x-nav-link>
-                              <x-nav-link :href="route('event.upload-url.create',$event->id)" :active="request()->routeIs('event.upload-url.create')" class="text-blue-600">
-                                    {{ __('Nahrát odkaz') }}
-                              </x-nav-link>
-                              <x-nav-link :href="route('event.upload-file.create',$event->id)" :active="request()->routeIs('event.upload-file.index')" class="text-blue-600">
-                                    {{ __('Nahrát soubor') }}
-                              </x-nav-link>
+                            </x-nav-link>
+                            <x-nav-link :href="route('event.upload-url.create',$event->id)" :active="request()->routeIs('event.upload-url.create')" class="text-blue-600">
+                                {{ __('Nahrát odkaz') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('event.upload-file.create',$event->id)" :active="request()->routeIs('event.upload-file.index')" class="text-blue-600">
+                                {{ __('Nahrát soubor') }}
+                            </x-nav-link>
 
                         </div>
                   </div>

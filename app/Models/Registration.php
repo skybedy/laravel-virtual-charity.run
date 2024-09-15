@@ -14,7 +14,7 @@ class Registration extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function registrationExists($userId,  $serieId)
+    public function registrationExistsNew($userId,  $serieId)
     {
         $return = self::join('events as e', 'e.id', '=', 'registrations.event_id')
                 ->where('e.serie_id', $serieId)
@@ -26,7 +26,7 @@ class Registration extends Model
     }
 
    //na kazdy zavod zvlast
-    public function registrationExistsOld($userId, $eventId, $serieId)
+    public function registrationExists($userId, $eventId, $serieId)
     {
        if(is_null($serieId))
         {

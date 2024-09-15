@@ -23,7 +23,7 @@
                     Od svého vzniku platforma umožnila realizaci tisíců sbírek, které pomohly vybrat více než 100 milionů korun. Díky transparentnosti a důvěře, kterou si platforma vybudovala, se Znesnáze stala jedním z nejdůležitějších nástrojů pro efektivní pomoc lidem v nouzi. Přidejte se i vy a pomozte tam, kde je to potřeba. S námi je to snadné, rychlé a bezpečné.
                 </x-p>
                 <div class="bg-blue-50 mt-5 p-5">
-                    <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout')}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
+                    <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout',$eventId )}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
                 </div>
             </div>
 

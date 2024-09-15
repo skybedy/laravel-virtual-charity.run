@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Registration;
-use App\Models\Event;
 use Illuminate\Http\Request;
 use Stripe\StripeClient;
-use Carbon\Carbon;
+use Stripe\Checkout\Session;
+use Stripe\Stripe;
 
 class RegistrationController extends Controller
 {
+
+
+
+
+
 
     /**
      * Display a listing of the resource.
@@ -22,20 +27,19 @@ class RegistrationController extends Controller
         ]);
     }
 
-
     /**
      * Show the form for creating a new resource.
-     * It was used for the old registration system and for each event extra
      */
-    public function createOld(Request $request, Category $category, Registration $registration)
+    public function create(Request $request, Category $category, Registration $registration)
     {
+
 
         $eventId = $request->eventId;
        // dd($eventId);
 
         $userId = $request->user()->id;
 
-        $serieId = 2;
+        $serieId = env('ACTIVE_SERIE_ID');
 
         $registrationSerieExists = $registration->registrationExists($userId, $eventId, $serieId);
 
@@ -65,31 +69,13 @@ class RegistrationController extends Controller
 
     }
 
-
-    public function create()
-    {
-        return view('registrations.payment');
-    }
-
-
-
     public function store(Request $request,Registration $registration, Category $category)
     {
-
-        $events = Event::where(['platform_id' => env("PLATFORM_ID"),'serie_id' => env("ACTIVE_SERIE_ID")])->pluck('id');
-
-        $now = Carbon::now();
-
-        foreach ($events as $eventId) {
-            $registrations[] = [
-                'event_id' => $eventId,
-                'user_id' => $request->user()->id,
-                'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-        }
-        $registration->bulkInsert($registrations);
+        $registration->create([
+            'event_id' => $request->eventId,
+            'user_id' =>  $userId = $request->user()->id,
+            'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
+        ]);
 
         session()->flash('success', 'Byli jste úspěšně zaregistrováni');
 
@@ -97,39 +83,66 @@ class RegistrationController extends Controller
     }
 
 
-    public function checkout(Request $request,StripeClient $stripe)
+
+
+
+
+
+
+
+
+        public function checkout(Request $request,StripeClient $stripe)
+        {
+            // Vytvoření Stripe Checkout Session
+            $checkout_session = $stripe->checkout->sessions->create([
+                'line_items' => [[
+                    //'price' => 'price_1Ps1uS2LSxhftJEav9dO6DNQ', // testovací Price ID
+                    'price' => env('STRIPE_PRICE_ID'), // Production Price ID
+                    'quantity' => 1,
+                ]],
+
+                'mode' => 'payment',
+                'success_url' => route('payment.success',$request->eventId),
+                'cancel_url' => route('payment.cancel'),
+
+                'payment_intent_data' => [
+                    'transfer_data' => ['destination' => env('STRIPE_CONNECT_CLIENT_ID')],
+                    'setup_future_usage' => 'on_session', //mozna kvuli apple kdyz nebude fungovat,dat pryč
+                ],
+            ]);
+
+            // Přesměrování na Stripe Checkout
+            return redirect($checkout_session->url);
+
+            }
+
+    public function success()
     {
-
-        //$event_id = $request->eventId;
-
-        // Vytvoření Stripe Checkout Session
-        $checkout_session = $stripe->checkout->sessions->create([
-            'line_items' => [[
-                //'price' => 'price_1Ps1uS2LSxhftJEav9dO6DNQ', // testovací Price ID
-                'price' => env('STRIPE_PRICE_ID'), // Production Price ID
-                'quantity' => 1,
-            ]],
-
-            'mode' => 'payment',
-            'success_url' => route('payment.success'),
-            'cancel_url' => route('payment.cancel'),
-
-            'payment_intent_data' => [
-                'transfer_data' => ['destination' => env('STRIPE_CONNECT_CLIENT_ID')],
-                'setup_future_usage' => 'on_session', //mozna kvuli apple kdyz nebude fungovat,dat pryč
-            ],
-        ]);
-
-        // Přesměrování na Stripe Checkout
-        return redirect($checkout_session->url);
-
-        }
-
+        dd('success');
+    }
 
     public function cancel()
     {
         return redirect()->route('index')->with('error', 'Platba byla zrušena');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }
