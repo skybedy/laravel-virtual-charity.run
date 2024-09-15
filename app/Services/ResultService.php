@@ -122,6 +122,8 @@ class ResultService
     {
         $request = $args['request'];
 
+        $registrationId = $args['registration_id'];
+
         $userId = $request->user()->id;
 
         $event = Event::where('id', $request->eventId);
@@ -203,6 +205,7 @@ class ResultService
                 'time' => $time,
                 'user_id' => $userId,
                 'cadence' => (string) $cad,
+                'registration_id' => $registrationId
             ];
             //pokud je to prvni, nebo prazdny bod, tak se nic nepocita
 
@@ -349,6 +352,8 @@ class ResultService
 
         $userId = $request->user()->id;
 
+        $registrationId = $args['registrationId'];
+
         $event = Event::where('id', $request->eventId);
 
         $eventDistance = $event->value('distance');
@@ -407,6 +412,7 @@ class ResultService
                 'time' => $point['time'],
                 'user_id' => $userId,
                 'cadence' => $point['cadence'],
+                'registration_id' => $registrationId
             ];
 
 

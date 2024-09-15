@@ -112,7 +112,7 @@ class EventController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromStravaStream',['activity_data' => $activityData,'request' => $request]);
+            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromStravaStream',['activity_data' => $activityData,'request' => $request,'registrationId' => $registrationId]);
         }
         catch (SmallDistanceException $e)
         {
@@ -245,7 +245,7 @@ class EventController extends Controller
 
         try
         {
-            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromGpx',['request' => $request]);
+            $finishTime = $this->activityFinishTime($resultService,'getActivityFinishDataFromGpx',['request' => $request,'registration_id' => $registration_id]);
         }
         catch (SmallDistanceException $e)
         {
