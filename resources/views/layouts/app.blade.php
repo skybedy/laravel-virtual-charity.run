@@ -65,7 +65,7 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gradient-to-b from-blue-400 to-blue-500">
+        <div class="min-h-screen bg-gradient-to-b from-blue-200 to-blue-400">
             @include('layouts.navigation')
 
 

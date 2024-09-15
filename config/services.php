@@ -38,10 +38,9 @@ return [
     ],
 
     'google' => [
-        'client_id' => '81604204242-69c7g24se3ogved24mm0btqi62s8sl9a.apps.googleusercontent.com',
-        'client_secret' => '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',
-      //  'redirect' => 'http://localhost:8000/auth/google/callback',
-        'redirect' => 'https://virtual-charity.run/auth/google/callback',
+        'client_id' => env("GOOGLE_CLIENT_ID"),
+        'client_secret' => env("GOOGLE_CLIENT_SECRET"),
+        'redirect' => env("APP_URL").'/auth/google/callback',
     ],
 
 ];
