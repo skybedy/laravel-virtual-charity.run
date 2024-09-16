@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\UniqueConstraintViolationException;
 use App\Exceptions\DuplicityException;
 use App\Exceptions\DuplicityTimeException;
+use App\Exceptions\StravaPrivateException;
 use App\Models\TrackPoint;
 use App\Models\Registration;
 use Illuminate\Support\Facades\Log;
@@ -39,7 +40,7 @@ class ResultService
     private $dateEventEndTimestamp;
     private $duplicityCheck;
 
-    public function getStreamFromStrava($request,$activityId = null)
+    public function getStreamFromStrava($request,$activityId = null): array
     {
         if($activityId == null)
         {
@@ -58,12 +59,12 @@ class ResultService
             $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$userId)->first();
         }
         //kontrola, jestli uzivatel ma autorizovanou aplikaci na Strave
-        if($user->strava_access_token)
+        if(is_null($user->strava_access_token))
         {
             throw new NoStravaAuthorizeException();
         };
 
-        dd($user->strava_expires_at);
+        //dd($user->strava_expires_at);
 
         if ($user->strava_expires_at > time())
         {
@@ -366,7 +367,13 @@ class ResultService
 
         $activityData = $args['activity_data'];
 
+        if(!isset($activityData['start_date_local']))
+        {
+            throw new StravaPrivateException();
+        }
+
         $startDayTimestamp = strtotime($activityData['start_date_local']);
+
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor

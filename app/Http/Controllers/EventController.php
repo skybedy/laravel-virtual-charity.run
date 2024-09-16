@@ -8,6 +8,8 @@ use App\Exceptions\TimeIsOutOfRangeException;
 use App\Exceptions\TimeMissingException;
 use App\Exceptions\DuplicityTimeException;
 use App\Exceptions\NoStravaAuthorizeException;
+use App\Exceptions\NoRaceRegistrationException;
+use App\Exceptions\StravaPrivateException;
 use Exception;
 use App\Models\Event;
 use App\Models\Registration;
@@ -73,17 +75,24 @@ class EventController extends Controller
                 'strava_url' => 'required',
             ],
             [
-                'strava_url.required' => 'Je nutné vyplnit odkaz na Stravy.',
+                'strava_url.required' => 'Je nutné vyplnit odkaz ze Stravy.',
             ]
         );
 
-        if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
+        try // kontrola, zda uzivatel je registrovan na zavod
         {
-            $registrationId = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
+            if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
+            {
+                $registrationId = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
+            }
+            else
+            {
+                throw new NoRaceRegistrationException($request->eventId);
+            }
         }
-        else
+        catch(NoRaceRegistrationException $e)
         {
-            return back()->withError('registration_required')->withInput();
+            return back()->withError($e->getMessage())->withInput();
         }
 
         //urceni, zda jde o link z prohlizece nebo z apky
@@ -104,6 +113,10 @@ class EventController extends Controller
 
         try{
             $activityData = $resultService->getStreamFromStrava($request, $activityId);
+        }
+        catch (NoStravaAuthorizeException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
         }
         catch (NoStravaAuthorizeException $e)
         {
@@ -225,23 +238,28 @@ class EventController extends Controller
 
         $request->validate(
             [
-                //'gpx_file' => 'required|mimetypes:application/gpx+xml|max:10000',
                 'gpx_file' => 'required|max:10000',
             ],
             [
                 'gpx_file.required' => 'Nebyl vybrán žádný soubor.',
             ]);
-        // kontrola, zda uzivatel je registrovan na zavod
-        if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
-        {
-            $registration_id = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
-        }
-        else
-        {
-            return back()->withError('registration_required')->withInput();
-        }
-        //
 
+
+        try // kontrola, zda uzivatel je registrovan na zavod
+        {
+            if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
+            {
+                $registration_id = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
+            }
+                    else
+            {
+                throw new NoRaceRegistrationException($request->eventId);
+            }
+        }
+        catch(NoRaceRegistrationException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
 
         try
         {
@@ -263,7 +281,6 @@ class EventController extends Controller
         {
             return back()->withError($e->getMessage())->withInput();
         }
-
 
         try
         {

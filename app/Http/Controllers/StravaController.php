@@ -42,7 +42,7 @@ class StravaController extends Controller
         Log::info('Webhook event received!', ['query' => $request->query(),'body' => $request->all()]);
         //z pozadavku si vezmeme id uzivatele Stravy a podle nej najdeme uzivatele v nasi databazi
         $stravaId = $request->input('owner_id');
-        //ziskani Usera 
+        //ziskani Usera
         $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('strava_id', $stravaId)->first();
         //ted musime zjistit, jestli token pro REST API jeste plati
         if ($user->strava_expires_at > time())
@@ -74,17 +74,17 @@ class StravaController extends Controller
             ]);
 
             $body = $response->body();
-            
+
             $content = json_decode($body, true);
 
             $user1 = User::where('id', $user->id)->first();
-            
+
             $user1->strava_access_token = $content['access_token'];
-            
+
             $user1->strava_refresh_token = $content['refresh_token'];
-            
+
             $user1->strava_expires_at = $content['expires_at'];
-            
+
             $user1->save();
 
             $url = config('strava.stream.url').$request->input('object_id').config('strava.stream.params');
@@ -108,7 +108,7 @@ class StravaController extends Controller
 
         return response('OK', 200);
     }
-    
+
 
 
 
@@ -172,7 +172,7 @@ class StravaController extends Controller
                 exit();
             }
         }
-        
+
         Log::info('Uzivatel '.$userId.' nahral aktivitu.');
     }
 
@@ -316,6 +316,6 @@ class StravaController extends Controller
 
     public function authorizeStrava(Request $request)
     {
-        return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-charity.run/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read_all');
+        return redirect('https://www.strava.com/oauth/authorize?client_id=117954&response_type=code&redirect_uri=https://virtual-charity.run/redirect-strava/'.$request->user()->id.'&approval_prompt=force&scope=activity:read');
     }
 }
