@@ -8,15 +8,12 @@
 
                    <x-event-navbar :event="$event" />
 
-                    @if (session('error'))
-                        @if(session('error') == 'registration_required')
-                            @php $error = 'Nahrávat výsledky je možné až poté, co se k závodu <a class="underline" href="'.route('registration.create',$event->id).'">zaregistrujete</a>'; @endphp
-                        @else
-                            @php $error = session('error') @endphp
-                        @endif
 
-                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2">{!!$error!!}</div>
-                    @endif
+
+
+
+
+
                     <div class="mt-10">
                         <div>Vložte odkaz ze Stravy podle pokynů níže:</div>
                             <form class="border  border-blue-400 rounded-md p-4 bg-slate-50" action="{{ route('event.upload.store.url',$event->id) }}" method="post" enctype="multipart/form-data">

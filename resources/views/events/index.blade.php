@@ -9,17 +9,6 @@
                 <div class="px-3 pt-3 text-gray-900">
 
 
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-
-
-
-
-
 @foreach ($events as $event)
     <div class="bg-gray-600  p-5 mb-3 text-3xl rounded-lg border border-gray-700 flex justify-between flex-col sm:flex-row shadow-lg">
 

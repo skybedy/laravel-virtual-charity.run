@@ -58,10 +58,12 @@ class ResultService
             $user = User::select('id', 'strava_access_token', 'strava_refresh_token', 'strava_expires_at')->where('id',$userId)->first();
         }
         //kontrola, jestli uzivatel ma autorizovanou aplikaci na Strave
-        if(is_null($user->strava_access_token))
+        if($user->strava_access_token)
         {
             throw new NoStravaAuthorizeException();
         };
+
+        dd($user->strava_expires_at);
 
         if ($user->strava_expires_at > time())
         {

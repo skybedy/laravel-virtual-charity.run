@@ -33,5 +33,5 @@
 @endphp
 
 <div class="{{ $bgColor }} border {{ $borderColor }} {{ $textColor }} border-x-0 px-4 py-3  relative mt-1 text-center" role="alert">
-    <span class="block sm:inline">{{ $message }}</span>
+    <span class="block sm:inline">{!! $message !!}</span>
 </div>
