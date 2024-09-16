@@ -14,12 +14,12 @@
 
 
 
-            <div class="sm:py-8 xl:py-4 md:px-4 flex flex-col sm:flex-row justify-between gap-x-4 gap-y-4 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-4">
-                <div class="w-full space-y-3 text-white text-center font-black text-4xl">
-                    <div class="bg-gray-600 rounded-xl py-5">
+            <div class="py-4 md:px-4 flex flex-col sm:flex-row justify-between gap-x-4 gap-y-4 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-4">
+                <div class="w-full space-y-4 text-white text-center font-black text-4xl">
+                    <div class="bg-gray-600 rounded-xl py-2 sm:py-5">
                         Startovné na všechny 3 závody 111 Kč
                     </div>
-                    <div class="bg-gray-600 rounded-xl py-5">
+                    <div class="bg-gray-600 rounded-xl py-2 sm:py-5">
                         Přímá platba dárcovské platformě Znesnáze
                     </div>
                 </div>

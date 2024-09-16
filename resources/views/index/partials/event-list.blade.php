@@ -1,6 +1,6 @@
 
 <div class="sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-4">
-    <div class="sm:py-8 xl:py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
+    <div class="py-4 md:px-2 flex flex-col sm:flex-row justify-around items-center">
         @foreach ($events as $event)
             <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  sm:rounded-2xl  text-white text-center font-black bg-gray-600 mt-10 sm:mt-0 pt-4 pb-6">
                 <div class="text-4xl sm:text-[3.4rem] md:text-7xl lg:text-8xl xl:text-9xl  sm:mt-7 xl:mt-3 border-b border-white mx-3 lg:mx-7 mb-1">{{ $event->name }}</div>
