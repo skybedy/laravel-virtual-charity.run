@@ -81,9 +81,9 @@ class EventController extends Controller
 
         try // kontrola, zda uzivatel je registrovan na zavod
         {
-            if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
+            if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL,NULL)->id))
             {
-                $registrationId = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
+                $registrationId = $registration->registrationExists($request->user()->id,$request->eventId, NULL,NULL)->id;
             }
             else
             {
@@ -248,9 +248,9 @@ class EventController extends Controller
 
         try // kontrola, zda uzivatel je registrovan na zavod
         {
-            if (isset($registration->registrationExists($request->user()->id,$request->eventId, NULL)->id))
+            if (isset($registration->registrationExists($request->user()->id,$request->eventId,NULL, NULL)->id))
             {
-                $registration_id = $registration->registrationExists($request->user()->id,$request->eventId, NULL)->id;
+                $registration_id = $registration->registrationExists($request->user()->id,$request->eventId,NULL,NULL)->id;
             }
                     else
             {

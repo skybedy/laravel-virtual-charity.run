@@ -123,7 +123,6 @@ class StravaController extends Controller
     public function dataProcessing($resultService, $registration, $trackPoint, $event, $dataStream, $userId)
     {
 
-        //return $dataStream;
         $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($dataStream, $registration, $userId);
 
         $result = new Result();
@@ -134,7 +133,7 @@ class StravaController extends Controller
 
         $result->finish_time = $finishTime['finish_time'];
 
-        $result->pace = $finishTime['pace'];
+        $result->pace_km = $finishTime['pace'];
 
         $result->finish_time_sec = $finishTime['finish_time_sec'];
 
@@ -229,6 +228,7 @@ class StravaController extends Controller
 
             $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($response, $registration, $user->id);
 
+           
             $result = new Result();
 
             $result->registration_id = $finishTime['registration_id'];
@@ -237,7 +237,7 @@ class StravaController extends Controller
 
             $result->finish_time = $finishTime['finish_time'];
 
-            $result->pace = $finishTime['pace'];
+            $result->pace_km = $finishTime['pace'];
 
             $result->finish_time_sec = $finishTime['finish_time_sec'];
 

@@ -39,9 +39,11 @@ class RegistrationController extends Controller
 
         $userId = $request->user()->id;
 
+        $platformId = env("PLATFORM_ID");
+
         $serieId = env('ACTIVE_SERIE_ID');
 
-        $registrationSerieExists = $registration->registrationExists($userId, $eventId, $serieId);
+        $registrationSerieExists = $registration->registrationExists($userId, $eventId, $platformId,$serieId);
 
 
         if ($registrationSerieExists->isEmpty()) {

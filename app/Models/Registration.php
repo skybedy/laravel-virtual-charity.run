@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Registration extends Model
 {
@@ -26,9 +27,10 @@ class Registration extends Model
     }
 
    //na kazdy zavod zvlast
-    public function registrationExists($userId, $eventId, $serieId)
+    public function registrationExists($userId, $eventId, $platformId, $serieId)
     {
-       if(is_null($serieId))
+      
+        if(is_null($serieId))
         {
             $return =  self::where(['user_id' => $userId,'event_id' => $eventId])->first('id');
         }
@@ -36,13 +38,15 @@ class Registration extends Model
         {
             $return = self::join('events as e', 'e.id', '=', 'registrations.event_id')
                 ->where('e.serie_id', $serieId)
+                ->where('e.platform_id', $platformId)
                 ->where('registrations.user_id', $userId)
                 ->select('registrations.event_id')
                 ->get();
+
+
         }
 
         return $return;
-
     }
 
     public function bulkInsert(array $registrations)

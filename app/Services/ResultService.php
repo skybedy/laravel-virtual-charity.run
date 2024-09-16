@@ -456,12 +456,11 @@ class ResultService
     //otazka zda spis nevyvolat vyjimky a logovat v controlleru, asi predelat
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
-       //dd($activityData);
+        $userRegisteredToSomeEvent = false;
         //pocatecni cas aktivity v UNIX sekundach
         $startDayTimestamp = strtotime($activityData['start_date_local']);
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
-       // dd($activityDate);
         //pole pro ulozeni bodu trasy
         $trackPointArray = [];
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
@@ -480,9 +479,9 @@ class ResultService
         //výpočet celkové vzdálenosti aktivity
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
 
-        $events = Event::where('date_start', '<=',$activityDate)
-                        ->where('date_end', '>=', $activityDate)
-                        ->where('distance', '<=', $activityDistance)
+        $events = Event::where('distance', '<=', $activityDistance)
+                        ->where('platform_id',env("PLATFORM_ID"))
+                        ->where('serie_id',env("ACTIVE_SERIE_ID"))
                         ->orderBy('distance', 'DESC')
                         ->get(['id', 'distance']);
         //kontrola, jestli v daném časovém období existuje nějaký závod
@@ -495,11 +494,12 @@ class ResultService
         //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
         foreach ($events as $key => $event)
         {
+            $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
+          
             //kontrola, jestli je uzivatel k nemu prihlasen
-            if (isset($registration->registrationExists($event['id'], $userId)->id))
+            if (!is_null($registrationId))
             {
-                //pokud ano, tak si vezmeme id registrace uzivatele k zavodu
-                $registrationId = $registration->registrationExists($event['id'], $userId)->id;
+                $userRegisteredToSomeEvent = true;
                 //prochazeni pole s daty aktivity
                 foreach($activityDataArray as $activityData)
                 {
@@ -528,10 +528,18 @@ class ResultService
                         ];
                     }
                 }
+                break;
             }
-            Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
 
+
+        }
+       
+        if(!$userRegisteredToSomeEvent)
+        {
+            Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
+            
             exit();
+
         }
 
     }
