@@ -118,10 +118,7 @@ class EventController extends Controller
         {
             return back()->withError($e->getMessage())->withInput();
         }
-        catch (NoStravaAuthorizeException $e)
-        {
-            return back()->withError($e->getMessage())->withInput();
-        }
+
 
         try
         {
@@ -140,6 +137,10 @@ class EventController extends Controller
             return back()->withError($e->getMessage())->withInput();
         }
         catch (TimeMissingException $e)
+        {
+            return back()->withError($e->getMessage())->withInput();
+        }
+        catch (StravaPrivateException $e)
         {
             return back()->withError($e->getMessage())->withInput();
         }

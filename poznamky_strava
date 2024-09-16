@@ -23,10 +23,11 @@ nové
 curl -X POST https://www.strava.com/api/v3/push_subscriptions \
       -F client_id=117954 \
       -F client_secret=a56df3b8bb06067ebe76c7d23af8ee8211d11381 \
-      -F callback_url=https://virtual-run.cz/webhook \
+      -F callback_url=https://virtual-charity.run/webhook \
       -F verify_token=STRAVA
 
 kontrola subscription webhook - curl -G https://www.strava.com/api/v3/push_subscriptions     -d client_id=117954     -d client_secret=a56df3b8bb06067ebe76c7d23af8ee8211d11381
 
-zrušení webohook curl -X DELETE "https://www.strava.com/api/v3/push_subscriptions/12345?client_id=117954&client_secret=a56df3b8bb06067ebe76c7d23af8ee8211d11381"
- 
+zrušení webohook
+curl -X DELETE "https://www.strava.com/api/v3/push_subscriptions/{id_subcriction}?client_id=117954&client_secret=a56df3b8bb06067ebe76c7d23af8ee8211d11381"
+

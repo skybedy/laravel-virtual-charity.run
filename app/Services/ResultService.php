@@ -367,6 +367,8 @@ class ResultService
 
         $activityData = $args['activity_data'];
 
+       // tohle usetruje situaci, kdy stream ze Stravy neobsahuje vsechny potrebne informace (v tomto pripade cas startu aktivity)
+       // k čemuž docházů třeba v pripade, ze aktivita je soukromá, nebo se někdo pokousi nahrat aktivitu nekoho jineho, apod.
         if(!isset($activityData['start_date_local']))
         {
             throw new StravaPrivateException();
