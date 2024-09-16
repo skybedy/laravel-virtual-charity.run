@@ -32,10 +32,7 @@ class RegistrationController extends Controller
      */
     public function create(Request $request, Category $category, Registration $registration)
     {
-
-
         $eventId = $request->eventId;
-       // dd($eventId);
 
         $userId = $request->user()->id;
 
@@ -45,16 +42,14 @@ class RegistrationController extends Controller
 
         $registrationSerieExists = $registration->registrationExists($userId, $eventId, $platformId,$serieId);
 
-
-        if ($registrationSerieExists->isEmpty()) {
-
+        if ($registrationSerieExists->isEmpty())
+        {
             return view('registrations.payment', [
                 'eventId' => $eventId,
             ]);
         }
         else
         {
-
             $registrationEventExists = $registrationSerieExists->firstWhere('event_id', $eventId);
 
             if($registrationEventExists)
