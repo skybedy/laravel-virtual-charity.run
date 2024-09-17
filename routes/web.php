@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\StravaController;
+use App\Http\Controllers\PrivacyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,6 +28,9 @@ Route::get('/redirect-strava/{userId}', [StravaController::class, 'redirectStrav
 Route::get('/webhook', [StravaController::class, 'getStrava'])->name('get_strava');
 Route::post('/webhook', [StravaController::class, 'webhookPostStrava'])->name('post_strava');
 Route::get('/webhook/autoupload', [StravaController::class, 'autouploadStrava'])->name('autoupload_strava');
+Route::get('/privacy-policy', [PrivacyController::class, 'privacyPolicy'])->name('privacy_policy');
+Route::get('/user-data-deletion', [PrivacyController::class, 'userDataDeletion'])->name('user_data_deletion');
+
 
 Route::middleware(['auth','checkUserSerieRegistered'])->group(function () {
     Route::get('/event/{eventId}/upload-url', [EventController::class, 'uploadUrlCreate'])->name('event.upload-url.create');

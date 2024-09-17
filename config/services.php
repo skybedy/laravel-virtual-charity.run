@@ -32,9 +32,9 @@ return [
     ],
 
     'facebook' => [
-        'client_id' => '709655243881130',
-        'client_secret' => '422e616f1441a4830096892038f60973',
-        'redirect' => 'https://virtual-run.cz/auth/facebook/callback',
+        'client_id' => '501944065799712',
+        'client_secret' => '46928497246776839f416dfe70994d02',
+        'redirect' => 'https://virtual-charity.run/auth/facebook/callback',
     ],
 
     'google' => [
