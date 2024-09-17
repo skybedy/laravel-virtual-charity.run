@@ -32,9 +32,9 @@ return [
     ],
 
     'facebook' => [
-        'client_id' => '501944065799712',
-        'client_secret' => '46928497246776839f416dfe70994d02',
-        'redirect' => 'https://virtual-charity.run/auth/facebook/callback',
+        'client_id' => env("FACEBOOK_CLIENT_ID"),
+        'client_secret' => env("FACEBOOK_CLIENT_ID"),
+        'redirect' => env("APP_URL").'/auth/facebook/callback',
     ],
 
     'google' => [
