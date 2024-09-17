@@ -11,7 +11,7 @@
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-80"  width="70px" height="70px" />
                     </a>
                     <div class="pt-1">
-                        <div class="indie-flower-regular text-4xl">Virtual Charity Run</div>
+                        <div class="indie-flower-regular text-3xl sm:text-4xl">Virtual Charity Run</div>
                     </div>
                 </div>
 
@@ -83,9 +83,16 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+       
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('index')" :active="request()->routeIs('index')">
                 {{ __('Hlavní strana') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('how_it_works.index')" :active="request()->routeIs('how_it_works.index')">
+                {{ __('Jak na to') }}
             </x-responsive-nav-link>
         </div>
 

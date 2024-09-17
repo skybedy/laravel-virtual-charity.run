@@ -16,10 +16,10 @@
 
             <div class="py-4 md:px-4 flex flex-col sm:flex-row justify-between gap-x-4 gap-y-4 sm:bg-white overflow-hidden shadow-sm sm:rounded-2xl mt-1 sm:mt-4">
                 <div class="w-full space-y-1 sm:space-y-4 text-white text-center font-black text-xl sm:text-4xl">
-                    <div class="bg-gray-600 sm:rounded-xl py-2 sm:py-5">
+                    <div class="bg-gradient-to-b from-blue-500 to-blue-600  sm:from-gray-500 sm:to-gray-600 sm:rounded-xl py-2 sm:py-5">
                         Startovné na všechny 3 závody 111 Kč
                     </div>
-                    <div class="bg-gray-600 sm:rounded-xl py-2 sm:py-5">
+                    <div class="bg-gradient-to-b from-blue-500 to-blue-600 sm:from-gray-500 sm:to-gray-600 sm:rounded-xl py-2 sm:py-5">
                         Přímá platba dárcovské platformě Znesnáze
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                 </a>
             </div>
             <div class=" sm:bg-white shadow-sm sm:rounded-2xl mt-2 sm:mt-4 -mb-12 sm:mb-0 sm:p-4">
-                <div class="sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-gray-600 py-2 sm:py-5">
+                <div class="sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-orange-400 py-2 sm:py-5">
                         1. KOLO ~ 1. 10 - 31. 12. 2024
                 </div>
             </div>
@@ -55,17 +55,17 @@
 
 
             <ol class=" sm:bg-white shadow-sm sm:rounded-2xl space-y-1 sm:space-y-4 sm:p-4 text-white text-xl sm:text-4xl text-center font-black list-decimal list-inside mt-8 sm:mt-4">
-                <div class="sm:rounded-xl  bg-gray-600 py-2 sm:py-5">
+                <div class="sm:rounded-xl  bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
                 </div>
-                <div class="sm:rounded-xl font-black bg-gray-600 py-2 sm:py-5">
+                <div class="sm:rounded-xl font-black bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('authorize_strava') }}>povolte</a> STRAVU..</li>
 
                 </div>
-                <div class="sm:rounded-xl bg-gray-600 py-2 sm:py-5">
+                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nejste, tak se registrujte se k závodu, nebo závodům..</li>
                 </div>
-                <div class="sm:rounded-xl bg-gray-600 py-2 sm:py-5">
+                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
 
                 </div>

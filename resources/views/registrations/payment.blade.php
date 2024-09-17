@@ -2,6 +2,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg boder p-6 boder-blue-300 shadow-lg">
+              
+              
+              
                 <x-h2 style="style-1">STARTOVNÉ</x-h2>
                 <x-p style="style-1">
 
@@ -25,6 +28,8 @@
                 <div class="bg-blue-50 mt-5 p-5">
                     <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout',$eventId )}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
                 </div>
+            
+            
             </div>
 
         </div>
