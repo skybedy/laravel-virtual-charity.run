@@ -10,7 +10,7 @@
 
 
             <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-                <div>1. Běhy pro N/nesnázi, 1. 10 - 31. 12. 24</div>
+                <div>Běhy pro N/nesnázi <span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
             </div>
 
 
