@@ -4,7 +4,7 @@
 
 <x-app-layout>
 
-    <div class="max-w-7xl mx-auto py-8 flex flex-col gap-y-8">
+    <div class="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl 2xl:max-w-7xl mx-auto py-8 flex flex-col gap-y-8">
 
     <div class="homepage-box">
 
@@ -49,46 +49,35 @@
                 </div>
 
                 <div class="homepage-inner-box-container gradient-tb-gray-500-700">
-                    <div>
-                        Plně automatizovaný přenos dat prostřednictvím STRAVA
-                    </div>
-                    <div>
-                        Okamžitý náhled na výsledky
-                    </div>
-                    <div>
-                        Libovolný počet běhů, do výsledků se započítává nejlepší
-                    </div>
-                    <div>
-                        Věkové kategorie po 5 letech
-                    </div>
+                    <div>Plně automatizovaný přenos dat prostřednictvím STRAVA</div>
+                    <div>Bez Stravy to jde taky a to importem GPX souborů</div>
+                    <div>Okamžitý náhled na výsledky</div>
+                    <div>Libovolný počet běhů, do výsledků se započítává nejlepší</div>
+                    <div>Věkové kategorie po 5 letech</div>
                 </div>
             </div>
         </div>
 
         <hr>
 
+
+
+
         <div class="homepage-box">
 
-            <div class=" bg-white shadow-sm rounded-2xl sm:mb-0 p-2 sm:p-4">
-                <div class="rounded-xl text-white  text-md sm:text-4xl text-center font-black bg-orange-400 p-5">
-                        Jak začít
-                </div>
+            <div class="homepage-inner-box-container gradient-tb-orange-400-600">
+                <div>Jak začít</div>
             </div>
-            <ol class=" sm:bg-white shadow-sm sm:rounded-2xl space-y-1 sm:space-y-4 sm:p-4 text-white text-xl sm:text-4xl text-center font-black list-decimal list-inside mt-8 sm:mt-4">
-                <div class="sm:rounded-xl  bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
-                    <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
-                </div>
-                <div class="sm:rounded-xl font-black bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
-                    <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('authorize_strava') }}>povolte</a> STRAVU..</li>
 
-                </div>
-                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
+
+            <ol class="homepage-inner-box-container gradient-tb-gray-500-700 list-decimal list-inside mt-4">
+
+                    <li>Pokud nejste, tak se <a class="underline text-orange-400" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
+                    <li>Pokud nemáte a chcete ji použít, <a class="underline text-orange-400" href={{ route('authorize_strava') }}>povolte</a> si STRAVU..</li>
+
                     <li>Pokud nejste, tak se registrujte se k závodu, nebo závodům..</li>
-                </div>
-                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
-                    <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
+                    <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-orange-400" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
 
-                </div>
             </ol>
 
 
