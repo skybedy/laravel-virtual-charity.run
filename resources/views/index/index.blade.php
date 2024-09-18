@@ -30,12 +30,7 @@
                 </a>
 
             </div>
-<<<<<<< HEAD
             <div class=" sm:bg-white shadow-sm sm:rounded-2xl mt-2 sm:mt-4  sm:mb-0 sm:p-4">
-=======
-
-            <div class=" sm:bg-white shadow-sm sm:rounded-2xl mt-2 sm:mt-4 -mb-12 sm:mb-0 sm:p-4">
->>>>>>> 69e5517 (Uprava vrchnich boxu)
                 <div class="sm:rounded-xl text-white  text-xl sm:text-4xl text-center font-black bg-orange-400 py-2 sm:py-5">
                         1. KOLO ~ 1. 10 - 31. 12. 2024
                 </div>
