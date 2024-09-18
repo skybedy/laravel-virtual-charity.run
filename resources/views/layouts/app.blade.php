@@ -65,12 +65,12 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-blue-50 sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
+        <div class="min-h-screen bg-sky-300 bg-none sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
             @include('layouts.navigation')
 
 
             <!-- Page Content -->
-            <main>
+            <main class="px-3 sm:px-0">
                     @if (session('success'))
                         <x-flash-message type="success" :message="session('success')" />
                     @endif
