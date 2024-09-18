@@ -65,7 +65,11 @@ input[type=file]::file-selector-button:hover {
 
     </head>
     <body class="font-sans antialiased">
+<<<<<<< HEAD
         <div class="min-h-screen  bg-blue-500 sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
+=======
+        <div class="min-h-screen bg-sky-300 bg-none sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
+>>>>>>> 69e5517 (Uprava vrchnich boxu)
             @include('layouts.navigation')
 
 
