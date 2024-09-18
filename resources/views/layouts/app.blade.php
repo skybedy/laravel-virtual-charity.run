@@ -18,51 +18,6 @@
         <script src="https://api.mapy.cz/loader.js"></script>
         <script type="text/javascript">Loader.load();</script>
         <script src="https://js.stripe.com/v3/"></script>
-
-        <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
-            #m img {
-                max-width: none;
-            }
-
-            input[type=file] {
-  widh: 100%;
-  mx-width: 100%;
-  color: #444;
-  padding: 5px;
-  background: #fff;
-  border-radius: 6px;
-  bordr: 1px solid blue;
-}
-
-input[type=file]::file-selector-button {
-  margin-right: 20px;
-  border: none;
-  background: #084cdf;
-  padding: 4px 20px;
-  border-radius: 6px;
-  color: #fff;
-  cursor: pointer;
-  transition: background .2s ease-in-out;
-}
-
-input[type=file]::file-selector-button:hover {
-  background: #0d45a5;
-}
-
-.indie-flower-regular {
-  font-family: "Indie Flower", cursive;
-  font-weight: 400;
-  font-style: normal;
-}
-
-
-
-        </style>
-
-
-
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-sky-300 bg-none sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
