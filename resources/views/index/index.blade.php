@@ -10,7 +10,7 @@
 
 
             <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-                <div>Pomoc z nesnáze 1. 10 - 31. 12. 2024</div>
+                <div>1. Běhy pro N/nesnázi, 1. 10 - 31. 12. 24</div>
             </div>
 
 
@@ -68,32 +68,17 @@
         <hr>
 
         <div class="homepage-box">
-
-            <div class=" bg-white shadow-sm rounded-2xl sm:mb-0 p-2 sm:p-4">
-                <div class="rounded-xl text-white  text-md sm:text-4xl text-center font-black bg-orange-400 p-5">
-                        Jak začít
+            <div class="flex flex-col gap-y-2 sm:gap-y-4">
+                <div class="homepage-inner-box-container gradient-tb-orange-400-600">
+                    <div>Jak začít</div>
                 </div>
-            </div>
-            <ol class=" sm:bg-white shadow-sm sm:rounded-2xl space-y-1 sm:space-y-4 sm:p-4 text-white text-xl sm:text-4xl text-center font-black list-decimal list-inside mt-8 sm:mt-4">
-                <div class="sm:rounded-xl  bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
+                <ol class="homepage-inner-box-container gradient-tb-gray-500-700 list-decimal list-inside">
                     <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
-                </div>
-                <div class="sm:rounded-xl font-black bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('authorize_strava') }}>povolte</a> STRAVU..</li>
-
-                </div>
-                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nejste, tak se registrujte se k závodu, nebo závodům..</li>
-                </div>
-                <div class="sm:rounded-xl bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
-
-                </div>
-            </ol>
-
-
-
-
+                </ol>
+            </div>
         </div>
 
 

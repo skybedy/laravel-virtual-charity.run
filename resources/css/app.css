@@ -72,7 +72,7 @@ background: #0d45a5;
   /* this is for white box content */
 
 .homepage-inner-box-container > *{
-    @apply rounded-xl text-white  text-lg md:text-xl lg:text-2xl  xl:text-4xl text-center font-black  p-5;
+    @apply rounded-xl text-white  text-sm sm:text-lg md:text-xl lg:text-2xl  xl:text-4xl text-center font-black  p-5;
 }
 
 
