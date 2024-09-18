@@ -4,13 +4,14 @@
 
 <x-app-layout>
 
+    <div class="max-w-7xl mx-auto py-8 flex flex-col gap-y-8">
 
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 bg-black">
+    <div class="homepage-box">
 
 
-            <div class=" bg-white shadow-sm rounded-2xl  mt-2 sm:mt-4  sm:mb-0 p-2 sm:p-4">
-                <div class="rounded-xl text-white  text-md sm:text-4xl text-center font-black bg-orange-400 p-5">
-                        1. KOLO ~ 1. 10 - 31. 12. 2024
+            <div class=" bg-white shadow-sm rounded-2xl sm:mb-0 p-2 sm:p-4">
+                <div class="homepage-inner-box homepage-inner-box--orange">
+                        Pomoc z nesnáze 1. 10 - 31. 12. 2024
                 </div>
             </div>
 
@@ -20,10 +21,10 @@
             <div class="p-2 sm:py-4 md:px-4 flex flex-col sm:flex-row justify-between gap-x-4 gap-y-4 bg-white overflow-hidden shadow-sm rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
 
                 <div class="w-full space-y-2 sm:space-y-4 text-white text-center font-black text-md sm:text-4xl">
-                    <div class="p-5 bg-gradient-to-b from-gray-500 to-gray-600 rounded-lg sm:rounded-xl sm:py-5">
+                    <div class="homepage-inner-box homepage-inner-box--gray">
                         Startovné na všechny 3 závody 111 Kč
                     </div>
-                    <div class="p-5 bg-gradient-to-b from-gray-500 to-gray-600 rounded-lg sm:rounded-xl sm:py-5">
+                    <div class="homepage-inner-box homepage-inner-box--gray">
                         Přímá platba dárcovské platformě Znesnáze
                     </div>
                 </div>
@@ -35,6 +36,19 @@
             </div>
 
             @include('index.partials.event-list')
+
+
+        </div>
+
+        <hr>
+
+        <div class="homepage-box">
+
+            <div class=" bg-white shadow-sm rounded-2xl sm:mb-0 p-2 sm:p-4">
+                <div class="homepage-inner-box">
+                        Základní vlastnosti
+                </div>
+            </div>
 
             <div class="sm:bg-white shadow-sm sm:rounded-2xl space-y-1 sm:space-y-4 mt-4 sm:p-4 text-white text-xl sm:text-4xl text-center font-black">
                 <div class="sm:rounded-xl  bg-gray-600 py-2 sm:py-5  px-1 sm:px-0">
@@ -50,10 +64,17 @@
                     Věkové kategorie po 5 letech
                 </div>
             </div>
+        </div>
 
+        <hr>
 
+        <div class="homepage-box">
 
-
+            <div class=" bg-white shadow-sm rounded-2xl sm:mb-0 p-2 sm:p-4">
+                <div class="rounded-xl text-white  text-md sm:text-4xl text-center font-black bg-orange-400 p-5">
+                        Jak začít
+                </div>
+            </div>
             <ol class=" sm:bg-white shadow-sm sm:rounded-2xl space-y-1 sm:space-y-4 sm:p-4 text-white text-xl sm:text-4xl text-center font-black list-decimal list-inside mt-8 sm:mt-4">
                 <div class="sm:rounded-xl  bg-blue-500 sm:bg-gray-500 py-2 sm:py-5">
                     <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
@@ -74,7 +95,7 @@
 
 
 
-
+        </div>
 
 
 

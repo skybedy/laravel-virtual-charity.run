@@ -7,7 +7,7 @@
 
         @foreach ($events as $event)
 
-            <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  rounded-xl sm:rounded-2xl  text-white text-center font-black bg-gray-600  sm:mt-0 pt-4 pb-6">
+            <div class="w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96  rounded-xl sm:rounded-2xl  text-white text-center font-black bg-gray-600  sm:mt-0 pt-4 pb-6 homepage-inner-box--gray">
 
                 <div class="text-7xl sm:text-[3.4rem] md:text-7xl lg:text-8xl xl:text-9xl  sm:mt-7 xl:mt-3 border-b border-white mx-3 lg:mx-7 mb-1">{{ $event->name }}</div>
 

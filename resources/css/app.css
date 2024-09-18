@@ -17,7 +17,7 @@
     }
 
 .event-box a{
-    @apply   w-1/3 sm:w-full inline-block rounded sm:px-4 py-4 sm:py-2 sm:mt-3 mt-4;
+    @apply   w-1/3 sm:w-full inline-block rounded sm:px-4 py-2 sm:py-2 sm:mt-3 mt-4 overflow-clip;
 }
 
 .indie-flower-regular {
@@ -54,5 +54,26 @@ transition: background .2s ease-in-out;
 input[type=file]::file-selector-button:hover {
 background: #0d45a5;
 }
+
+.homepage-box{
+    @apply w-full mx-auto p-2 sm:p-4 rounded-2xl border border-white bg-sky-200;
+}
+
+.homepage-inner-box{
+    @apply rounded-xl text-white  text-lg sm:text-4xl text-center font-black  p-5;
+}
+
+.homepage-inner-box--orange {
+    @apply bg-gradient-to-b from-orange-400 to-orange-600;
+  }
+
+  .homepage-inner-box--gray {
+    @apply bg-gradient-to-b from-gray-500 to-gray-700;
+  }
+
+  .graddient-gray-500-700 {
+    @apply bg-gradient-to-b from-gray-500 to-gray-700;
+  }
+
 
 

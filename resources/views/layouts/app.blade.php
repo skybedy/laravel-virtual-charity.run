@@ -20,7 +20,7 @@
         <script src="https://js.stripe.com/v3/"></script>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-sky-300 bg-none sm:bg-gradient-to-b sm:from-blue-200 sm:to-blue-400">
+        <div class="min-h-screen bg-sky-300">
             @include('layouts.navigation')
 
 
