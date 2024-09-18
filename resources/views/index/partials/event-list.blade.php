@@ -3,8 +3,6 @@
 
 <div class="bg-white overflow-hidden shadow-sm rounded-2xl mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-around items-center gap-x-4">
 
-
-
         @foreach ($events as $event)
 
             <div class="w-full sm:w-1/3 rounded-xl sm:rounded-2xl  text-white text-center font-black bg-gray-600  sm:mt-0 pt-4 pb-6 bg-gradient-to-b from-gray-500 to-gray-700">

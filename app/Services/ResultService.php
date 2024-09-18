@@ -173,7 +173,7 @@ class ResultService
             //kontrola, jestli je cas v rozsahu zavodu
             if (!$this->isTimeInRange($time, $dateEventStartTimestamp, $dateEventEndTimestamp))
             {
-                throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
+                throw new TimeIsOutOfRangeException('Aktivita je mimo rozsah akce.');
             }
             // zacatek startu aktivity, teoreticky by se měl shodovat s case v metadatech, ale pro jistotu
             if ($i == 1)
@@ -361,6 +361,8 @@ class ResultService
 
         $eventDistance = $event->value('distance');
 
+        $timeDistance = $event->value('time');
+
         $dateEventStartTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_start'))->timestamp;
 
         $dateEventEndTimestamp = Carbon::createFromFormat('Y-m-d', $event->value('date_end'))->timestamp;
@@ -390,6 +392,7 @@ class ResultService
                     'distance' => $activityData['distance']['data'][$key],
                     'altitude' => $activityData['altitude']['data'][$key],
                     'cadence' => $activityData['cadence']['data'][$key],
+                    'seconds' => $activityData['time']['data'][$key],
                 ];
 
         }
@@ -398,13 +401,86 @@ class ResultService
 
         $lastPointLat = $lastPointLon = $currentPointLat = $currentPointLon = $distance = null;
 
+
+        //zavody na cas
+        if(is_null($eventDistance))
+        {
+
+            $x = $this->getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp,$currentPointLat,$currentPointLon,$distance,$timeDistance,$activityDate);
+            dd($x);
+        }
+        // zavody na vzdalenost
+        else
+        {
+            foreach($activityDataArray as $point)
+            {
+
+                if (!$this->isTimeInRange($point['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
+                {
+                    throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
+                }
+
+                $lastPointLat = $currentPointLat;
+
+                $lastPointLon = $currentPointLon;
+
+                $currentPointLat = floatval($point['latlng'][0]);
+
+                $currentPointLon = floatval($point['latlng'][1]);
+
+                //dump($lastPointLat);
+
+                $trackPointArray[] = [
+                    'latitude' => $currentPointLat,
+                    'longitude' => $currentPointLon,
+                    'time' => $point['time'],
+                    'user_id' => $userId,
+                    'cadence' => $point['cadence'],
+                    'registration_id' => $registrationId
+                ];
+
+
+                if ($lastPointLat != null) {
+
+                    $pointDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+
+                    $distance += $pointDistance;
+
+
+                    if ($distance >= $eventDistance)
+                    {
+                        $finishTime = $this->finishTimeCalculation($eventDistance,$point['distance'],$point['time'],$startDayTimestamp);
+
+                        return [
+                            'finish_time' => $finishTime['finish_time'],
+                            'finish_time_sec' => $finishTime['finish_time_sec'],
+                            'pace' => $finishTime['pace'],
+                            'track_points' => $trackPointArray,
+                          //  'registration_id' => $registrationId,
+                            'finish_time_date' => $activityDate,
+                        ];
+                    }
+                }
+            }
+
+            throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
+
+        }
+
+    }
+
+
+
+    private function getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp, $currentPointLat, $currentPointLon,$distance,$timeDistance,$activityDate)
+    {
+
+
         foreach($activityDataArray as $point)
         {
 
-
             if (!$this->isTimeInRange($point['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
             {
-                throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
+                throw new TimeIsOutOfRangeException('Aktivita je mimo rozsah akce.');
             }
 
             $lastPointLat = $currentPointLat;
@@ -415,7 +491,6 @@ class ResultService
 
             $currentPointLon = floatval($point['latlng'][1]);
 
-            //dump($lastPointLat);
 
             $trackPointArray[] = [
                 'latitude' => $currentPointLat,
@@ -423,7 +498,6 @@ class ResultService
                 'time' => $point['time'],
                 'user_id' => $userId,
                 'cadence' => $point['cadence'],
-                'registration_id' => $registrationId
             ];
 
 
@@ -433,25 +507,76 @@ class ResultService
 
                 $distance += $pointDistance;
 
-                if ($distance >= $eventDistance)
+
+                if ($point['seconds'] >= $timeDistance)
                 {
-                    $finishTime = $this->finishTimeCalculation($eventDistance,$point['distance'],$point['time'],$startDayTimestamp);
+
+
+                   // $finishTime = $this->finishTimeCalculation($timeDistance,$point['distance'],$point['time'],$startDayTimestamp);
+
+                   $timeNavic = $point['seconds'] - $timeDistance;
+                   $distanceCm = $distance * 100;
+                   $cmZaSekundu = $distanceCm / $point['seconds'] ;
+                   $cmNavic = $cmZaSekundu * $timeNavic;
+                   $cmPoKorekci = $distanceCm - $cmNavic;
+                   $metryPoKorekci = intval(round($cmPoKorekci / 100));
+
+                   //dump(round(floatval($metryPoKorekci / 1000),2));
+                   //dd(round(floatval(($metryPoKorekci * 0.8) / 1000),2));
+
+
+
+
+
+
+
+
+
 
                     return [
-                        'finish_time' => $finishTime['finish_time'],
-                        'finish_time_sec' => $finishTime['finish_time_sec'],
-                        'pace' => $finishTime['pace'],
+                  //      'finish_time' => $finishTime['finish_time'],
+                    //    'finish_time_sec' => $finishTime['finish_time_sec'],
+                    'finish_distance_km' => round(floatval($metryPoKorekci / 1000),2),
+                    'finish_distance_mile' => round(floatval(($metryPoKorekci * 0.8) / 1000),2),
+
+                       'pace_km' => $this->averageTimePerKm($distance,$timeDistance),
+                       'pace_mile' => $this->pacePerMile($distance,$timeDistance),
                         'track_points' => $trackPointArray,
-                      //  'registration_id' => $registrationId,
+                      // 'registration_id' => $registrationId,
                         'finish_time_date' => $activityDate,
                     ];
                 }
             }
         }
 
-        throw new SmallDistanceException('Vzdálenost je menší než délka tratě.');
+        throw new SmallDistanceException('The time is less than 2:00:35');
 
     }
+
+
+    private function pacePerMile($eventDistance,$finishTimeSec)
+    {
+        $secondPerMile = round(($finishTimeSec * 1609.3) / $eventDistance);
+
+        $timeObj = Carbon::createFromTime(0, 0, 0)->addSeconds($secondPerMile);
+
+        if($secondPerMile > 599)
+        {
+            return $timeObj->format('i:s');
+        }
+        else
+        {
+            return substr($timeObj->format('i:s'), 1);
+        }
+
+
+    }
+
+
+
+
+
+
 
     //otazka zda spis nevyvolat vyjimky a logovat v controlleru, asi predelat
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
@@ -495,7 +620,7 @@ class ResultService
         foreach ($events as $key => $event)
         {
             $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
-          
+
             //kontrola, jestli je uzivatel k nemu prihlasen
             if (!is_null($registrationId))
             {
@@ -533,11 +658,11 @@ class ResultService
 
 
         }
-       
+
         if(!$userRegisteredToSomeEvent)
         {
             Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
-            
+
             exit();
 
         }

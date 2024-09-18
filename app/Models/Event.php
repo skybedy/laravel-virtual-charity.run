@@ -33,19 +33,5 @@ class Event extends Model
             ->get();
     }
 
-    public function eventShow()
-    {
 
-        $eventId = 1;
-        $userId = 1;
-
-        $event = Event::with(['registrations' => function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        }])
-            ->where('id', $eventId)
-            ->first();
-
-        return $event;
-
-    }
 }

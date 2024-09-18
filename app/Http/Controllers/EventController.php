@@ -29,13 +29,14 @@ class EventController extends Controller
      */
     public function index(Request $request, Event $event)
     {
-
-
-        if ($request->user() == null) {
+        if ($request->user() == null)
+        {
             return view('events.index', [
                 'events' => $event::All(),
             ]);
-        } else {
+        }
+        else
+        {
             return view('events.index', [
                 'events' => $event->eventList($request->user()->id),
             ]);
