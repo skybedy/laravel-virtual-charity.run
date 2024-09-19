@@ -92,7 +92,7 @@ class Result extends Model
     {
         $sql = "SELECT
             r1.registration_id,
-            r1.finish_time_date AS date,
+            DATE_FORMAT(r1.finish_time_date,'%e.%c.') AS date,
             r1.finish_distance_km,
             r1.pace_km,
             r1.finish_distance_mile,
@@ -141,18 +141,29 @@ class Result extends Model
 
 
 
-    public function resultsIndividual($registrationId,$eventTypeId)
+    public function resultsIndividual($registrationId,$eventType)
     {
-        $results =  self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace_km AS pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
-            ->where('registration_id', $registrationId)
-            ->orderBy('finish_time','ASC')
-            ->skip(1)
-            ->take(PHP_INT_MAX)
-            ->get();
 
+        switch($eventType)
+        {
+            case 1;
+                $results =  self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace_km AS pace,results.finish_distance_km,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+                ->where('registration_id', $registrationId)
+                ->orderBy('finish_time','ASC')
+                ->skip(1)
+                ->take(PHP_INT_MAX)
+                ->get();
+            case 2;
+                $results = self::selectRaw('id,finish_distance_km,pace_km as pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+                ->where('registration_id', $registrationId)
+                ->orderBy('finish_distance_km','DESC')
+                ->skip(1)
+                ->take(PHP_INT_MAX)
+                ->get();
+        }
             return [
                 'results' => $results,
-                'event_type' => $eventTypeId
+                'event_type' => $eventType
             ];
     }
 
