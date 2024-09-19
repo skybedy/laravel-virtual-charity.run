@@ -5,6 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <meta property="og:url" content="https://virtual-charity-run" />
+        <meta property="og:type" content="website" /> <!-- nebo "article", pokud jde o článek -->
+        <meta property="og:title" content="Virtual Charity Run" />
+        <meta property="og:description" content="Virtuální běhy pro charitatovní účely" />
+        <meta property="og:image" content="https://virtual-charity.run/virtual-charity-logo.jpg" />
+        <meta property="fb:app_id" content="501944065799712" />
+
         <title>Virtual Charity Run @yield('title')</title>
 
         <!-- Fonts -->
