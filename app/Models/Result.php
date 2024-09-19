@@ -141,14 +141,19 @@ class Result extends Model
 
 
 
-    public function resultsIndividual($registrationId)
+    public function resultsIndividual($registrationId,$eventTypeId)
     {
-        return self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace_km AS pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
+        $results =  self::selectRaw('id,SUBSTRING(finish_time,2) AS finish_time,pace_km AS pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
             ->where('registration_id', $registrationId)
             ->orderBy('finish_time','ASC')
             ->skip(1)
             ->take(PHP_INT_MAX)
             ->get();
+
+            return [
+                'results' => $results,
+                'event_type' => $eventTypeId
+            ];
     }
 
 

@@ -329,13 +329,13 @@ class EventController extends Controller
             case 1:
                 return view('events.results.result-index-1', [
                     'results' => $result->resultsOverall($request->eventId)['results'],
-                    'event' => $event::find($request->eventId),
+                    'event' => $event::select("id","name","event_type_id")->find($request->eventId),
                 ]);
 
             case 2:
                 return view('events.results.result-index-2', [
                     'results' => $result->resultsOverall($request->eventId)['results'],
-                    'event' => $event::find($request->eventId),
+                    'event' => $event::select("id","name","event_type_id")->find($request->eventId),
                 ]);
         }
     }

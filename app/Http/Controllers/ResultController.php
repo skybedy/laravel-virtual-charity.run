@@ -44,7 +44,7 @@ class ResultController extends Controller
 
     public function resultUser(Request $request, Result $result)
     {
-        return response()->json($result->resultsIndividual($request->registrationId));
+        return response()->json($result->resultsIndividual($request->registrationId,$request->eventTypeId));
     }
 
 

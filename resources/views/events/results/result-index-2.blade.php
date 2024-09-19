@@ -6,7 +6,7 @@
                 <div class="p-6 text-gray-900">
                     <x-event-navbar :event="$event" />
                     <div class="overflow-auto">
-                        <table id="result_table_sm" class="hidden md:table table-auto border-collapse w-full mt-5">
+                        <table id="result_table" class="hidden md:table table-auto border-collapse w-full mt-5">
                             <tr class="">
                                 <th class="border px-2">#</th>
                                 <th class="border px-2 text-left">Jméno</th>
@@ -26,7 +26,7 @@
                             <td class="border text-center">{{ $loop->iteration }}</td>
                             <td class="border px-2">
                                 @if($result->count > 1)
-                                    <a href="{{ route('result.user',$result->registration_id) }}" class="text-blue-700 underline">{{ $result->lastname }} {{ $result->firstname }}</a>
+                                    <a href="{{ route('result.user',$event->event_type_id,$result->registration_id) }}" class="text-blue-700 underline">{{ $result->lastname }} {{ $result->firstname }}</a>
                                 @else
                                 {{ $result->lastname }} {{ $result->firstname }}
                                 @endif
