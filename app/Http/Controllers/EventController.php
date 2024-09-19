@@ -320,11 +320,28 @@ class EventController extends Controller
 
     public function resultIndex(Request $request, Result $result, Event $event)
     {
-        return view('events.results.result-index', [
-            'results' => $result->resultsOverall($request->eventId),
-            'event' => $event::find($request->eventId),
-        ]);
+
+
+        $eventType = $result->resultsOverall($request->eventId)['event_type'];
+
+        switch($eventType)
+        {
+            case 1:
+                return view('events.results.result-index-1', [
+                    'results' => $result->resultsOverall($request->eventId)['results'],
+                    'event' => $event::find($request->eventId),
+                ]);
+
+            case 2:
+                return view('events.results.result-index-2', [
+                    'results' => $result->resultsOverall($request->eventId)['results'],
+                    'event' => $event::find($request->eventId),
+                ]);
+        }
     }
+
+
+
 
     public function startlistIndex(Request $request, Registration $registration, Event $event, Startlist $startlist)
     {

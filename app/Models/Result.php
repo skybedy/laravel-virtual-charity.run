@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class Result extends Model
 {
+
+
+
+
     protected $casts = [
         'duplicity_check' => 'array',
     ];
@@ -31,39 +35,106 @@ class Result extends Model
 
     public function resultsOverall($eventId)
     {
+        $eventType = $this->raceType($eventId);
+
+        switch($eventType)
+        {
+            case 1:
+                return $this->resultsOverallType1($eventId,$eventType);
+            case 2:
+                return $this->resultsOverallType2($eventId,$eventType);
+        }
+
+    }
+
+
+    private function resultsOverallType1($eventId,$eventType)
+    {
         $sql = "SELECT
-        r1.registration_id,
-        SUBSTRING(r1.finish_time,2) AS best_finish_time,
-        r1.finish_time_sec as best_finish_time_sec,
-        DATE_FORMAT(r1.finish_time_date,'%e.%c.') AS date,
-        r1.pace_km AS pace,
-        r1.id,
-        r.category_id,
-        u.lastname,
-        u.firstname,
-        u.team,
-        c.name AS category_name,
-        counts.count
-    FROM results r1
-    JOIN registrations r ON r1.registration_id = r.id
-    JOIN users u ON r.user_id = u.id
-    JOIN categories c ON r.category_id = c.id
-    JOIN (
-        SELECT registration_id, COUNT(*) AS count
-        FROM results
-        GROUP BY registration_id
-    ) counts ON r1.registration_id = counts.registration_id
-    WHERE
-        r1.finish_time = (
-            SELECT MIN(r2.finish_time)
-            FROM results r2
-            WHERE r1.registration_id = r2.registration_id
-        ) AND r.event_id = ?
-    ORDER BY best_finish_time asc";
+                r1.registration_id,
+                SUBSTRING(r1.finish_time,2) AS best_finish_time,
+                r1.finish_time_sec as best_finish_time_sec,
+                DATE_FORMAT(r1.finish_time_date,'%e.%c.') AS date,
+                r1.pace_km AS pace,
+                r1.id,
+                r.category_id,
+                u.lastname,
+                u.firstname,
+                u.team,
+                c.name AS category_name,
+                counts.count
+            FROM results r1
+            JOIN registrations r ON r1.registration_id = r.id
+            JOIN users u ON r.user_id = u.id
+            JOIN categories c ON r.category_id = c.id
+            JOIN (
+                SELECT registration_id, COUNT(*) AS count
+                FROM results
+                GROUP BY registration_id
+            ) counts ON r1.registration_id = counts.registration_id
+            WHERE
+                r1.finish_time = (
+                    SELECT MIN(r2.finish_time)
+                    FROM results r2
+                    WHERE r1.registration_id = r2.registration_id
+                ) AND r.event_id = ?
+            ORDER BY best_finish_time asc";
 
-      $result = self::hydrate(DB::select($sql, [$eventId]));
+        $result = self::hydrate(DB::select($sql, [$eventId]));
 
-      return $result;
+        return [
+            'event_type' => $eventType,
+            'results' => $result
+        ];
+    }
+
+    private function resultsOverallType2($eventId,$eventType)
+    {
+        $sql = "SELECT
+            r1.registration_id,
+            r1.finish_time_date AS date,
+            r1.finish_distance_km,
+            r1.pace_km,
+            r1.finish_distance_mile,
+            r1.pace_mile,
+            r1.id,
+            r.category_id,
+            u.lastname,
+            u.firstname,
+            u.country,
+            c.name AS category_name,
+            counts.count
+        FROM results r1
+        JOIN registrations r ON r1.registration_id = r.id
+        JOIN users u ON r.user_id = u.id
+        JOIN categories c ON r.category_id = c.id
+        JOIN (
+            SELECT registration_id, COUNT(*) AS count
+            FROM results
+            GROUP BY registration_id
+        ) counts ON r1.registration_id = counts.registration_id
+        WHERE
+            r1.finish_distance_km = (
+                SELECT MAX(r2.finish_distance_km)
+                FROM results r2
+                WHERE r1.registration_id = r2.registration_id
+            ) AND r.event_id = ?
+        ORDER BY finish_distance_km DESC";
+
+        $result = self::hydrate(DB::select($sql, [$eventId]));
+
+        return [
+            'event_type' => $eventType,
+            'results' => $result
+        ];
+    }
+
+
+
+
+    private function raceType($eventId)
+    {
+        return Event::where('id', $eventId  )->value('event_type_id');
     }
 
 
