@@ -599,22 +599,52 @@ class ResultService
                     'cadence' => $activityData['cadence']['data'][$key]
                 ];
         }
-        //výpočet celkové vzdálenosti aktivity
+
+        
+        /* výpočet celkové vzdálenosti aktivity */
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
 
+        
+        
+        /* kontrola, jestli v daném časovém období existuje nějaký závod */
         $events = Event::where('distance', '<=', $activityDistance)
-                        ->where('platform_id',env("PLATFORM_ID"))
-                        ->where('serie_id',env("ACTIVE_SERIE_ID"))
-                        ->orderBy('distance', 'DESC')
-                        ->get(['id', 'distance']);
-        //kontrola, jestli v daném časovém období existuje nějaký závod
+                      
+        
+        
+        ->where('platform_id',env("PLATFORM_ID"))
+                        ->where('date_end', '>=', $activityDate)
+                        ->where('distance', '<=', $activityDistance)
+                        ->orderBy('event_type_id','DESC')
+                        ->orderBy('distance','DESC')
+                        ->get(['id', 'distance','event_type_id']);
+
+
+
+        /* zadny zavod neni */
         if (count($events) == 0)
         {
-            Log::alert('Uzivatel '.$userId.' nahrál aktivitu, ale v daném časovém období a v patřičné délce neexistuje žádný závod.');
+            Log::alert("Uzivatel $userId nahrál aktivitu, ale v daném časovém období a v patřičné délce neexistuje žádný závod.");
 
             exit();
         }
-        //procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen
+        
+      
+      
+  
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+        /* procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen */
         foreach ($events as $key => $event)
         {
             $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
@@ -623,6 +653,21 @@ class ResultService
             if (!is_null($registrationId))
             {
                 $userRegisteredToSomeEvent = true;
+
+
+
+                if($event['event_type_id'] == 2)
+                {
+                     return $this->getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp,$currentPointLat,$currentPointLon,$distance,$timeDistance,$activityDate);
+                }
+        
+
+
+
+
+
+                
+               
                 //prochazeni pole s daty aktivity
                 foreach($activityDataArray as $activityData)
                 {
@@ -636,6 +681,7 @@ class ResultService
                         'cadence' => $activityData['cadence'],
 
                     ];
+                  
                     //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
                     if($activityData['distance'] >= $event['distance'])
                     {
@@ -657,6 +703,13 @@ class ResultService
 
         }
 
+        
+        
+        
+        
+        
+        
+        
         if(!$userRegisteredToSomeEvent)
         {
             Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
@@ -666,6 +719,14 @@ class ResultService
         }
 
     }
+
+
+
+    private function webhookType2($activityDataArray,$event)
+    {
+
+    }    
+
 
 
 
