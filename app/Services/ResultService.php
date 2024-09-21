@@ -359,6 +359,8 @@ class ResultService
 
         $event = Event::where('id', $request->eventId);
 
+        $eventDistance = $event->value('distance');
+
         $eventType = $event->value('event_type_id');
 
         $timeDistance = $event->value('time');
@@ -380,6 +382,10 @@ class ResultService
 
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
+
+
+
+
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
         $activityDataArray = [];
 
@@ -410,10 +416,10 @@ class ResultService
         // zavody na vzdalenost
         else
         {
-            foreach($activityDataArray as $point)
+            foreach($activityDataArray as $activityData)
             {
 
-                if (!$this->isTimeInRange($point['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
+                if (!$this->isTimeInRange($activityData['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
                 {
                     throw new TimeIsOutOfRangeException('Čas je mimo rozsah akce.');
                 }
@@ -422,18 +428,18 @@ class ResultService
 
                 $lastPointLon = $currentPointLon;
 
-                $currentPointLat = floatval($point['latlng'][0]);
+                $currentPointLat = floatval($activityData['latlng'][0]);
 
-                $currentPointLon = floatval($point['latlng'][1]);
+                $currentPointLon = floatval($activityData['latlng'][1]);
 
                 //dump($lastPointLat);
 
                 $trackPointArray[] = [
                     'latitude' => $currentPointLat,
                     'longitude' => $currentPointLon,
-                    'time' => $point['time'],
+                    'time' => $activityData['time'],
                     'user_id' => $userId,
-                    'cadence' => $point['cadence'],
+                    'cadence' => $activityData['cadence'],
                     'registration_id' => $registrationId
                 ];
 
@@ -447,7 +453,7 @@ class ResultService
 
                     if ($distance >= $eventDistance)
                     {
-                        $finishTime = $this->finishTimeCalculation($eventDistance,$point['distance'],$point['time'],$startDayTimestamp);
+                        $finishTime = $this->finishTimeCalculation($eventDistance,$activityData['distance'],$point['time'],$startDayTimestamp);
 
                         return [
                             'finish_time' => $finishTime['finish_time'],
@@ -473,10 +479,10 @@ class ResultService
     {
 
 
-        foreach($activityDataArray as $point)
+        foreach($activityDataArray as $activityData)
         {
 
-            if (!$this->isTimeInRange($point['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
+            if (!$this->isTimeInRange($activityData['time'], $dateEventStartTimestamp, $dateEventEndTimestamp))
             {
                 throw new TimeIsOutOfRangeException('Aktivita je mimo rozsah akce.');
             }
@@ -485,36 +491,37 @@ class ResultService
 
             $lastPointLon = $currentPointLon;
 
-            $currentPointLat = floatval($point['latlng'][0]);
+            $currentPointLat = floatval($activityData['latlng'][0]);
 
-            $currentPointLon = floatval($point['latlng'][1]);
+            $currentPointLon = floatval($activityData['latlng'][1]);
 
 
             $trackPointArray[] = [
                 'latitude' => $currentPointLat,
                 'longitude' => $currentPointLon,
-                'time' => $point['time'],
+                'time' => $activityData['time'],
                 'user_id' => $userId,
-                'cadence' => $point['cadence'],
+                'cadence' => $activityData['cadence'],
             ];
 
 
             if ($lastPointLat != null) {
 
-                $pointDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+                $activityDataDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
 
-                $distance += $pointDistance;
+                $distance += $activityDataDistance;
 
 
-                if ($point['seconds'] >= $timeDistance)
+
+                if ($activityData['seconds'] >= $timeDistance)
                 {
 
 
-                   // $finishTime = $this->finishTimeCalculation($timeDistance,$point['distance'],$point['time'],$startDayTimestamp);
+                   // $finishTime = $this->finishTimeCalculation($timeDistance,$activityData['distance'],$activityData['time'],$startDayTimestamp);
 
-                   $timeNavic = $point['seconds'] - $timeDistance;
+                   $timeNavic = $activityData['seconds'] - $timeDistance;
                    $distanceCm = $distance * 100;
-                   $cmZaSekundu = $distanceCm / $point['seconds'] ;
+                   $cmZaSekundu = $distanceCm / $activityData['seconds'] ;
                    $cmNavic = $cmZaSekundu * $timeNavic;
                    $cmPoKorekci = $distanceCm - $cmNavic;
                    $metryPoKorekci = intval(round($cmPoKorekci / 100));
@@ -600,17 +607,17 @@ class ResultService
                 ];
         }
 
-        
+
         /* výpočet celkové vzdálenosti aktivity */
         $activityDistance = $this->activityDistanceCalculation($activityDataArray);
 
-        
-        
+
+
         /* kontrola, jestli v daném časovém období existuje nějaký závod */
         $events = Event::where('distance', '<=', $activityDistance)
-                      
-        
-        
+
+
+
         ->where('platform_id',env("PLATFORM_ID"))
                         ->where('date_end', '>=', $activityDate)
                         ->where('distance', '<=', $activityDistance)
@@ -627,23 +634,10 @@ class ResultService
 
             exit();
         }
-        
-      
-      
-  
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
         /* procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen */
         foreach ($events as $key => $event)
         {
@@ -655,19 +649,66 @@ class ResultService
                 $userRegisteredToSomeEvent = true;
 
 
-
                 if($event['event_type_id'] == 2)
                 {
-                     return $this->getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp,$currentPointLat,$currentPointLon,$distance,$timeDistance,$activityDate);
+
+
+
+                    foreach($activityDataArray as $activityData)
+                    {
+                        //vytvorime TrackPointArray pro ulozeni do DB
+                        $trackPointArray[] = [
+                            'latitude' => $activityData['latlng'][0],
+                            'longitude' => $activityData['latlng'][1],
+                            'time' => $activityData['time'],
+                            'altitude' => $activityData['altitude'],
+                            'user_id' => $userId,
+                            'cadence' => $activityData['cadence'],
+
+                        ];
+
+
+                        $activityDataDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+
+                        $distance += $activityDataDistance;
+
+
+
+
+
+
+
+
+                        //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
+                        if($activityData['distance'] >= $event['distance'])
+                        {
+                            $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
+
+                            return [
+                                'finish_time' => $finishTime['finish_time'],
+                                'finish_time_sec' => $finishTime['finish_time_sec'],
+                                'pace' => $finishTime['pace'],
+                                'track_points' => $trackPointArray,
+                                'registration_id' => $registrationId,
+                                'finish_time_date' => $activityDate,
+                            ];
+                        }
+                    }
+
+
+
+
+
+
                 }
-        
 
 
 
 
 
-                
-               
+
+
+
                 //prochazeni pole s daty aktivity
                 foreach($activityDataArray as $activityData)
                 {
@@ -681,7 +722,13 @@ class ResultService
                         'cadence' => $activityData['cadence'],
 
                     ];
-                  
+
+
+
+
+
+
+
                     //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
                     if($activityData['distance'] >= $event['distance'])
                     {
@@ -703,13 +750,13 @@ class ResultService
 
         }
 
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         if(!$userRegisteredToSomeEvent)
         {
             Log::alert('Uživatel '.$userId.' není prihlaseny k zadnemu zavodu v daném časovém období a odpovídající délce.');
@@ -725,7 +772,7 @@ class ResultService
     private function webhookType2($activityDataArray,$event)
     {
 
-    }    
+    }
 
 
 
