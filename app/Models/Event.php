@@ -27,7 +27,7 @@ class Event extends Model
                 $join->on('events.id', '=', 'registrations.event_id')
                     ->where('registrations.user_id', '=', $userId);
             })
-            ->where(['events.platform_id' =>  env('PLATFORM_ID'),'events.serie_id' => env('ACTIVE_SERIE_ID')])
+            ->where(['events.platform_id' =>  env('PLATFORM_ID'),'display' => true])
             ->selectRaw('CASE WHEN registrations.user_id IS NULL THEN null ELSE 1 END as registration_status')
             ->orderBy('events.id', 'asc')
             ->get();
