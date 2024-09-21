@@ -596,6 +596,13 @@ class ResultService
         //vytvoreni noveho pole se stejnymi paramatry jak GPX soubor
         $activityDataArray = [];
         // vytvoreni pole ve stejne strukture jak GPX soubor
+
+        /*
+            proverit, zda tu delkau zavodu nekontrolovat uz tady at se zbytecne nemusi tvorit pole
+
+        */
+
+
         foreach ($activityData['latlng']['data'] as $key => $val)
         {
             $activityDataArray[] = [
@@ -603,7 +610,8 @@ class ResultService
                     'time' => $activityData['time']['data'][$key] + $startDayTimestamp,
                     'distance' => $activityData['distance']['data'][$key],
                     'altitude' => $activityData['altitude']['data'][$key],
-                    'cadence' => $activityData['cadence']['data'][$key]
+                    'cadence' => $activityData['cadence']['data'][$key],
+                    'seconds' => $activityData['time']['data'][$key],
                 ];
         }
 
@@ -623,7 +631,7 @@ class ResultService
                         ->where('distance', '<=', $activityDistance)
                         ->orderBy('event_type_id','DESC')
                         ->orderBy('distance','DESC')
-                        ->get(['id', 'distance','event_type_id']);
+                        ->get(['id', 'distance','event_type_id','time']);
 
 
 
@@ -680,18 +688,30 @@ class ResultService
 
 
                         //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
-                        if($activityData['distance'] >= $event['distance'])
+                        if ($activityData['seconds'] >= $event['time'])
                         {
                             $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
 
+
+                            $timeNavic = $activityData['seconds'] - $event['time'];
+                            $distanceCm = $distance * 100;
+                            $cmZaSekundu = $distanceCm / $activityData['seconds'] ;
+                            $cmNavic = $cmZaSekundu * $timeNavic;
+                            $cmPoKorekci = $distanceCm - $cmNavic;
+                            $metryPoKorekci = intval(round($cmPoKorekci / 100));
+
+
+
+
+
                             return [
-                                'finish_time' => $finishTime['finish_time'],
-                                'finish_time_sec' => $finishTime['finish_time_sec'],
-                                'pace' => $finishTime['pace'],
-                                'track_points' => $trackPointArray,
-                                'registration_id' => $registrationId,
-                                'finish_time_date' => $activityDate,
-                            ];
+                                    'finish_distance_km' => round(floatval($metryPoKorekci / 1000),2),
+                                    'finish_distance_mile' => round(floatval(($metryPoKorekci * 0.8) / 1000),2),
+                                    'pace' => $this->averageTimePerKm($distance,$event['time']),
+                                    'pace_mile' => $this->pacePerMile($distance,$event['time']),
+                                    'track_points' => $trackPointArray,
+                                    'finish_time_date' => $activityDate,
+                                    ];
                         }
                     }
 
@@ -703,6 +723,9 @@ class ResultService
                 }
 
 
+
+                else
+                {
 
 
 
@@ -744,6 +767,9 @@ class ResultService
                         ];
                     }
                 }
+
+            }
+
                 break;
             }
 
