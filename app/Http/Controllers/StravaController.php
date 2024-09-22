@@ -131,11 +131,38 @@ class StravaController extends Controller
 
         $result->finish_time_date = $finishTime['finish_time_date'];
 
-        $result->finish_time = $finishTime['finish_time'];
 
-        $result->pace_km = $finishTime['pace'];
+        $result->pace_km = $finishTime['pace_km'];
 
-        $result->finish_time_sec = $finishTime['finish_time_sec'];
+
+        if(isset($finishTime['finish_time']))
+        {
+            $result->finish_time = $finishTime['finish_time'];
+        }
+
+        if(isset($finishTime['finish_time_sec']))
+        {
+            $result->finish_time_sec = $finishTime['finish_time_sec'];
+        }
+
+        if(isset($finishTime['finish_distance_km']))
+        {
+            $result->finish_distance_km = $finishTime['finish_distance_km'];
+        }
+
+        if(isset($finishTime['finish_distance_mile']))
+        {
+            $result->finish_distance_mile = $finishTime['finish_distance_mile'];
+        }
+
+        if(isset($finishTime['pace_mile']))
+        {
+            $result->pace_mile = $finishTime['pace_mile'];
+        }
+
+
+
+
 
         DB::beginTransaction();
 

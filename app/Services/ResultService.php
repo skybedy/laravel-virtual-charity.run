@@ -586,6 +586,15 @@ class ResultService
     //otazka zda spis nevyvolat vyjimky a logovat v controlleru, asi predelat
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
+        
+        
+      //  print_r($activityData);
+
+        //exit();
+        
+        
+        
+        
         $userRegisteredToSomeEvent = false;
         //pocatecni cas aktivity v UNIX sekundach
         $startDayTimestamp = strtotime($activityData['start_date_local']);
@@ -676,9 +685,9 @@ class ResultService
                         ];
 
 
-                        $activityDataDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
+                      //  $activityDataDistance = round($this->haversineGreatCircleDistance($lastPointLat, $lastPointLon, $currentPointLat, $currentPointLon), 1);
 
-                        $distance += $activityDataDistance;
+                        //$distance += $activityDataDistance;
 
 
 
@@ -690,11 +699,10 @@ class ResultService
                         //pokud je vzdálenost větší než délka závodu, tak se vypocita cas a dal se v cyklu, ktery prochazi polem, nepokracuje
                         if ($activityData['seconds'] >= $event['time'])
                         {
-                            $finishTime = $this->finishTimeCalculation($event['distance'],$activityData['distance'],$activityData['time'],$startDayTimestamp);
 
 
                             $timeNavic = $activityData['seconds'] - $event['time'];
-                            $distanceCm = $distance * 100;
+                            $distanceCm = $activityData['distance'] * 100;
                             $cmZaSekundu = $distanceCm / $activityData['seconds'] ;
                             $cmNavic = $cmZaSekundu * $timeNavic;
                             $cmPoKorekci = $distanceCm - $cmNavic;
@@ -704,14 +712,24 @@ class ResultService
 
 
 
-                            return [
-                                    'finish_distance_km' => round(floatval($metryPoKorekci / 1000),2),
-                                    'finish_distance_mile' => round(floatval(($metryPoKorekci * 0.8) / 1000),2),
-                                    'pace' => $this->averageTimePerKm($distance,$event['time']),
-                                    'pace_mile' => $this->pacePerMile($distance,$event['time']),
-                                    'track_points' => $trackPointArray,
-                                    'finish_time_date' => $activityDate,
-                                    ];
+
+
+
+
+                                    return [
+                                        //      'finish_time' => $finishTime['finish_time'],
+                                          //    'finish_time_sec' => $finishTime['finish_time_sec'],
+                                          'finish_distance_km' => round(floatval($metryPoKorekci / 1000),2),
+                                          'finish_distance_mile' => round(floatval(($metryPoKorekci * 0.8) / 1000),2),
+                      
+                                             'pace_km' => $this->averageTimePerKm($activityData['distance'],$event['time']),
+                                             'pace_mile' => $this->pacePerMile($activityData['distance'],$event['time']),
+                                              'track_points' => $trackPointArray,
+                                             'registration_id' => $registrationId,
+                                              'finish_time_date' => $activityDate,
+                                          ];
+
+
                         }
                     }
 
@@ -1122,6 +1140,9 @@ class ResultService
 
         $finishTime = $this->finishTimeRecountAccordingDistance($eventDistance, $rawActivityDistance, $rawFinishTimeSec);
 
+        
+        
+        
         return [
             'finish_time' => $finishTime['finish_time'],
 
