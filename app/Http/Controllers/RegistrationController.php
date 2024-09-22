@@ -105,6 +105,7 @@ class RegistrationController extends Controller
                 'payment_intent_data' => [
                     'transfer_data' => ['destination' => env('STRIPE_CONNECT_CLIENT_ID')],
                     'setup_future_usage' => 'on_session', //mozna kvuli apple kdyz nebude fungovat,dat pryč
+                    'statement_descriptor' => 'CHARITY RUN',
                 ],
             ]);
 

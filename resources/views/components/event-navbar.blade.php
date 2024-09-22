@@ -1,5 +1,3 @@
-@inject('carbon', 'Carbon\Carbon')
-
 <div class="flex justify-center sm:justify-between">
       <h2 class="mb-1 text-4xl font-extrabold leading-none tracking-tight text-orange-600 md:text-5xl lg:text-6xl dark:text-white pl-1">{{ $event->name }}</h2>
 </div>

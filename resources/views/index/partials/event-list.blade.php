@@ -1,4 +1,9 @@
+@php
+    use Carbon\Carbon;
 
+    $today = Carbon::now()->format('Y-m-d');
+
+@endphp
 
 
 <div class="bg-white overflow-hidden shadow-sm rounded-2xl mt-2 sm:mt-4 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-0 sm:flex-row justify-around items-center gap-x-4">
@@ -12,12 +17,18 @@
                 <div class="event-box px-5 text-white text-center flex sm:flex-col justify-between space-x-2 sm:space-x-0 text-sm md:text-base lg:text-xl">
                     <a class="bg-blue-400 hover:bg-blue-500" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>
                     <a class="bg-yellow-400 hover:bg-yellow-500" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
-                    @if($event->registration_status == 0)
-                       <span class="bg-red-400">Registrace od 1.10</span>
-                        <!--<a class="bg-red-400 hover:bg-red-500" href="{{ route('registration.create',$event->id) }}">Registrovat</a>-->
-                    @else
-                        <a class="bg-green-400 hover:bg-gray-500 md:text-xl" href="{{ route('event.show',$event->id) }}">Administrace</a>
-                    @endif
+                    @if ($today >= $event->date_start &&  $today <= $event->date_end)
+                        @if($event->registration_status == 0)
+                            <a class="bg-red-400 hover:bg-red-500" href="{{ route('registration.create',$event->id) }}">Registrovat</a>
+                        @else
+                            <a class="bg-green-400 hover:bg-gray-500 md:text-xl" href="{{ route('event.show',$event->id) }}">Administrace</a>
+                        @endif
+                   @else
+                         <span class="bg-red-400">Registrace od {{ Carbon::parse($event->date_start)->format('j.n.y') }} </span>
+                   @endif
+
+
+
                 </div>
 
             </div>
