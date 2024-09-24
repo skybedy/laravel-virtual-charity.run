@@ -554,7 +554,7 @@ class ResultService
             }
         }
 
-        throw new SmallDistanceException('The time is less than 2:00:35');
+        throw new SmallDistanceException('Čas běhu je kratší než 1 hodina');
 
     }
 

@@ -70,7 +70,7 @@ class RegistrationController extends Controller
             'event_id' => $request->eventId,
             'user_id' =>   $request->user()->id,
             'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-            'ids' => $registration->startNumber($request->eventId),
+            'ids' => $registration->startNumber($request->eventId,$request->user()->id),
         ]);
 
         session()->flash('success', 'Byli jste úspěšně zaregistrováni');

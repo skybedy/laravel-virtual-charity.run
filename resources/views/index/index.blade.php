@@ -10,7 +10,7 @@
 
 
         <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-            <div>Běhy pro povodně@<span class="block sm:inline">16.9 - 31.10.24</span></div>
+            <div>Běhy pro povodně<span class="hidden sm:inline">@</span><span class="block sm:inline">16.9 - 13.10.24</span></div>
         </div>
 
 
@@ -40,7 +40,7 @@
         <div class="homepage-box">
 
             <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-                <div>Běhy pro N/nesnázi <span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
+                <div>Běhy pro N/nesnázi<span class="hidden sm:inline">@</span><span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
             </div>
 
 
@@ -81,6 +81,9 @@
                 <div class="homepage-inner-box-container gradient-tb-gray-500-700">
                     <div>
                         Plně automatizovaný přenos dat prostřednictvím STRAVA
+                    </div>
+                    <div>
+                        Jde to ale i bez STRAVY pomocí GPX souborů
                     </div>
                     <div>
                         Okamžitý náhled na výsledky

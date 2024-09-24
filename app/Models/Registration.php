@@ -31,7 +31,31 @@ class Registration extends Model
 
 
 
-    public function startNumber($event_id)
+    public function startNumber($event_id,$user_id)
+    {
+       
+     
+
+
+    $user_exists_ids = self::select('ids')
+    ->where('user_id', $user_id)
+    ->whereIn('event_id', function($query) {
+        $query->select('id')
+            ->from('events')
+            ->where('serie_id', function($subQuery) {
+                $subQuery->select('serie_id')
+                    ->from('events')
+                    ->where('id', 5);
+            });
+    })
+    ->pluck('ids')
+    ->first();
+
+    if(!is_null($user_exists_ids))
+    {
+        return $user_exists_ids;
+    }
+    else
     {
         $max_ids =  self::whereHas('event', function ($query) use ($event_id) {
             $query->where('serie_id', function ($subquery) use ($event_id) {
@@ -43,8 +67,6 @@ class Registration extends Model
         })
         ->max("ids");
 
-       //dd($max_ids);
-
         if($max_ids == null)
         {
             return 1;
@@ -53,6 +75,13 @@ class Registration extends Model
         {
             return $max_ids + 1;
         }
+
+    }
+
+
+       
+       
+       
     }
 
 

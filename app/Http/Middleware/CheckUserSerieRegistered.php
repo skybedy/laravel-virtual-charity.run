@@ -23,7 +23,9 @@ class CheckUserSerieRegistered
             return $next($request);
         }
 
-        return redirect()->route('registration.create',$event_id)->with('error', 'Je nutné nejdříve se k závodům registrovat a uhradit startovné.');
+        return redirect()->route('event.show', $event_id)->with('error', 'Je nutné nejdříve se k závodu <a class="underline" href="' . route('registration.create', $event_id) . '">REGISTROVAT</a>.');
+
+
     }
 
 
