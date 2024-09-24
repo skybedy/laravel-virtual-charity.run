@@ -9,6 +9,36 @@
     <div class="homepage-box">
 
 
+        <div class="homepage-inner-box-container gradient-tb-orange-400-600">
+            <div>Běhy pro povodně@<span class="block sm:inline">16.9 - 31.10.24</span></div>
+        </div>
+
+
+        <div class="flex flex-col sm:flex-row justify-between gap-x- ap-y-4 bg-white overflow-hidden shadow-sm rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
+
+            <div class="homepage-inner-box-container gradient-tb-gray-500-700">
+                <div>
+                    Startovné na všechny 3 závody 111 Kč
+                </div>
+                <div>
+                    Přímá platba vybrané charitativní organizaci
+                </div>
+            </div>
+
+
+            <div class="m-4 ms-0 p-1 w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96 sm:rounded-xl border border-gray-600 hidden sm:flex justify-center items-center">
+                <img class="w-full h-auto"  src="{{ asset('images/neziskovky-logo.png') }}" alt="Obrázek">
+            </div>
+
+        </div>
+
+        @include('index.partials.event-list',['serie_id' => 2])
+    </div>
+
+<hr>
+
+        <div class="homepage-box">
+
             <div class="homepage-inner-box-container gradient-tb-orange-400-600">
                 <div>Běhy pro N/nesnázi <span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
             </div>
@@ -34,7 +64,7 @@
 
             </div>
 
-            @include('index.partials.event-list')
+            @include('index.partials.event-list',['serie_id' => 1])
 
 
         </div>
