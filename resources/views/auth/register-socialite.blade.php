@@ -4,10 +4,10 @@
 <x-guest-layout>
     <div class="w-ful sm:max-w-md my-2 md:mr-5  px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg border border-solid border-gray-200">
         <div class="mt-3">
-            <img class="img-fluid" src="{{$provider}}-login-icon.png" />           
+            <img class="img-fluid" src="images/{{$provider}}-login-icon.png" />
         </div>
         <form method="POST" action="{{ route('register-socialite') }}">
-            @csrf 
+            @csrf
              <x-text-input  id="provider_name" type="hidden" name="provider_name" :value="$provider" />
              <x-text-input  id="provider_id" type="hidden" name="provider_id" :value="$id" />
             <div class="mt-4">
@@ -21,8 +21,8 @@
                 <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
             </div>
             <div class="mt-4">
-                <x-input-label for="team" :value="__('Tým/Město/Obec - nepovinné')" />
-                <x-text-input id="team" class="mt-1 block w-full" type="text" name="team"  autofocus autocomplete="team" />
+                <x-input-label for="team" :value="__('Tým/Město/Obec')" />
+                <x-text-input id="team" class="mt-1 block w-full" type="text" name="team" required autofocus autocomplete="team" />
                 <x-input-error class="mt-2" :messages="$errors->get('team')" />
             </div>
             <div class="mt-4">

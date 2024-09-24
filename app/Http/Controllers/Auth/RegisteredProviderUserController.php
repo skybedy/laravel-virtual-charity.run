@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredProviderUserController extends Controller
 {
@@ -100,6 +101,7 @@ class RegisteredProviderUserController extends Controller
      */
     public function handleProviderCallback(string $provider, Request $request)
     {
+
         try {
 
             $user = Socialite::driver($provider)->user();
@@ -113,7 +115,6 @@ class RegisteredProviderUserController extends Controller
                 return redirect()->intended('/');
 
             } else {
-                //          dd($user);
 
                 return redirect()->route('register-socialite', [
                     'id' => $user->id,
@@ -141,7 +142,7 @@ class RegisteredProviderUserController extends Controller
             }
 
         } catch (Exception $e) {
-            // dd($e->getMessage());
+            Log::alert($e->getMessage());
         }
     }
 }
