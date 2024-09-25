@@ -20,12 +20,13 @@
         <script src="https://js.stripe.com/v3/"></script>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gradient-to-b from-sky-300 to-sky-500">
+
+        <div class="min-h-screen flex flex-col bg-gradient-to-b from-sky-300 to-sky-500">
             @include('layouts.navigation')
 
 
             <!-- Page Content -->
-            <main class="px-3 sm:px-0">
+            <main class="flex-grow px-3 sm:px-0">
                     @if (session('success'))
                         <x-flash-message type="success" :message="session('success')" />
                     @endif
@@ -45,7 +46,14 @@
 
                 {{ $slot }}
             </main>
-        </div>
+             <!-- Footer -->
+        <footer class="bg-[#fefdf9] text-blue text-center  h-24 border-t border-orange-400 flex flex-col justify-center">
+            <div class="max-w-7xl  mx-auto">
+                <p>&copy; 2024 Virtual Charity Run. All rights reserved.</p>
+            </div>
+        </footer>
 
+        </div>
+        @include('cookie-consent::index')
     </body>
 </html>

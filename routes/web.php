@@ -43,6 +43,7 @@ Route::middleware(['auth','checkUserSerieRegistered'])->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::post('/autodistance-upload', [IndexController::class, 'autodistanceUpload'])->name('autodistance_upload');
+    Route::get('/strava', [StravaController::class, 'index'])->name('strava.index');
     Route::get('/authorize-strava', [StravaController::class, 'authorizeStrava'])->name('authorize_strava');
     Route::get('/result/manage', [ResultController::class, 'manage'])->name('result.manage');
 });

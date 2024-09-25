@@ -25,6 +25,13 @@ use Exception;
 class StravaController extends Controller
 {
 
+
+    public function index()
+    {
+        return view('strava.index');
+
+    }
+
     /**
      *   zpracování webhook  ze Stravy
     */
@@ -255,7 +262,7 @@ class StravaController extends Controller
 
             $finishTime = $resultService->getActivityFinishDataFromStravaWebhook($response, $registration, $user->id);
 
-           
+
             $result = new Result();
 
             $result->registration_id = $finishTime['registration_id'];

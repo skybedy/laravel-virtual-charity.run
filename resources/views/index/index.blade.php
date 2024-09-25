@@ -107,7 +107,7 @@
                 </div>
                 <ol class="homepage-inner-box-container gradient-tb-gray-500-700 list-decimal list-inside">
                     <li>Pokud nejste, tak se <a class="underline text-red-500" href="{{ route('login') }}">přihlaste</a> přes FB, nebo Google..</li>
-                    <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('authorize_strava') }}>povolte</a> STRAVU..</li>
+                    <li>Pokud nemáte, tak si <a class="underline text-red-500" href={{ route('strava.index') }}>povolte</a> STRAVU..</li>
                     <li>Pokud nejste, tak se registrujte se k závodu, nebo závodům..</li>
                     <li>A to je vše - i když možná si ještě raději přečtěte, <a class="underline text-red-500" href="{{ route('how_it_works.index') }}">jak na to..</a></li>
                 </ol>
