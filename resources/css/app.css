@@ -78,7 +78,12 @@ background: #0d45a5;
     @apply bg-gradient-to-b from-gray-500 to-gray-700;
   }
 
-  .cooke-cnsent {
-    @apply text-white text-center bg-black;
+  .cookie-consent p{
+    @apply text-white font-bold text-center;
+  }
+
+
+  .cookie-consent > div > div {
+    @apply text-white  text-center bg-red-500 border-2 border-black;
   }
 
