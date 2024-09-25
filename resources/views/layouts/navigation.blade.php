@@ -110,6 +110,9 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profil') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('result.manage')">
+                      {{ __('Správa výsledků') }}
+                </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

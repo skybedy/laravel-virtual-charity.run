@@ -20,7 +20,7 @@
 
                         @if ($results->count() > 0)
                             <div class="flex justify-center">
-                            <table id="result_table" class="hidden md:table  border-collapse w-full my-10 mx-5">
+                            <table id="result_table" class="table  border-collapse w-full my-10 mx-5">
 
                                 @foreach ($results as $result)
                                     @if($current_race != $result->race_name)

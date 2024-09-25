@@ -586,18 +586,30 @@ class ResultService
     //otazka zda spis nevyvolat vyjimky a logovat v controlleru, asi predelat
     public function getActivityFinishDataFromStravaWebhook($activityData, $registration, $userId)
     {
-        
-        
+
+
       //  print_r($activityData);
 
         //exit();
-        
-        
-        
-        
+
+
+
+
         $userRegisteredToSomeEvent = false;
         //pocatecni cas aktivity v UNIX sekundach
-        $startDayTimestamp = strtotime($activityData['start_date_local']);
+
+        if(isset($activityData['start_date_local']))
+        {
+            $startDayTimestamp = strtotime($activityData['start_date_local']);
+        }
+        else
+        {
+            Log::alert("Uzivatel $userId nahrál aktivitu, ale ve chybí nutný údaj 'start_date_local', bez kterého to pokračovat nemůže, důvodí může být více.");
+
+            exit();
+        }
+
+
         //datum aktivity pro dotaz do DB
         $activityDate = date("Y-m-d", $startDayTimestamp);
         //pole pro ulozeni bodu trasy
@@ -658,7 +670,21 @@ class ResultService
         /* procházení závodů, jestli délkově odpovídají a jestli je k nim uzivatel prihlasen */
         foreach ($events as $key => $event)
         {
-            $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
+
+            $registration_exists = $registration->registrationExists($userId, $event['id'],NULL,NULL);
+
+            if(!is_null($registration_exists))
+            {
+                $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
+            }
+            else
+            {
+                continue;
+            }
+
+
+
+
 
             //kontrola, jestli je uzivatel k nemu prihlasen
             if (!is_null($registrationId))
@@ -721,7 +747,7 @@ class ResultService
                                           //    'finish_time_sec' => $finishTime['finish_time_sec'],
                                           'finish_distance_km' => round(floatval($metryPoKorekci / 1000),2),
                                           'finish_distance_mile' => round(floatval(($metryPoKorekci * 0.8) / 1000),2),
-                      
+
                                              'pace_km' => $this->averageTimePerKm($activityData['distance'],$event['time']),
                                              'pace_mile' => $this->pacePerMile($activityData['distance'],$event['time']),
                                               'track_points' => $trackPointArray,
@@ -778,7 +804,7 @@ class ResultService
                         return [
                             'finish_time' => $finishTime['finish_time'],
                             'finish_time_sec' => $finishTime['finish_time_sec'],
-                            'pace' => $finishTime['pace'],
+                            'pace_km' => $finishTime['pace'],
                             'track_points' => $trackPointArray,
                             'registration_id' => $registrationId,
                             'finish_time_date' => $activityDate,
@@ -1140,9 +1166,9 @@ class ResultService
 
         $finishTime = $this->finishTimeRecountAccordingDistance($eventDistance, $rawActivityDistance, $rawFinishTimeSec);
 
-        
-        
-        
+
+
+
         return [
             'finish_time' => $finishTime['finish_time'],
 
