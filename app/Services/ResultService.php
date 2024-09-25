@@ -411,7 +411,7 @@ class ResultService
         //zavody na cas
         if($eventType == 2)
         {
-             return $this->getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp,$currentPointLat,$currentPointLon,$distance,$timeDistance,$activityDate);
+             return $this->getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp,$currentPointLat,$currentPointLon,$distance,$timeDistance,$activityDate,$registrationId);
         }
         // zavody na vzdalenost
         else
@@ -453,7 +453,7 @@ class ResultService
 
                     if ($distance >= $eventDistance)
                     {
-                        $finishTime = $this->finishTimeCalculation($eventDistance,$activityData['distance'],$point['time'],$startDayTimestamp);
+                        $finishTime = $this->finishTimeCalculation($eventDistance,$activityData['distance'],$activityData['time'],$startDayTimestamp);
 
                         return [
                             'finish_time' => $finishTime['finish_time'],
@@ -475,7 +475,7 @@ class ResultService
 
 
 
-    private function getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp, $currentPointLat, $currentPointLon,$distance,$timeDistance,$activityDate)
+    private function getActivityFinishDataFromStravaStreamTimeType($userId,$activityDataArray,$dateEventStartTimestamp,$dateEventEndTimestamp, $currentPointLat, $currentPointLon,$distance,$timeDistance,$activityDate,$registrationId)
     {
 
 
@@ -502,6 +502,7 @@ class ResultService
                 'time' => $activityData['time'],
                 'user_id' => $userId,
                 'cadence' => $activityData['cadence'],
+                'registration_id' => $registrationId
             ];
 
 
@@ -673,6 +674,7 @@ class ResultService
 
             $registration_exists = $registration->registrationExists($userId, $event['id'],NULL,NULL);
 
+           
             if(!is_null($registration_exists))
             {
                 $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
@@ -707,6 +709,7 @@ class ResultService
                             'altitude' => $activityData['altitude'],
                             'user_id' => $userId,
                             'cadence' => $activityData['cadence'],
+                            'registration_id' => $registrationId
 
                         ];
 
@@ -787,6 +790,7 @@ class ResultService
                         'altitude' => $activityData['altitude'],
                         'user_id' => $userId,
                         'cadence' => $activityData['cadence'],
+                        'registration_id' => $registrationId
 
                     ];
 

@@ -24,10 +24,10 @@
                                 {{ __('Výsledky') }}
                             </x-nav-link>
                             <x-nav-link :href="route('event.upload-url.create',$event->id)" :active="request()->routeIs('event.upload-url.create')" class="text-blue-600 text-xs sm:text-sm">
-                                {{ __('Nahrát odkaz') }}
+                                {{ __('Nahrát odkaz ze Stravy') }}
                             </x-nav-link>
                             <x-nav-link :href="route('event.upload-file.create',$event->id)" :active="request()->routeIs('event.upload-file.index')" class="text-blue-600 text-xs sm:text-sm">
-                                {{ __('Nahrát soubor') }}
+                                {{ __('Nahrát GPX soubor') }}
                             </x-nav-link>
 
                         </div>

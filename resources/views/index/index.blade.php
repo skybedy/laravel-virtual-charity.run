@@ -14,7 +14,7 @@
         </div>
 
 
-        <div class="flex flex-col sm:flex-row justify-between gap-x- ap-y-4 bg-white overflow-hidden shadow-sm rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
+        <div class="flex flex-col sm:flex-row justify-between gap-x- ap-y-4 bg-white overflow-hidden shadow-md rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
 
             <div class="homepage-inner-box-container gradient-tb-gray-500-700">
                 <div>
@@ -26,7 +26,7 @@
             </div>
 
 
-            <div class="shadow-lg m-4 ms-0 p-1 w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96 sm:rounded-xl border-2 border-gray-600 hidden sm:flex justify-center items-center">
+            <div class="shadow-md m-4 ms-0 p-1 w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96 sm:rounded-xl border-2 border-gray-600 hidden sm:flex justify-center items-center">
                 <img class="w-full h-auto"  src="{{ asset('images/neziskovky-logo.png') }}" alt="Obrázek">
             </div>
 
