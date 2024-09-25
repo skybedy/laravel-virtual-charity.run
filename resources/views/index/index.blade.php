@@ -26,7 +26,7 @@
             </div>
 
 
-            <div class="m-4 ms-0 p-1 w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96 sm:rounded-xl border border-gray-600 hidden sm:flex justify-center items-center">
+            <div class="shadow-lg m-4 ms-0 p-1 w-full sm:w-44 md:w-56 lg:w-[19rem] xl:w-96 sm:rounded-xl border-2 border-gray-600 hidden sm:flex justify-center items-center">
                 <img class="w-full h-auto"  src="{{ asset('images/neziskovky-logo.png') }}" alt="Obrázek">
             </div>
 
