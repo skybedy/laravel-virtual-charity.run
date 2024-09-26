@@ -9,6 +9,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\StravaController;
 use App\Http\Controllers\PrivacyController;
+use App\Http\Controllers\AboutController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,6 +59,7 @@ Route::get('/event/{eventId}/startlist', [EventController::class, 'startlistInde
 
 Route::get('/result/{resultId}/map', [ResultController::class, 'resultMap'])->name('result.map');
 Route::get('/event/result/{eventTypeId}/{registrationId}', [ResultController::class, 'resultUser'])->name('result.user');
+Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
 
 

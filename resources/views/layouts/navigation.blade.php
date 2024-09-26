@@ -30,6 +30,10 @@
                     <x-nav-link :href="route('how_it_works.index')" :active="request()->routeIs('how_it_works.index')" class="text-lg lg:text-xl text-gray-600">
                         {{ __('Jak na to') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('about.index')" :active="request()->routeIs('about.index')" class="text-lg lg:text-xl text-gray-600">
+                        {{ __('O platformě') }}
+                    </x-nav-link>
                 </div>
 
             <!-- Settings Dropdown -->
