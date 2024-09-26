@@ -3,10 +3,15 @@
 
 
     @if(auth()->check())
-        @if(auth()->user()->strava_id === null)
-            <a class="bg-orange-600 text-xl text-white font-black rounded-md flex flex-col justify-center px-3 my-2" href="{{ route('strava.index') }}">Máte-li, povolte si Stravu</a>
+        @if(auth()->user()->strava_id !== null)
+            <a class="bg-gradient-to-b from-blue-400 to-blue-500 text-xl text-white font-black rounded-md flex flex-col justify-center px-3 my-3" href="{{ route('strava.index') }}">Máte-li, povolte si Stravu</a>
         @endif
     @endif
+    <div class="my-3 text-orange-500 flex flex-col justify-end text-xl font-weight">
+
+
+   | 5km | 10km |
+    </div>
 </div>
 
 
