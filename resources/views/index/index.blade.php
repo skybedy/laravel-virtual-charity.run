@@ -40,7 +40,7 @@
         <div class="homepage-box">
 
             <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-                <div>Běhy pro N/nesnázi<span class="hidden sm:inline">@</span><span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
+                <div>Běhy pro mámy samoživitelk v N/nesnázi<span class="hidden sm:inline">@</span><span class="block sm:inline">1. 10 - 31. 12. 24</span></div>
             </div>
 
 
