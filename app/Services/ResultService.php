@@ -643,17 +643,28 @@ class ResultService
 
 
 
-        /* kontrola, jestli v daném časovém období existuje nějaký závod */
+        /* kontrola, jestli v daném časovém období existuje nějaký závod,
+            s PLATFORM:ID se tam nedostane Kiptumtime
+            bere to vsechny zavody s mensi vzdalenosti, nez vypoctena vdalenost behu, tzn. zavody, ktere jsou na cas a maji nastaveno 0, to bere taky automaticky
+        */
         $events = Event::where('distance', '<=', $activityDistance)
-
-
-
         ->where('platform_id',env("PLATFORM_ID"))
+                        ->where('date_start', '<=', $activityDate)
                         ->where('date_end', '>=', $activityDate)
                         ->where('distance', '<=', $activityDistance)
                         ->orderBy('event_type_id','DESC')
                         ->orderBy('distance','DESC')
-                        ->get(['id', 'distance','event_type_id','time']);
+                        ->get(['id', 'distance','event_type_id','time','name']);
+
+
+                      /*
+                        foreach ($events as $key => $event)
+                        {
+                           echo "$event->id,$event->name\n";
+                            Log::alert($event->name);
+                        }
+
+                        exit();*/
 
 
 
@@ -674,16 +685,20 @@ class ResultService
 
             $registration_exists = $registration->registrationExists($userId, $event['id'],NULL,NULL);
 
-           
+
+
+
+
+
             if(!is_null($registration_exists))
             {
                 $registrationId = $registration->registrationExists($userId, $event['id'],NULL,NULL)->id;
+
             }
             else
             {
                 continue;
             }
-
 
 
 
@@ -760,12 +775,10 @@ class ResultService
 
 
                         }
+
+
+
                     }
-
-
-
-
-
 
                 }
 
@@ -773,10 +786,6 @@ class ResultService
 
                 else
                 {
-
-
-
-
 
 
                 //prochazeni pole s daty aktivity
@@ -818,7 +827,7 @@ class ResultService
 
             }
 
-                break;
+                //break;
             }
 
 

@@ -46,9 +46,9 @@ class EventController extends Controller
 
     public function show(Request $request, Event $event)
     {
-
         return view('events.show', [
             'event' => $event::find($request->eventId),
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
         ]);
     }
 
@@ -56,6 +56,7 @@ class EventController extends Controller
     {
         return view('events.results.upload-url-create', [
             'event' => $event::find($request->eventId),
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
         ]);
     }
 
@@ -63,6 +64,8 @@ class EventController extends Controller
     {
         return view('events.results.upload-file-create', [
             'event' => $event::find($request->eventId),
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
+
         ]);
     }
 
@@ -314,13 +317,14 @@ class EventController extends Controller
             'event' => $resultSave['event'],
             'last_id' => $resultSave['last_id'],
             'rank' => $resultSave['rank'],
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
+
         ]);
 
     }
 
     public function resultIndex(Request $request, Result $result, Event $event)
     {
-
 
         $eventType = $result->resultsOverall($request->eventId)['event_type'];
 
@@ -331,6 +335,7 @@ class EventController extends Controller
                     'results' => $result->resultsOverall($request->eventId)['results'],
                     'eventType' => $eventType,
                     'event' => $event::select("id","name","event_type_id")->find($request->eventId),
+                    'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
                 ]);
 
             case 2:
@@ -338,8 +343,9 @@ class EventController extends Controller
                     'results' => $result->resultsOverall($request->eventId)['results'],
                     'eventType' => $eventType,
                     'event' => $event::select("id","name")->find($request->eventId),
+                    'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
                 ]);
-        }
+            }
     }
 
 
@@ -350,6 +356,10 @@ class EventController extends Controller
         return view('events.start-list', [
             'startlists' => $startlist->startlist($request->eventId),
             'event' => $event::find($request->eventId),
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
+
         ]);
     }
 }
+
+

@@ -153,6 +153,7 @@ class Result extends Model
                 ->skip(1)
                 ->take(PHP_INT_MAX)
                 ->get();
+            break;
             case 2;
                 $results = self::selectRaw('id,finish_distance_km,pace_km as pace,DATE_FORMAT(results.finish_time_date,"%e.%c.") AS date')
                 ->where('registration_id', $registrationId)
@@ -160,8 +161,10 @@ class Result extends Model
                 ->skip(1)
                 ->take(PHP_INT_MAX)
                 ->get();
+            break;
         }
-            return [
+
+        return [
                 'results' => $results,
                 'event_type' => $eventType
             ];
@@ -205,17 +208,7 @@ class Result extends Model
         ->select('r.*', 'e.name as race_name')
         ->get();
 
-
-
-
-
-
-
-
-
     }
-
-
 
 
 }

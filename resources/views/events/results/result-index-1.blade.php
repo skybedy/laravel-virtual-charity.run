@@ -3,9 +3,9 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl">
-                <div class="text-gray-900">
+                <div class="p-2 text-gray-900">
                     <div class="homepage-box">
-                        <x-event-navbar :event="$event" />
+                        <x-event-navbar :event="$event" :all_same_serie_events="$all_same_serie_events" />
                         <div class="overflow-auto">
                             <table id="result_table" class="hidden md:table table-auto border-collapse w-full mt-5">
                                 <tr class="">

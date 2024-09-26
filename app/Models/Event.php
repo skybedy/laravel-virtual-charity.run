@@ -33,5 +33,25 @@ class Event extends Model
             ->get();
     }
 
+    /**
+     * Get all events from the same series only
+     *
+     * @param $eventId
+     * @return mixed
+     */
+    public function allSameSeriesEvents($eventId)
+    {
+
+        return self::where('id', '!=', $eventId)
+            ->where('serie_id', function ($query) use($eventId) {
+                $query->select('serie_id')
+                    ->from('events')
+                    ->where('id', $eventId)
+                    ->limit(1);
+            })
+            ->select("id","name")
+            ->get();
+    }
+
 
 }
