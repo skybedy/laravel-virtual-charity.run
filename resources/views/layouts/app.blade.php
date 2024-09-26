@@ -23,7 +23,7 @@
     </head>
     <body class="font-sans antialiased">
 
-        <div class="min-h-screen flex flex-col bg-gradient-to-b from-sky-300 to-sky-500">
+        <div class="min-h-screen flex flex-col bg-gradient-to-b from-sky-400 to-sky-600">
             @include('layouts.navigation')
 
 

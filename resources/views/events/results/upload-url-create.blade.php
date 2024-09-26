@@ -3,8 +3,9 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 bg-rd-500">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-2xl">
+                <div class="text-gray-900 bg-rd-500">
+                 <div class="homepage-box">
 
                    <x-event-navbar :event="$event" />
 
@@ -43,6 +44,7 @@
                                     <div class="mt-2"><img class="img-fluid border" src="/strava-url-app-example.png" /></div>
                                 </div>
 
+                    </div>
                     </div>
                 </div>
             </div>
