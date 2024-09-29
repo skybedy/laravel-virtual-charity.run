@@ -30,6 +30,7 @@
                             <a class="underline" href="#7">Věcné ceny?</a>
                              <a class="underline" href="#16">Startovné je jednorázové?</a>
                             <a class="underline" href="#8">Dá se platit kartou?</a>
+                            <a class="underline" href="#17">Proč se nedá platit přes QR kód?</a>
                             <a class="underline" href="#9">Kam jdou peníze?</a>
                             <a class="underline" href="#10">Co z toho má provozovatel?</a>
                             <a class="underline" href="#11">Mám další otázky...</a>
@@ -171,6 +172,18 @@ Se spuštěním platformy nebylo počítáno v této chvíli a akcelerátorem by
                         <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
 <p>Ano, dá se platit kartou a dalšími moderními způsoby jako je Google Pay a Apple Pay, přičemž případné další platební metody budou přidávány, pokud k tomu bude důvod a bude to techicky možné.<br>
 Pro platební operace je využívána infrastruktura, umožňující provozovateli této platformy působit, z hlediska financí, pouze jako prostředník a veškeré vybrané finanční prostředky jdou přímo od vás uživatelů, přes platební infrastrukturu, rovnou k příjemci.</p>
+                            <div class="mt-1 text-right"><a class="text-orange-500 text-sm" href="#top">Zpět nahoru</a></div>
+                        </div>
+                    </div>
+
+                    <a name="17"></a>
+                    <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4 mt-4">
+                        <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Proč se nedá platit přes QR kód?</h2>
+                        <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
+<p>Celá platforma je založena na téměř úplné automatizaci, která zas, narozdíl od ostatních, umožňuje třeba víceméně libovolnou délku trvání jednoho závodu, protože tam se prostě musí číst maily, studovat screeny, atd, aby se daly zjistit časy, nehledě k tomu, že by to musely být běhy stejně dlouhé, jak je vypsaná délka, což jsou přesně věci, kterým se tady chtělo vyhnout, protože tady můžete běžet klidně delší trasu a program ho zkrátí na tu předepsanou, což v praxi znamená, že když budete chtít běžet 10km, klidně můžete v reálu běžet 15, ale program  to zkrátí na 10 a čas zkrátí i o průměr, který jsi běžel do toho desátého.<br>
+    Nedílnou součástí toho všeho je i automatická registrace, které následuje až poté, co platforma dostane potvrzení o úspěšné platbě přes Google/Apple Pay/kartou, a po kterém teprve bude člověk zaregistrován.<br>
+    V okamžiku, kdy by se tam přidala možnost QR platby, přibývá nutnost tohle manuálně kontrolovat a pak člověka teprve opět manuálně zaregistrovat, což by zcela měnilo pravidla hry.</p>
+
                             <div class="mt-1 text-right"><a class="text-orange-500 text-sm" href="#top">Zpět nahoru</a></div>
                         </div>
                     </div>
