@@ -28,7 +28,8 @@
                             <a class="underline" href="#15">Jsou věkové kategorie?</a>
                             <a class="underline" href="#6">Je to přesné?</a>
                             <a class="underline" href="#7">Věcné ceny?</a>
-                            <a class="underline" href="#8">Dá se platit kartou a kam jdou peníze?</a>
+                             <a class="underline" href="#16">Startovné je jednorázové?</a>
+                            <a class="underline" href="#8">Dá se platit kartou?</a>
                             <a class="underline" href="#9">Kam jdou peníze?</a>
                             <a class="underline" href="#10">Co z toho má provozovatel?</a>
                             <a class="underline" href="#11">Mám další otázky...</a>
@@ -80,7 +81,8 @@
                     <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4 mt-4">
                         <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Potřebuju hodinky?</h2>
                         <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
-                            <p>Podobně jako v případě STRAVY jsou velmi, velmi, velmi vhodné a důvodem je to, že naše platforma kontroluje kadenci aby se předešlo případným snahám importovat aktivy na kole, koni či raketoplánem, prostě jinak než po svých. <br>Pokud ale máte mobilní telefon s akcelerometrem, Stryd, Food Pod, či nějaký ANT+ senzor kompatibilní s vaší mobilní apkou, je možné použít i toto. </p>
+                            <p>Jsou velmi vhodné, nikoli však nezbytné a pokud máte mobil s GPS a nějakou aplikaci, tak to je také cesta.<br>
+                             I v tomto případě je nejlepším řešením instalace apky STRAVA, protože ta kromě zaznamenání běhu samotného, umí bezprostředně po ukončení poslat jeho parametry na naši platformu tak, že hned se můžete podívat na výsledek.
                             <div class="mt-1 text-right"><a class="text-orange-500 text-sm" href="#top">Zpět nahoru</a></div>
                         </div>
                     </div>
@@ -151,6 +153,15 @@
 Se spuštěním platformy nebylo počítáno v této chvíli a akcelerátorem byly povodně. Z tohoto důvodu nebyl ještě čas vymyslet, jak se to vlastně udělá s cenami a případné úvahy končící u medailí, kterých má doma skoro každý skoro plný šuplík, zatím teprve nabírají nějaký smysluplný směr.
 </p>
                             <div class="mt-1 text-right"><a class="text-orange-500 text-sm" href="#top">Zpět nahoru</a></div>
+                        </div>
+                    </div>
+
+                    <a name="16"></a>
+                    <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4 mt-4">
+                        <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Startovné je jednorázové?</h2>
+                        <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
+              <p>Ano, každý závodní blok obsahuje 3 závody, startovné se platí pouze při registraci k prvnímu z nich a v případě registrace k dalšímu závodu stejného závodního bloku, jako je například Běhání pro povodně, se už startovné neplatí.</p>
+                 <div class="mt-1 text-right"><a class="text-orange-500 text-sm" href="#top">Zpět nahoru</a></div>
                         </div>
                     </div>
 

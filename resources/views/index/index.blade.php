@@ -10,7 +10,7 @@
 
 
         <div class="homepage-inner-box-container gradient-tb-orange-400-600">
-            <div>Běhy pro povodně<span class="hidden sm:inline">@</span><span class="block sm:inline">16.9 - 13.10.24</span></div>
+            <div>Běhy pro povodně<span class="hidden sm:inline">@</span><span class="block sm:inline">16.9 - 31.10.24</span></div>
         </div>
 
 

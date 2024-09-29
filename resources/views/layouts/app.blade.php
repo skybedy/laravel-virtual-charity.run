@@ -49,11 +49,14 @@
                 {{ $slot }}
             </main>
              <!-- Footer -->
-        <footer class="bg-[#fefdf9] text-gray-300 text-xl text-center  h-40 border-t border-orange-400 flex flex-col justify-center">
-            <div class="max-w-7xl  mx-auto">
-                <p>&copy; 2024 Virtual Charity Run. All rights reserved.</p>
-                <p><a href="mailto://virtual.run.cz@gmail.com">virtual.run.cz@gmail.com</a>, +042 776131313</p>
-                <img class="w-48 h-auto" src="{{ asset('images/strava-logo.png') }}" alt="Strava" class="h-8 w-8">
+        <footer class="bg-[#fefdf9] text-gray-300 text-xl text-center  h-40 border-t border-orange-400">
+            <div class="max-w-7xl  mx-auto flex justify-between">
+                <p class="mt-2"><a href="mailto://virtual.run.cz@gmail.com">virtual.run.cz@gmail.com</a>, +042 776131313</p>
+                <img class="w-48 h-auto" src="{{ asset('images/strava-logo.png') }}" alt="Strava">
+                <p class="mt-2">&copy; 2024 Virtual Charity Run. All rights reserved.</p>
+               
+               
+
             </div>
         </footer>
 
