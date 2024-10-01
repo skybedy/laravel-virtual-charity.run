@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="5/6mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg boder p-6 boder-blue-300 shadow-lg">
                 <x-h2 style="style-1">STRAVA</x-h2>
                 <x-p style="style-1">

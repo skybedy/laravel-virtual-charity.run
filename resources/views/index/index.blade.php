@@ -4,7 +4,7 @@
 
 <x-app-layout>
 
-    <div class="w-5/6 mx-auto py-8 flex flex-col gap-y-6 sm:gap-y-8">
+    <div class="w-5/6 mx-auto py-6 flex flex-col gap-y-6 sm:gap-y-6 xl:gap-y-8 ">
 
     <div class="homepage-box">
 
@@ -14,7 +14,7 @@
         </div>
 
 
-        <div class="flex flex-col sm:flex-row justify-between gap-x- ap-y-4 bg-white overflow-hidden shadow-md rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
+        <div class="flex flex-col sm:flex-row justify-between bg-white overflow-hidden shadow-md rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
 
             <div class="homepage-inner-box-container gradient-tb-gray-500-700">
                 <div>

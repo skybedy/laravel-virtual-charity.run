@@ -1,12 +1,12 @@
 <x-app-layout>
 
     <div class="py-12">
-           <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+           <div class="w-5/6 mx-auto sm:px-6 lg:px-8">
                <div class=" bg-white overflow-hidden sm:rounded-2xl boder  boder-blue-300 shadow-lg">
 
                    <div class="homepage-box">
 
-                        <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4">
+                        <div class="otherpage-inner-box-container sm:mt-0">
 
                             <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Megastručné představení</h2>
 
@@ -23,7 +23,7 @@
 
                         </div>
 
-                        <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4 mt-4">
+                        <div class="otherpage-inner-box-container">
 
                             <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Startovní výstřel</h2>
                             <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
@@ -33,7 +33,7 @@
                                         najdou mouchy a pokud by nastala ochota se k nim stavět smířlivě, bylo by to skvělé, přičemž každá zpětná vazba se zaměřením na funkčnost, bude vítána.</p>
                             </div>
                         </div>
-                        <div class="w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4 mt-4">
+                        <div class="otherpage-inner-box-container">
                             <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Pokorný pohled do budoucna</h2>
                             <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
                                 <p class="mt-2">Žádné poletování v oblacích se nekoná, dnešní doba a konkurenční prostředí, v téměř všech oblastech lidské existence, velí držet se při zemi.</p>

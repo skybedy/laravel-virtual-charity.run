@@ -1,7 +1,7 @@
 <x-app-layout>
 
  <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="5/6mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-2xl boder  boder-blue-300 shadow-lg">
 
                 <div class="homepage-box">

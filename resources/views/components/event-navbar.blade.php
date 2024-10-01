@@ -21,7 +21,7 @@
 
 
 <nav class="bg-gradient-to-b from-orange-400 to-orange-500 rounded-md text-white font-bold">
-      <div class="max-w-7xl mx-auto">
+      <div class="5/6mx-auto">
             <div class="flex h-10  px-1 justify-center sm:justify-between">
                   <div class="flex">
                         <div class="space-x-2 sm:space-x-5  sm:-my-px flex justify-center">

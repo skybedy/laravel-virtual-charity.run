@@ -53,14 +53,20 @@ background: #0d45a5;
 }
 
 .homepage-box{
-    @apply w-full mx-auto p-2 sm:p-4 rounded-xl sm:rounded-2xl border border-white bg-sky-200;
+    @apply w-full mx-auto p-2 sm:p-3 xl:p-4 rounded-xl sm:rounded-2xl border border-white bg-sky-200;
 }
 
 
     /* this is the white box */
   .homepage-inner-box-container{
-    @apply w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-4 flex flex-col gap-y-2 sm:gap-y-4;
+    @apply w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-3 xl:p-4 flex flex-col gap-y-2 sm:gap-y-3 xl:gap-y-4;
   }
+
+ .otherpage-inner-box-container{
+    @apply w-full bg-white shadow-sm rounded-xl sm:rounded-2xl sm:mb-0 p-2 sm:p-3 xl:p-4 flex flex-col gap-y-2 sm:gap-y-3 xl:gap-y-4 text-left sm:mt-3 xl:mt-4;
+  }
+
+
 
   /* this is for white box content */
 
