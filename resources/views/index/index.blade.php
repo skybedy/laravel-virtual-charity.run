@@ -4,7 +4,7 @@
 
 <x-app-layout>
 
-    <div class="max-w-7xl mx-auto py-8 flex flex-col gap-y-6 sm:gap-y-8">
+    <div class="w-5/6 mx-auto py-8 flex flex-col gap-y-6 sm:gap-y-8">
 
     <div class="homepage-box">
 
