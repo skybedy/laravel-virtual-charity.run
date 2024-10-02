@@ -41,12 +41,8 @@ class RegistrationController extends Controller
 
         if (!$registration->someRegistrationExists(env('PLATFORM_ID'),$event_id,$user_id))
         {
-
-            $this->store($request,$registration,$category);
-
-
-            /*
-            if($event_id < 5){
+            if($event_id < 5)
+            {
                 return view('registrations.payment_znesnaze', [
                     'payment_recepients' => $paymentRecepient->All(),
                     'eventId' => $event_id,
@@ -58,13 +54,10 @@ class RegistrationController extends Controller
                     'payment_recepients' => $paymentRecepient->All(),
                     'event_id' => $event_id,
                 ]);
-            }*/
-
+            }
         }
-
         else
         {
-
             if($registration->eventRegistrationExists($user_id, $event_id))
             {
                 session()->flash('info', 'Na tento závod už je registrace provedená');
@@ -142,7 +135,7 @@ class RegistrationController extends Controller
 
 
 
-        public function checkout($request,$stripe)
+        public function checkout(Request $request,StripeClient $stripe)
         {
 
 

@@ -40,7 +40,7 @@ Jakékoliv tempo je vítáno. Běžíme, aby měly lepší život!
 
 
                 <div class="bg-blue-50 mt-5 p-5">
-                    <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout',$eventId )}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
+                    <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout.znesnaze.stripe',$eventId )}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
                 </div>
 
 
