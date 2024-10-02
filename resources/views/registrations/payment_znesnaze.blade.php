@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="py-12">
-        <div class="5/6mx-auto sm:px-6 lg:px-8">
+        <div class="w-5/6 mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden sm:rounded-lg boder p-6 boder-blue-300 shadow-lg">
 
 
@@ -25,6 +25,20 @@
                     Crowdfundingu se Znesnáze věnuje od roku 2014 a nasednout na palubu může každý, kdo potřebuje pomoc, ať už pro sebe, své blízké, přítele, kolegu, nebo na podporu projektu, který má veřejně prospěšný účel.<br>
                     Od svého vzniku platforma umožnila realizaci tisíců sbírek, které pomohly vybrat více než 100 milionů korun. Díky transparentnosti a důvěře, kterou si platforma vybudovala, se Znesnáze stala jedním z nejdůležitějších nástrojů pro efektivní pomoc lidem v nouzi. Přidejte se i vy a pomozte tam, kde je to potřeba. S námi je to snadné, rychlé a bezpečné.
                 </x-p>
+                <x-h2 style="style-1">Proč běžíme?</x-h2>
+                <x-p style="style-1">
+
+Samoživitelky často čelí finančním problémům, které jim brání zajistit dětem základní potřeby.  <br>Díky vaší účasti v tomto běhu můžeme zajistit, že dostanou pomoc ve formě nákupů potravin, léků, nebo hygienických
+produktů, které jim ulehčí život v této náročné době.<br>
+
+Připojte se k našemu virtuálnímu běhu a podpořte dobrou věc – každý kilometr se počítá!
+
+
+Jakékoliv tempo je vítáno. Běžíme, aby měly lepší život!
+                </x-p>
+
+
+
                 <div class="bg-blue-50 mt-5 p-5">
                     <a class="block bg-gradient-to-b from-blue-400 to-blue-500 text-4xl text-center p-10 text-white font-black rounded-md shadow-lg" href="{{route('registration.checkout',$eventId )}}">REGISTROVAT SE A ZAPLATIT STARTOVNÉ 111Kč </a>
                 </div>

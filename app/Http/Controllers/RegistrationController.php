@@ -41,10 +41,22 @@ class RegistrationController extends Controller
 
         if (!$registration->someRegistrationExists($user_id, $event_id))
         {
-            return view('registrations.payment', [
-                'payment_recepients' => $paymentRecepient->All(),
-                'event_id' => $event_id,
-            ]);
+
+if($event_id < 5){
+    return view('registrations.payment_znesnaze', [
+        'payment_recepients' => $paymentRecepient->All(),
+        'eventId' => $event_id,
+    ]);
+}
+else
+{
+    return view('registrations.payment', [
+        'payment_recepients' => $paymentRecepient->All(),
+        'event_id' => $event_id,
+    ]);
+}
+
+
         }
 
         else

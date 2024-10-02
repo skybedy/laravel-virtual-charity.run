@@ -16,7 +16,7 @@
 
                 <div class="text-7xl sm:text-[3.4rem] md:text-6xl lg:text-7xl xl:text-9xl  sm:mt-7 xl:mt-3 border-b border-white mx-3 lg:mx-7 mb-1">{{ $event->name }}</div>
 
-                <div class="event-box px-5 text-white text-center flex sm:flex-col justify-between space-x-2 sm:space-x-0 text-sm md:text-base lg:text-lg xl:text-xl">
+                <div class="event-box px-5 text-white text-center flex sm:flex-col justify-between space-x-2 sm:space-x-0 text-xs md:text-sm lg:text-lg xl:text-xl">
                     <a class="bg-blue-400 hover:bg-blue-500" href="{{ route('event.result.index',$event->id) }}">Výsledky</a>
                     <a class="bg-yellow-400 hover:bg-yellow-500" href="{{ route('event.startlist.index',$event->id) }}">Startovka</a>
                     @if ($today >= $event->date_start &&  $today <= $event->date_end)
