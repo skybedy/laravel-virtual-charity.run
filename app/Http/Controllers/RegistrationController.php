@@ -39,23 +39,26 @@ class RegistrationController extends Controller
 
         $user_id = $request->user()->id;
 
-        if (!$registration->someRegistrationExists($user_id, $event_id))
+        if (!$registration->someRegistrationExists(env('PLATFORM_ID'),$event_id,$user_id))
         {
 
-if($event_id < 5){
-    return view('registrations.payment_znesnaze', [
-        'payment_recepients' => $paymentRecepient->All(),
-        'eventId' => $event_id,
-    ]);
-}
-else
-{
-    return view('registrations.payment', [
-        'payment_recepients' => $paymentRecepient->All(),
-        'event_id' => $event_id,
-    ]);
-}
+            $this->store($request,$registration,$category);
 
+
+            /*
+            if($event_id < 5){
+                return view('registrations.payment_znesnaze', [
+                    'payment_recepients' => $paymentRecepient->All(),
+                    'eventId' => $event_id,
+                ]);
+            }
+            else
+            {
+                return view('registrations.payment', [
+                    'payment_recepients' => $paymentRecepient->All(),
+                    'event_id' => $event_id,
+                ]);
+            }*/
 
         }
 
@@ -82,7 +85,7 @@ else
             'event_id' => $request->eventId,
             'user_id' =>   $request->user()->id,
             'category_id' => $category->categoryChoice($request->user()->gender, calculate_age($request->user()->birth_year))->id,
-            'ids' => $registration->startNumber($request->eventId,$request->user()->id),
+            'ids' => $registration->startNumber(env('PLATFORM_ID'),$request->eventId,$request->user()->id),
         ]);
 
         session()->flash('success', 'Byli jste úspěšně zaregistrováni');

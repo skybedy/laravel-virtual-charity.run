@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class Registration extends Model
 {
@@ -15,27 +16,55 @@ class Registration extends Model
         return $this->belongsTo(Event::class, 'event_id');
     }
 
-    public function someRegistrationExists($user_id,  $event_id)
+    /*
+    * Jestli uz existuje nejaka registrace pro platformu a serii, at vime, jestli se ma platit startovne
+    */
+    public function someRegistrationExists($platform_id,$event_id,$user_id)
     {
-        return self::where('user_id', $user_id)
-        ->whereHas('event', function ($query) use ($event_id) {
-            $query->where('serie_id', function ($subquery) use ($event_id) {
-                $subquery->select('serie_id')
-                         ->from('events')
-                         ->where('id', $event_id)
-                         ->limit(1);
-            });
-        })
-        ->exists();
+        $sql = "SELECT EXISTS(
+                    SELECT 1 from registrations r, events e WHERE
+                    e.platform_id = ? AND
+                    e.serie_id = (select serie_id from events e where id = ?) AND
+                    e.id = r.event_id AND
+                    r.user_id = ?) as result";
+
+        $dbData = DB::select($sql,[$platform_id,$event_id,$user_id]);
+
+        return (bool)$dbData[0]->result;
     }
 
 
-
-    public function startNumber($event_id,$user_id)
+    public function startNumber($platform_id,$event_id,$user_id)
     {
-       
-     
+        $sql = "SELECT r.ids FROM registrations r, events e
+                WHERE
+                    e.platform_id = ? AND
+                    e.serie_id = (SELECT serie_id FROM events e WHERE id = ?) AND
+                    e.id = r.event_id AND
+                    r.user_id = ? LIMIT 1";
 
+        $dbData = DB::select($sql,[$platform_id,$event_id,$user_id]);
+
+        if(isset($dbData[0]->ids))
+        {
+            return $dbData[0]->ids;
+        }
+        else
+        {
+            $max_ids = DB::select("SELECT MAX(ids) as max_ids FROM registrations r, events e
+                            WHERE
+                                e.platform_id = ? AND
+                                e.serie_id = (SELECT serie_id FROM events e WHERE id = ?) AND
+                                e.id = r.event_id",[$platform_id,$event_id]);
+
+            return $max_ids[0]->max_ids + 1;
+        }
+
+    }
+
+
+    public function startNumberZal($event_id,$user_id)
+    {
 
     $user_exists_ids = self::select('ids')
     ->where('user_id', $user_id)
@@ -79,9 +108,9 @@ class Registration extends Model
     }
 
 
-       
-       
-       
+
+
+
     }
 
 
