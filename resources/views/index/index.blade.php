@@ -17,9 +17,26 @@
         <div class="flex flex-col sm:flex-row justify-between bg-white overflow-hidden shadow-md rounded-xl sm:rounded-2xl mt-2 sm:mt-4">
 
             <div class="homepage-inner-box-container gradient-tb-gray-500-700">
-                <div>
-                    Startovné na všechny 3 závody 111 Kč
-                </div>
+
+
+
+                <div class= "bg-gray-100 p-6 flex justify-center">
+                    <!-- Obsah nadřazeného boxu -->
+                    <div> Startovné na všechny 3 závody 111 Kč</div>
+
+                    <!-- Tooltip ikona -->
+                    <div class="relative group ms-3 -mt-3">
+                      <!-- Ikona s otazníkem -->
+                      <svg class="w-4 md:w-8 h-auto" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10zm-.01-4c-.552 0-1-.448-1-1s.448-1 1-1c.553 0 1 .448 1 1s-.447 1-1 1zm2.29-8.346c-.583.42-1.316.949-1.316 1.795v.277c0 .553-.448 1-1 1s-1-.447-1-1v-.277c0-1.551 1.173-2.348 1.774-2.773.513-.369.89-.642.89-1.154 0-.737-.704-1.386-1.589-1.386-.887 0-1.589.649-1.589 1.386 0 .552-.448 1-1 1s-1-.448-1-1c0-1.833 1.613-3.386 3.589-3.386s3.589 1.553 3.589 3.386c0 1.207-.824 1.835-1.71 2.454z"/>
+                      </svg>
+
+                      <!-- Tooltip text -->
+                      <div class="absolute top-0 right-10 transform translate-y-2 w-72 bg-white text-red-500 border-4 border-red-600 text-left text-xs rounded-lg py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-1">
+                        Startovné 111Kč zahrnuje účast na všech 3 tratích a každou můžete absolvovat, kolikrát chcete.<br> Při registraci k prvnímu závodu se po vás bude chtít platba, při registraci k dalším už ne.
+                      </div>
+                    </div>
+                  </div>
                 <div>
                     Přímá platba vybrané charitativní organizaci
                 </div>
