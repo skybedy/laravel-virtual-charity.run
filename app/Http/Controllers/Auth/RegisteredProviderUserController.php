@@ -101,6 +101,7 @@ class RegisteredProviderUserController extends Controller
      */
     public function handleProviderCallback(string $provider, Request $request)
     {
+        $user = Socialite::driver($provider)->user();
 
         try {
 
@@ -114,7 +115,9 @@ class RegisteredProviderUserController extends Controller
 
                 return redirect()->intended('/');
 
-            } else {
+            }
+            else
+            {
 
                 return redirect()->route('register-socialite', [
                     'id' => $user->id,
@@ -122,27 +125,19 @@ class RegisteredProviderUserController extends Controller
                     'name' => $user->name,
                     'provider' => $provider,
                 ]);
-                /*
-                return Inertia::render('Auth/RegisterSocialite', [
-                    'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-                    'status' => session('status'),
-                ]);*/
-
-                /*
-
-                $newUser = User::updateOrCreate(['email' => $user->email],[
-                        'name' => $user->name,
-                        'facebook_id'=> $user->id,
-                        'password' => encrypt('password')
-                    ]);*/
-
-                //Auth::login($newUser);
-
-                //return redirect()->intended('dashboard');
             }
 
         } catch (Exception $e) {
             Log::alert($e->getMessage());
         }
     }
+
+
+    public function test()
+    {
+        //dd('jsem tu');
+        return redirect()->route('auth.socialite','strava');
+    }
+
+
 }

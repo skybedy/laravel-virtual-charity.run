@@ -648,10 +648,9 @@ class ResultService
             bere to vsechny zavody s mensi vzdalenosti, nez vypoctena vdalenost behu, tzn. zavody, ktere jsou na cas a maji nastaveno 0, to bere taky automaticky
         */
         $events = Event::where('distance', '<=', $activityDistance)
-        ->where('platform_id',env("PLATFORM_ID"))
+                        //->where('platform_id',env("PLATFORM_ID"))
                         ->where('date_start', '<=', $activityDate)
                         ->where('date_end', '>=', $activityDate)
-                        ->where('distance', '<=', $activityDistance)
                         ->orderBy('event_type_id','DESC')
                         ->orderBy('distance','DESC')
                         ->get(['id', 'distance','event_type_id','time','name']);

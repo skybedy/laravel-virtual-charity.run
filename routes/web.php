@@ -63,6 +63,8 @@ Route::get('/about', [AboutController::class, 'index'])->name('about.index');
 
 
 
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -87,10 +89,11 @@ Route::middleware('auth')->group(function () {
 Route::get('/registration/{eventId}', [RegistrationController::class, 'index'])->name('registration.index');
 
 Route::controller(RegisteredProviderUserController::class)->group(function () {
-    Route::get('auth/{provider}', 'redirectToProvider');
+    Route::get('auth/{provider}', 'redirectToProvider')->name('auth.socialite');
     Route::get('auth/{provider}/callback', 'handleProviderCallback');
     Route::get('register-socialite', 'create')->name('register-socialite');
     Route::post('register-socialite', 'store')->name('register-socialite');
+    Route::get('/authx/kiptumtime', 'test');
 });
 
 require __DIR__.'/auth.php';
