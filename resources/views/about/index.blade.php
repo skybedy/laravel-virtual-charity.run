@@ -6,17 +6,21 @@
 
                    <div class="homepage-box">
 
+
                         <div class="otherpage-inner-box-container sm:mt-0">
 
                             <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl text-white bg-gradient-to-b from-orange-400 to-orange-500 text-center font-black py-2 shadow-md rounded-md">Megastručné představení</h2>
 
                             <div class="text-base sm:text-lg md:text-xl lg:text-2xl px-2 sm:px-4 md:px-5 text-white bg-gradient-to-b from-gray-500 to-gray-700 py-5 rounded-md text-left">
-                                <p>Tak jako i u mnoha dalších virtuálních závodů, tak i tady myšlenka platformy vznikla už za Covidu někdy v roce 2020 a přes respekt k ostatním platformám bylo hned od začátku primárním záměrem to dělat trochu jinak
-                                a spojit do jednoho celku zkušenosti s organizací závodů, zpracováním výsledků závodů a programovacím dovednostmi.</p>
-                                <p class="mt-2">Kdo za tím stojí? <br>Eh, o tom třeba někdy jindy, moc lidí to není, na jejich spočítání budou bohatě stačit prsty jedné ruky a to jich klidně ještě může pár chybět.. :-))  </p>
-                                <p class="mt-2">Určitě se nedá tvrdit, že práce na platformě trvaly nepřetržitě 4 roky, bylo více kratších i delších pauz způsobených různými důvody, od změny programovací platformy, přes
+                                <p>ViCHR je platforma pro dlouhodobé virtuální závody, lišící se od ostatních virtuálních platforem  dlouhodobým trváním jednotlivých akcí a možností mít neomezený počet pokusů na jednotlivé běhy, přičemž so celkových výsledků se pak započítává nejlepší čas.<br>
+                                    Od ostatních se tato platforma patrně také liší ve vyší míře automatizace, zajišťující nahrávání výsledků a jejich okamžité publikování. <br>Při vývoji platformy byly využity dlouholeté zkušenosti jak s organizováním "normálních" závodů, dále zpracováním výsledků závodů v návaznosti na provozování čipové časomíry a samozřejmě programátorské dovednosti.   </p>
+
+                                <p class="mt-3">Tak jako i u mnoha dalších virtuálních závodů, tak i tady myšlenka platformy vznikla už za Covidu někdy v roce 2020 a přes respekt k ostatním platformám bylo hned od začátku primárním záměrem to dělat trochu jinak
+                                a spojit do jednoho celku zkušenosti s organizací závodů, zpracováním výsledků závodů a programovacím dovednostmi, bez kterých by to ani nemohlo vzniknout, protože by to nikdo nezaplatil.</p>
+                                <p class="mt-3">Kdo za tím stojí? <br>Eh, o tom třeba někdy jindy, moc lidí to není, na jejich spočítání budou bohatě stačit prsty jedné ruky a to jich klidně ještě může pár chybět.. :-))  </p>
+                                <p class="mt-3">Určitě se nedá tvrdit, že práce na platformě trvaly nepřetržitě 4 roky, bylo více kratších i delších pauz způsobených různými důvody, od změny programovací platformy, přes
                                     vyvíjecí se koncepční představy až po nestálé pochyby o smyslu celého platformy.</p>
-                                <p class="mt-2">Od technického konceptu platformy, který byl do značné míry jasný od začátku, se lišila velká nejistota v tom, kam ji zasadit a komu ji nabídnout a teprve na začátku roku
+                                <p class="mt-3">Od technického konceptu platformy, který byl do značné míry jasný od začátku, se lišila velká nejistota v tom, kam ji zasadit a komu ji nabídnout a teprve na začátku roku
                                     přišla myšlenka, že narozdíl od záměru jej nabídnout běžecké komunitě zcela zdarma, bude obecně nesrovnatelně užitečnější jej velmi lehce zpoplatnit a věnovat ho primárně charitativním účelům.</p>
                                 </p>
                             </div>
