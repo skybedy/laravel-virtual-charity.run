@@ -11,8 +11,8 @@
     @endif
     <div class="my-3 text-blue-600 flex items-end text-xl font-weight">
         |
-        @foreach ($all_same_serie_events as $event )
-            <a class="px-1 hover:text-orange-500" href="{{ route(Route::currentRouteName(),$event->id) }}">{{ $event->name }}</a> |
+        @foreach ($all_same_serie_events as $e )
+            <a class="px-1 hover:text-orange-500" href="{{ route(Route::currentRouteName(),$e->id) }}">{{ $e->name }}</a> |
         @endforeach
     </div>
 </div>

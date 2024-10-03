@@ -44,6 +44,7 @@ class Event extends Model
 
         return self::where('id', '!=', $eventId)
             ->where('platform_id', env('PLATFORM_ID'))
+            ->where('display',1)
             ->where('serie_id', function ($query) use($eventId) {
                 $query->select('serie_id')
                     ->from('events')
