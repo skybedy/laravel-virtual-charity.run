@@ -324,25 +324,37 @@ class StravaController extends Controller
     {
 
         $response = Http::post('https://www.strava.com/oauth/token', [
-            'client_id' => '117954',
-            'client_secret' => 'a56df3b8bb06067ebe76c7d23af8ee8211d11381',
+            'client_id' => env('STRAVA_CLIENT_ID'),
+            'client_secret' => env('STRAVA_CLIENT_SECRET'),
             'code' => $request->query('code'),
             'grant_type' => 'authorization_code',
         ]);
 
         $body = $response->body();
+
         $content = json_decode($body, true);
-        //dd($content);
 
-        $user = User::find($request->userId);
-        $user->strava_id = $content['athlete']['id'];
-        $user->strava_access_token = $content['access_token'];
-        $user->strava_refresh_token = $content['refresh_token'];
-        $user->strava_expires_at = $content['expires_at'];
-        $user->strava_scope = $request->query('scope');
-        $user->save();
-
-        return redirect('/');
+        $strava_id_exists = User::where('strava_id',$content['athlete']['id'])->exists();
+        
+        if(!$strava_id_exists)
+        {
+            $user = User::find($request->userId);
+            $user->strava_id = $content['athlete']['id'];
+            $user->strava_access_token = $content['access_token'];
+            $user->strava_refresh_token = $content['refresh_token'];
+            $user->strava_expires_at = $content['expires_at'];
+            $user->strava_scope = $request->query('scope');
+            $user->save();
+        }
+       
+        if(is_null($request->query('callback')))
+        {
+            return redirect('/');
+        }    
+        else
+        {
+            return redirect($request->query('callback'));
+        }
 
     }
 

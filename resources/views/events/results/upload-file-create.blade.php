@@ -7,7 +7,7 @@
                 <div class="p-2 text-gray-900 bg-rd-500">
                 <div class="homepage-box">
                     <x-event-navbar :event="$event" :all_same_serie_events="$all_same_serie_events" />
-s                    @if (session('error'))
+                     @if (session('error'))
                         @if(session('error') == 'registration_required')
                             @php $error = 'Nahrávat výsledky je možné až poté, co se k závodu <a class="underline" href="'.route('registration.create',$event->id).'">zaregistrujete</a>'; @endphp
                         @else

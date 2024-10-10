@@ -625,6 +625,13 @@ class ResultService
         */
 
 
+        if(!isset($activityData['latlng']))
+        {
+            Log::alert("Problém s daty, pole latlng je prázdné");
+
+            exit();
+        }
+
         foreach ($activityData['latlng']['data'] as $key => $val)
         {
             $activityDataArray[] = [
