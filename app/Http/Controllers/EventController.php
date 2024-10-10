@@ -183,6 +183,7 @@ class EventController extends Controller
             'event' => $resultSave['event'],
             'last_id' => $resultSave['last_id'],
             'rank' => $resultSave['rank'],
+            'all_same_serie_events' => $event->allSameSeriesEvents($request->eventId),
         ]);
 
 
@@ -309,10 +310,7 @@ class EventController extends Controller
         }
 
 
-
-
-
-        return view('events.results.post-upload', [
+      return view('events.results.post-upload', [
             'results' => $resultSave['results'],
             'event' => $resultSave['event'],
             'last_id' => $resultSave['last_id'],
