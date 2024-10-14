@@ -19,7 +19,7 @@
 
         <script src="https://api.mapy.cz/loader.js"></script>
         <script type="text/javascript">Loader.load();</script>
-        <script src="https://js.stripe.com/v3/"></script>
+  +
     </head>
     <body class="font-sans antialiased">
 
@@ -49,7 +49,7 @@
                 {{ $slot }}
             </main>
              <!-- Footer -->
-        <footer class="bg-[#fefdf9] text-gray-300 text-xl text-center  h-32 py-8 border-t border-orange-400">
+        <footer class="bg-[#fefdf9] text-gray-300 text-xl text-center  h-32 pt-1 pb-8 border-t border-orange-400">
             <div class="w-5/6 mx-auto flex justify-between text-xs sm:text-sm md:text:base lg:text-lg">
                 <div><a href="">Privacy Policy</a> | <a href="/">Terms of Service</a> | <a href="/">Contact</a>
                 </div>
