@@ -18,6 +18,7 @@
                                     <th class="border-none">Tempo</th>
                                     <th class="border-none">Čas</th>
                                     <th class="border-none">Rozdíl</th>
+                                    <th class="border-none">FB</th>
                                 </tr>
                                 @foreach ($results as $result )
                                     @if($loop->iteration == 1)
@@ -48,6 +49,7 @@
                                         <td class="border text-center">{{ $result->pace }}</td>
                                         <td class="border text-center">{{ $result->best_finish_time }}</td>
                                         <td class="border text-center">{{ dynamic_distance($loop->iteration,$result->best_finish_time_sec,$best_time) }}</td>
+                                        <td class="border text-center"><a href="{{ route('result.share.facebook',$result->id) }}">FB</a></td>
                                     </tr>
                                 @endforeach
                             </table>
