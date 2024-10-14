@@ -33,7 +33,7 @@
             <div class="mb-1">
                      <div class="indie-flower-regular text-4xl">Virtual Charity Run</div>
             </div>
-            
+
                 {{ $slot }}
         </body>
 </html>

@@ -38,6 +38,7 @@ Route::middleware(['auth','checkUserSerieRegistered'])->group(function () {
     Route::get('/event/{eventId}/upload-file', [EventController::class, 'uploadFileCreate'])->name('event.upload-file.create');
     Route::post('/event/{eventId}/upload', [EventController::class, 'uploadStore'])->name('event.upload.store');
     Route::post('/event/{eventId}/upload-url', [EventController::class, 'uploadStoreFromUrl'])->name('event.upload.store.url');
+    Route::get('/result/share/{result_id}', [ResultController::class, 'shareFacebook'])->name('result.share.facebook');
 
 });
 
