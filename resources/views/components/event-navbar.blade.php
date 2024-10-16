@@ -21,8 +21,8 @@
 
 
 <nav class="bg-gradient-to-b from-orange-400 to-orange-500 rounded-md text-white font-bold">
-      <div class="w-5/6 mx-auto">
-            <div class="flex h-10  px-1 justify-center sm:justify-between">
+      <div class="mx-auto">
+            <div class="flex h-10  px-1 justify-center sm:justify-start">
                   <div class="flex">
                         <div class="space-x-1 sm:space-x-5  sm:-my-px flex justify-around">
                             <x-nav-link :href="route('event.startlist.index',$event->id)" :active="request()->routeIs('event.startlist.index')" class="text-white text-xs sm:text-base">
